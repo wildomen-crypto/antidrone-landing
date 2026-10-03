@@ -92,7 +92,7 @@ function MaterialSurface({ panels, materialId }: { panels: Panel[]; materialId: 
 }
 
 function Camera({ graph, view }: { graph: ModelGraph; view: CameraView }) {
-  const { camera, gl, invalidate } = useThree();
+  const { camera, gl, invalidate, size: viewport } = useThree();
   useEffect(() => {
     const control = new OrbitControls(camera, gl.domElement);
     control.enableDamping = false; control.maxPolarAngle = Math.PI * 0.52;
@@ -109,7 +109,7 @@ function Camera({ graph, view }: { graph: ModelGraph; view: CameraView }) {
     const change = () => invalidate();
     control.target.copy(target); control.update(); control.addEventListener("change", change); invalidate();
     return () => { control.removeEventListener("change", change); control.dispose(); };
-  }, [camera, gl, graph.members, graph.solids, view, invalidate]);
+  }, [camera, gl, graph.members, graph.solids, view, invalidate, viewport.width, viewport.height]);
   return null;
 }
 

@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { company } from "@/config/company";
 import "./globals.css";
 import "./details.css";
+import "./wide-calculator.css";
 import Analytics from "@/components/landing/Analytics";
 
 export const metadata: Metadata = {

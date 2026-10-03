@@ -12,13 +12,25 @@ import type { CameraView } from "@/components/viewer/ModelDiagram";
 import DetailViews from "@/components/viewer/DetailViews";
 import NumberInput from "./NumberInput";
 import ContourFields from "./ContourFields";
+import ShapePicker from "./ShapePicker";
 import { track } from "@/lib/analytics";
 
 const Scene = dynamic(() => import("@/components/viewer/Scene"), { ssr: false, loading: () => <div className="viewer-loading">Подготавливаем 3D-схему…</div> });
 const format = (v: number) => v.toLocaleString("ru-RU", { maximumFractionDigits: 2 });
 
 function variantFor(shapeId: string) { return shapeId === "C5" ? "screen" : shapeId === "C7" ? "dome" : "portal"; }
-export default function Calculator() {
+export default function Calculator({ variant = "standard" }: { variant?: "standard" | "wide" }) {
+  const wide = variant === "wide";
+  const [parametersOpen, setParametersOpen] = useState(false);
+  const [parametersVisible, setParametersVisible] = useState(true);
+  const parameterButton = useRef<HTMLButtonElement>(null);
+  const closeParameters = () => { setParametersOpen(false); parameterButton.current?.focus(); };
+  useEffect(() => {
+    if (!parametersOpen) return;
+    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") { setParametersOpen(false); parameterButton.current?.focus(); } };
+    window.addEventListener("keydown", escape);
+    return () => window.removeEventListener("keydown", escape);
+  }, [parametersOpen]);
   const [input, setInput] = useState<LayoutInput>(structuredClone(defaultInput));
   const [view, setView] = useState<CameraView>("perspective");
   const [onlyFrame, setOnlyFrame] = useState(false), [hiddenGroups, setHiddenGroups] = useState<string[]>([]);
@@ -71,13 +83,8 @@ export default function Calculator() {
     document.getElementById("contacts")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
   const q = result.estimate?.quantities;
-  return <div className="calculator" data-shape={input.shapeId}>
-    <div className="calculator-inputs">
-      <div className="step-title"><span>01</span> Конструкция и размеры</div>
-      {result.error && <p className="input-error" role="alert">{result.error}</p>}
-      <label className="field"><span>Тип конструкции</span><select value={input.shapeId} onChange={e => choose(e.target.value as LayoutInput["shapeId"])}>{shapes.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
-      {shape.variants.length > 0 && <label className="field"><span>Вариант</span><select value={input.variant} onChange={e => setInput(c => ({ ...c, variant: e.target.value as LayoutInput["variant"], opening: { ...c.opening, enabled: false } }))}>{shape.variants.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}</select></label>}
-      <div className="field-grid">
+  const dimensions = (
+      <div className={wide ? "quick-dimensions" : "field-grid"}>
         {input.shapeId !== "C7" && number("length", input.shapeId === "C8" ? "Длина объекта" : "Длина")}
         {["C2", "C3", "C4", "C6", "C8"].includes(input.shapeId) && number("width", input.shapeId === "C8" ? "Ширина объекта" : "Ширина", 100)}
         {input.shapeId === "C7" && number("diameter", "Диаметр", 100)}
@@ -85,6 +92,14 @@ export default function Calculator() {
         {((input.shapeId === "C6" && input.variant !== "portal") || (input.shapeId === "C7" && input.variant === "dome")) && number("rise", "Подъём покрытия", 30)}
         {input.shapeId === "C5" && (input.variant === "screen" ? number("offset", "Вынос от стены", 20) : number("projection", "Вылет козырька", 30))}
       </div>
+  );
+  const settings = (
+    <div className="calculator-inputs">
+      <div className="step-title"><span>01</span> Конструкция и размеры</div>
+      {result.error && <p className="input-error" role="alert">{result.error}</p>}
+      {!wide && <label className="field"><span>Тип конструкции</span><select value={input.shapeId} onChange={e => choose(e.target.value as LayoutInput["shapeId"])}>{shapes.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}</select></label>}
+      {shape.variants.length > 0 && <label className="field"><span>Вариант</span><select value={input.variant} onChange={e => setInput(c => ({ ...c, variant: e.target.value as LayoutInput["variant"], opening: { ...c.opening, enabled: false } }))}>{shape.variants.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}</select></label>}
+      {!wide && dimensions}
       <label className="field"><span>Заполнение стен / экрана</span><select value={input.materialId} onChange={e => update("materialId", e.target.value as LayoutInput["materialId"])}>{materials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select></label>
       {["C3", "C4", "C6", "C7", "C8"].includes(input.shapeId) || (input.shapeId === "C5" && input.variant === "shelter") ? <label className="field"><span>Материал покрытия</span><select value={input.roofMaterialId} onChange={e => update("roofMaterialId", e.target.value as LayoutInput["materialId"])}>{materials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select></label> : null}
       <button className="advanced-toggle" aria-expanded={showAdvanced} onClick={() => setShowAdvanced(v => !v)}>{showAdvanced ? "−" : "+"} Дополнительные настройки</button>
@@ -107,9 +122,28 @@ export default function Calculator() {
       <fieldset><legend>Нужные работы</legend><div className="check-grid">{([["design", "Проектирование"], ["manufacturing", "Изготовление"], ["delivery", "Доставка"], ["installation", "Монтаж"]] as const).map(([id, label]) => <label key={id} className="check-field"><input type="checkbox" checked={input.services.includes(id)} onChange={e => update("services", e.target.checked ? [...input.services, id] : input.services.filter(s => s !== id))} />{label}</label>)}</div></fieldset>
       <p className="field-hint">Размеры и шаг задают предварительную компоновку. Сечения, основания и допустимые пролёты проверяет проектировщик.</p>
     </div>
+  );
+  return <div className={wide ? "calculator calculator-wide" : "calculator"} data-shape={input.shapeId}>
+    {wide && <ShapePicker value={input.shapeId} onChange={choose} />}
+    {!wide && settings}
     <div className="calculator-output">
       <div className="viewer-toolbar"><span className="step-title"><span>02</span> Предварительная схема</span><span className="viewer-badge">{three ? "3D / 2D" : "Аксонометрия"}</span></div>
+      <div className="viewer-stage">
       <div className="viewer" ref={viewer}>{result.graph ? three ? <Scene graph={result.graph} view={view} onlyFrame={onlyFrame} hiddenGroups={hiddenGroups} /> : <ModelDiagram graph={result.graph} /> : <div className="viewer-error" role="alert">{result.error}</div>}</div>
+        {wide && parametersVisible && <div className="quick-parameters" aria-label="Размеры конструкции">
+          {dimensions}
+          <button type="button" className="overlay-button" ref={parameterButton} aria-expanded={parametersOpen} aria-controls="configuration-parameters" onClick={() => setParametersOpen(v => !v)}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="white"/><circle cx="16" cy="12" r="2" fill="white"/><circle cx="8" cy="18" r="2" fill="white"/></svg>
+            Настройки
+          </button>
+          <button type="button" className="overlay-hide" aria-label="Скрыть параметры с 3D" title="Скрыть параметры" onClick={() => { setParametersOpen(false); setParametersVisible(false); }}>×</button>
+        </div>}
+        {wide && !parametersVisible && <button type="button" className="overlay-button overlay-restore" autoFocus onClick={() => { setParametersVisible(true); requestAnimationFrame(() => parameterButton.current?.focus()); }}>Показать параметры</button>}
+        {wide && parametersOpen && parametersVisible && <div id="configuration-parameters" className="parameter-panel" role="region" aria-label="Настройки конструкции">
+          <div className="parameter-panel-heading"><strong>Материалы и параметры</strong><button type="button" aria-label="Закрыть настройки" onClick={closeParameters}>×</button></div>
+          {settings}
+        </div>}
+      </div>
       <p className="viewer-help">Вращение: перетащите схему. Масштаб: колесо мыши или жест двумя пальцами. Без WebGL доступна 2D-схема.</p>
       <div className="viewer-controls"><div className="view-buttons">{([["perspective", "3D"], ["top", "Сверху"], ["front", "Спереди"], ["side", "Сбоку"]] as const).map(([key, label]) => <button key={key} className={view === key ? "selected" : ""} aria-pressed={view === key} onClick={() => setView(key)}>{label}</button>)}</div><label className="check-field"><input type="checkbox" checked={onlyFrame} onChange={e => setOnlyFrame(e.target.checked)} />Только каркас</label></div>
       {input.shapeId === "C8" && <div className="viewer-layers"><span>Видимость (состав заказа не меняется):</span>{input.contours.map((c, i) => c.enabled && <label key={i} className="check-field"><input type="checkbox" checked={!hiddenGroups.includes(`contour${i + 1}`)} onChange={e => setHiddenGroups(old => e.target.checked ? old.filter(g => g !== `contour${i + 1}`) : [...old, `contour${i + 1}`])} />Контур {i + 1}</label>)}</div>}
