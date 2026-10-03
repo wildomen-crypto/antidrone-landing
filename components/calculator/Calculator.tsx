@@ -21,16 +21,8 @@ const format = (v: number) => v.toLocaleString("ru-RU", { maximumFractionDigits:
 function variantFor(shapeId: string) { return shapeId === "C5" ? "screen" : shapeId === "C7" ? "dome" : "portal"; }
 export default function Calculator({ variant = "standard" }: { variant?: "standard" | "wide" }) {
   const wide = variant === "wide";
-  const [parametersOpen, setParametersOpen] = useState(false);
-  const [parametersVisible, setParametersVisible] = useState(true);
-  const parameterButton = useRef<HTMLButtonElement>(null);
-  const closeParameters = () => { setParametersOpen(false); parameterButton.current?.focus(); };
-  useEffect(() => {
-    if (!parametersOpen) return;
-    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") { setParametersOpen(false); parameterButton.current?.focus(); } };
-    window.addEventListener("keydown", escape);
-    return () => window.removeEventListener("keydown", escape);
-  }, [parametersOpen]);
+  const [rightInset, setRightInset] = useState(0);
+  const parameterPanel = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState<LayoutInput>(structuredClone(defaultInput));
   const [view, setView] = useState<CameraView>("perspective");
   const [onlyFrame, setOnlyFrame] = useState(false), [hiddenGroups, setHiddenGroups] = useState<string[]>([]);
@@ -39,6 +31,14 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   const [calculatedAt, setCalculatedAt] = useState("");
   useEffect(() => { setCalculatedAt(new Date().toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })); }, [input]);
   const file = useRef<HTMLInputElement>(null), viewer = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const scene = viewer.current, panel = parameterPanel.current;
+    if (!wide || !scene || !panel) return;
+    const fit = () => setRightInset(Math.max(0, scene.getBoundingClientRect().right - panel.getBoundingClientRect().left + 12));
+    const observer = new ResizeObserver(fit);
+    observer.observe(scene); observer.observe(panel); fit();
+    return () => observer.disconnect();
+  }, [wide]);
   const shape = shapes.find(s => s.id === input.shapeId)!;
   useEffect(() => {
     const node = viewer.current; if (!node) return;
@@ -84,7 +84,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   }
   const q = result.estimate?.quantities;
   const dimensions = (
-      <div className={wide ? "quick-dimensions" : "field-grid"}>
+      <div className="field-grid">
         {input.shapeId !== "C7" && number("length", input.shapeId === "C8" ? "Длина объекта" : "Длина")}
         {["C2", "C3", "C4", "C6", "C8"].includes(input.shapeId) && number("width", input.shapeId === "C8" ? "Ширина объекта" : "Ширина", 100)}
         {input.shapeId === "C7" && number("diameter", "Диаметр", 100)}
@@ -99,12 +99,12 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
       {result.error && <p className="input-error" role="alert">{result.error}</p>}
       {!wide && <label className="field"><span>Тип конструкции</span><select value={input.shapeId} onChange={e => choose(e.target.value as LayoutInput["shapeId"])}>{shapes.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}</select></label>}
       {shape.variants.length > 0 && <label className="field"><span>Вариант</span><select value={input.variant} onChange={e => setInput(c => ({ ...c, variant: e.target.value as LayoutInput["variant"], opening: { ...c.opening, enabled: false } }))}>{shape.variants.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}</select></label>}
-      {!wide && dimensions}
+      {dimensions}
       <label className="field"><span>Заполнение стен / экрана</span><select value={input.materialId} onChange={e => update("materialId", e.target.value as LayoutInput["materialId"])}>{materials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select></label>
       {["C3", "C4", "C6", "C7", "C8"].includes(input.shapeId) || (input.shapeId === "C5" && input.variant === "shelter") ? <label className="field"><span>Материал покрытия</span><select value={input.roofMaterialId} onChange={e => update("roofMaterialId", e.target.value as LayoutInput["materialId"])}>{materials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select></label> : null}
-      <button className="advanced-toggle" aria-expanded={showAdvanced} onClick={() => setShowAdvanced(v => !v)}>{showAdvanced ? "−" : "+"} Дополнительные настройки</button>
+      {!wide && <button className="advanced-toggle" aria-expanded={showAdvanced} onClick={() => setShowAdvanced(v => !v)}>{showAdvanced ? "−" : "+"} Дополнительные настройки</button>}
       {(input.materialId === "M8" || input.roofMaterialId === "M8" || input.contours.some(c => c.materialId === "M8" || c.roofMaterialId === "M8")) && <fieldset><legend>Состав комбинированной панели</legend>{input.combinedMaterials.map((id, i) => <label className="field" key={i}><span>Материал слоя {i + 1}</span><select value={id} onChange={e => update("combinedMaterials", input.combinedMaterials.map((v, j) => j === i ? e.target.value as LayoutInput["materialId"] : v))}>{materials.filter(m => m.id !== "M8").map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select></label>)}<p className="field-hint">Каждый материал учитывается отдельно. Количество повторений комбинации задаётся в дополнительных настройках.</p></fieldset>}
-      {showAdvanced && <div className="advanced-fields">
+      {(wide || showAdvanced) && <div className="advanced-fields">
         <label className="field"><span>Несущие элементы</span><select value={input.structuralSystem} onChange={e => update("structuralSystem", e.target.value as LayoutInput["structuralSystem"])}>{structuralSystems.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
         <label className="field"><span>Форма сечения на схеме</span><select value={input.sectionType} onChange={e => update("sectionType", e.target.value as LayoutInput["sectionType"])}><option value="profile">Профильная труба</option><option value="round">Круглая труба</option></select></label>
         <label className="check-field"><input type="checkbox" checked={input.spatialSupports} onChange={e => update("spatialSupports", e.target.checked)} />Пространственные опоры</label>
@@ -127,20 +127,11 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     {wide && <ShapePicker value={input.shapeId} onChange={choose} />}
     {!wide && settings}
     <div className="calculator-output">
-      <div className="viewer-toolbar"><span className="step-title"><span>02</span> Предварительная схема</span><span className="viewer-badge">{three ? "3D / 2D" : "Аксонометрия"}</span></div>
+      {!wide && <div className="viewer-toolbar"><span className="step-title"><span>02</span> Предварительная схема</span><span className="viewer-badge">{three ? "3D / 2D" : "Аксонометрия"}</span></div>}
       <div className="viewer-stage">
-      <div className="viewer" ref={viewer}>{result.graph ? three ? <Scene graph={result.graph} view={view} onlyFrame={onlyFrame} hiddenGroups={hiddenGroups} /> : <ModelDiagram graph={result.graph} /> : <div className="viewer-error" role="alert">{result.error}</div>}</div>
-        {wide && parametersVisible && <div className="quick-parameters" aria-label="Размеры конструкции">
-          {dimensions}
-          <button type="button" className="overlay-button" ref={parameterButton} aria-expanded={parametersOpen} aria-controls="configuration-parameters" onClick={() => setParametersOpen(v => !v)}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="white"/><circle cx="16" cy="12" r="2" fill="white"/><circle cx="8" cy="18" r="2" fill="white"/></svg>
-            Настройки
-          </button>
-          <button type="button" className="overlay-hide" aria-label="Скрыть параметры с 3D" title="Скрыть параметры" onClick={() => { setParametersOpen(false); setParametersVisible(false); }}>×</button>
-        </div>}
-        {wide && !parametersVisible && <button type="button" className="overlay-button overlay-restore" autoFocus onClick={() => { setParametersVisible(true); requestAnimationFrame(() => parameterButton.current?.focus()); }}>Показать параметры</button>}
-        {wide && parametersOpen && parametersVisible && <div id="configuration-parameters" className="parameter-panel" role="region" aria-label="Настройки конструкции">
-          <div className="parameter-panel-heading"><strong>Материалы и параметры</strong><button type="button" aria-label="Закрыть настройки" onClick={closeParameters}>×</button></div>
+        <div className="viewer" ref={viewer}>{result.graph ? three ? <Scene graph={result.graph} view={view} onlyFrame={onlyFrame} hiddenGroups={hiddenGroups} rightInset={rightInset} /> : <div className="scene-fallback" style={{ paddingRight: rightInset }}><ModelDiagram graph={result.graph} /></div> : <div className="viewer-error" role="alert">{result.error}</div>}</div>
+        {wide && <div id="configuration-parameters" className="parameter-panel" role="region" aria-label="Настройки конструкции" ref={parameterPanel}>
+          <div className="parameter-panel-heading"><strong>Параметры конструкции</strong></div>
           {settings}
         </div>}
       </div>

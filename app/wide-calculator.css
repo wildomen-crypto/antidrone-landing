@@ -12,22 +12,10 @@
 .shape-choice-image svg{width:100%;height:100%}
 .shape-choice-name{font-size:11px;line-height:1.4;text-align:center;max-width:145px}
 .shape-choice-check{position:absolute;right:7px;top:4px;color:var(--accent);font-size:13px}
-.calculator-wide .viewer-toolbar{padding-inline:32px;background:white}
 .viewer-stage{position:relative;isolation:isolate}
-.quick-parameters{position:absolute;z-index:3;top:16px;left:24px;max-width:calc(100% - 48px);display:flex;align-items:center;gap:10px;padding:10px;background:#fffffff0;border:1px solid #d9e2ef;border-radius:10px;box-shadow:0 4px 24px #172b4012;backdrop-filter:blur(10px)}
-.quick-dimensions{display:flex;gap:10px;overflow-x:auto;min-width:0}
-.quick-dimensions .field{flex:0 0 94px;margin:0}
-.quick-dimensions .field>span{font-size:10px;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.quick-dimensions .field input{min-height:38px;padding:7px 10px;font-size:13px}
-.overlay-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex-shrink:0;min-height:44px;padding:9px 12px;border:1px solid #d3dded;background:white;border-radius:6px;color:var(--ink);font-size:11px;font-weight:600}
-.overlay-button svg{width:17px;height:17px}
-.overlay-button[aria-expanded=true]{border-color:var(--accent);color:var(--accent);background:#edf3ff}
-.overlay-hide{width:36px;min-width:36px;padding:0;border:0;background:transparent;color:var(--muted);min-height:44px;cursor:pointer}
-.overlay-restore{position:absolute;z-index:3;top:16px;left:24px;box-shadow:0 3px 18px #172b4015}
-.parameter-panel{position:absolute;z-index:4;top:100px;left:24px;width:320px;max-width:calc(100% - 48px);max-height:calc(100% - 114px);border:1px solid #d4dfec;border-radius:10px;background:#fffffff5;box-shadow:0 8px 32px #172b401c;display:flex;flex-direction:column;overflow:hidden;backdrop-filter:blur(12px)}
-.parameter-panel-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 14px;border-bottom:1px solid var(--line);font-size:12px;flex-shrink:0}
-.parameter-panel-heading button{border:0;background:transparent;font-size:22px;color:var(--muted);width:36px;min-height:36px}
-.calculator-wide .parameter-panel .calculator-inputs{padding:14px 16px;border:0;background:transparent;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.parameter-panel{position:absolute;z-index:4;top:12px;right:16px;bottom:12px;width:300px;max-width:calc(100% - 32px);border:1px solid #d4dfec;border-radius:10px;background:#fffffff5;box-shadow:0 8px 32px #172b401c;display:flex;flex-direction:column;overflow:hidden;backdrop-filter:blur(12px)}
+.parameter-panel-heading{padding:12px 16px;border-bottom:1px solid var(--line);font-size:12px;flex-shrink:0}
+.calculator-wide .parameter-panel .calculator-inputs{padding:14px 16px;border:0;background:transparent;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
 .parameter-panel .calculator-inputs>.step-title{display:none}
 .parameter-panel .field{margin-bottom:12px}
 .parameter-panel .field select{font-size:12px}
@@ -38,7 +26,30 @@
 .calculator-wide .quantity-grid{max-width:820px}
 .calculator-wide .quote-row{flex-direction:row;align-items:center}
 .calculator-wide .quote-row .button{width:auto}
+
+.scene-fallback{width:100%;height:100%}
+.scene-fallback>svg{display:block;width:100%;height:100%}
+.parameter-panel .calculator-inputs>.field-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(max-width:1100px){.shape-picker{grid-template-columns:repeat(8,140px);padding-inline:24px}.shape-choice-name{font-size:11px}}
-@media(max-width:800px){.shape-picker{grid-template-columns:repeat(8,130px);gap:8px;padding:14px 20px}.shape-choice-image{height:65px}.quick-parameters{top:12px;left:16px;max-width:calc(100% - 32px);gap:6px;padding:8px}.quick-dimensions{gap:6px}.quick-dimensions .field{flex-basis:80px}.parameter-panel{top:92px;left:16px;max-width:calc(100% - 32px);max-height:calc(100% - 104px)}.overlay-restore{top:12px;left:16px}.calculator-wide .viewer-toolbar,.calculator-wide .viewer-help,.calculator-wide .viewer-controls,.calculator-wide .viewer-layers,.calculator-wide .dimension-strip,.calculator-wide .viewer-caption{padding-inline:20px}.calculator-wide .node-details,.calculator-wide .estimate-result,.calculator-wide .export-actions,.calculator-wide .calculator-output>.form-message{width:calc(100% - 40px)}}
-@media(max-width:500px){.layout-comparison{justify-content:flex-start;gap:18px}.shape-picker{grid-template-columns:repeat(8,118px);padding:12px 16px}.shape-choice{padding:8px 8px 11px}.shape-choice-image{height:62px}.shape-choice-name{font-size:10px}.quick-parameters{top:8px;left:8px;max-width:calc(100% - 16px);gap:4px;padding:7px}.quick-dimensions{gap:5px}.quick-dimensions .field{flex-basis:61px}.quick-dimensions .field input{min-height:38px;padding:7px;font-size:16px}.quick-dimensions .field>span{font-size:9px}.quick-parameters .overlay-button{font-size:10px;padding:8px}.quick-parameters .overlay-button svg{display:none}.overlay-hide{min-width:24px;width:24px}.parameter-panel{top:86px;left:8px;max-width:calc(100% - 16px);max-height:calc(100% - 94px)}.overlay-restore{top:8px;left:8px}.calculator-wide .viewer-toolbar,.calculator-wide .viewer-help,.calculator-wide .viewer-controls,.calculator-wide .viewer-layers,.calculator-wide .dimension-strip,.calculator-wide .viewer-caption{padding-inline:16px}.calculator-wide .node-details,.calculator-wide .estimate-result,.calculator-wide .export-actions,.calculator-wide .calculator-output>.form-message{width:calc(100% - 32px)}.calculator-wide .quote-row{flex-direction:column;align-items:flex-start}.calculator-wide .quote-row .button{width:100%}}
-@media print{.shape-picker,.quick-parameters,.parameter-panel,.overlay-restore,.layout-comparison{display:none!important}.calculator-wide{width:100%;border:0}}
+@media(max-width:800px){
+  .shape-picker{grid-template-columns:repeat(8,130px);gap:8px;padding:14px 20px}.shape-choice-image{height:65px}
+  .parameter-panel{right:12px;width:260px}
+  .calculator-wide .viewer-help,.calculator-wide .viewer-controls,.calculator-wide .viewer-layers,.calculator-wide .dimension-strip,.calculator-wide .viewer-caption{padding-inline:20px}
+  .calculator-wide .node-details,.calculator-wide .estimate-result,.calculator-wide .export-actions,.calculator-wide .calculator-output>.form-message{width:calc(100% - 40px)}
+}
+@media(max-width:500px){
+  .layout-comparison{justify-content:flex-start;gap:18px}.shape-picker{grid-template-columns:repeat(8,118px);padding:12px 16px}
+  .shape-choice{padding:8px 8px 11px}.shape-choice-image{height:62px}.shape-choice-name{font-size:10px}
+  .parameter-panel{top:8px;right:8px;bottom:8px;width:clamp(170px,46vw,210px);max-width:calc(100% - 16px)}
+  .parameter-panel-heading{padding:10px;font-size:10px}
+  .calculator-wide .parameter-panel .calculator-inputs{padding:10px}
+  .parameter-panel .field-grid{gap:0 7px}.parameter-panel .field{margin-bottom:10px}
+  .parameter-panel .field>span{font-size:9px;margin-bottom:5px}
+  .parameter-panel .field input{font-size:16px;padding:7px;min-height:38px}
+  .parameter-panel .field select{font-size:11px;padding:7px;min-height:38px}
+  .parameter-panel .check-grid{grid-template-columns:1fr}.parameter-panel .check-field{font-size:10px}
+  .calculator-wide .viewer-help,.calculator-wide .viewer-controls,.calculator-wide .viewer-layers,.calculator-wide .dimension-strip,.calculator-wide .viewer-caption{padding-inline:16px}
+  .calculator-wide .node-details,.calculator-wide .estimate-result,.calculator-wide .export-actions,.calculator-wide .calculator-output>.form-message{width:calc(100% - 32px)}
+  .calculator-wide .quote-row{flex-direction:column;align-items:flex-start}.calculator-wide .quote-row .button{width:100%}
+}
+@media print{.shape-picker,.parameter-panel,.layout-comparison{display:none!important}.calculator-wide{width:100%;border:0}}
