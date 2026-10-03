@@ -1,6 +1,11 @@
 # Широкий 3D-конфигуратор
 
 Статус: VERIFIED. Запрос пользователя: 3 октября 2026.
+Проверенный код: 5f6f35deb026941f40b30389f11fc7de0874f090.
+Перенесён в main fast-forward; отдельная рабочая ветка сохранена.
+Исходники и полная история: C:\taran\artifacts\antidrone-landing-backups\
+wide-configurator-20261003-5f6f35d-source.zip и одноимённый .bundle.
+Manifest фиксирует SHA256 и исключение приватных файлов; bundle verify PASS.
 База: ea094d6a28cfab4d04e2215263cdb92375cbcba2; последний проверенный код f67f7c9.
 Ветка: ui/full-width-configurator. Исходная страница сохраняется на /.
 
