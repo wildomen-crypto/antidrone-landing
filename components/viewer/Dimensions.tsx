@@ -5,11 +5,11 @@ import type { ModelGraph, Point } from "@/lib/geometry/generate";
 function Label({ text, point, scale }: { text: string; point: Point; scale: number }) {
   const texture = useMemo(() => {
     const canvas = document.createElement("canvas"); canvas.width = 512; canvas.height = 112;
-    const ctx = canvas.getContext("2d")!; ctx.fillStyle = "rgba(255,255,255,0.92)"; ctx.fillRect(0,0,512,112); ctx.fillStyle = "#2355d6"; ctx.font = "500 44px Segoe UI, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(text,256,56);
-    const t = new THREE.CanvasTexture(canvas); return t;
+    const ctx = canvas.getContext("2d")!; ctx.fillStyle = "rgba(255,255,255,0.95)"; ctx.fillRect(0,0,512,112); ctx.fillStyle = "#2355d6"; ctx.font = "600 72px Segoe UI, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(text,256,56);
+    const t = new THREE.CanvasTexture(canvas); t.colorSpace = THREE.SRGBColorSpace; return t;
   }, [text]);
   useEffect(() => () => texture.dispose(), [texture]);
-  return <sprite position={[...point]} scale={[scale * 3, scale * .66, 1]}><spriteMaterial map={texture} depthTest={false} /></sprite>;
+  return <sprite position={[...point]} scale={[scale * 3, scale * .66, 1]} renderOrder={1000}><spriteMaterial map={texture} depthTest={false} depthWrite={false} /></sprite>;
 }
 export function Dimensions({ graph }: { graph: ModelGraph }) {
   const lines = useMemo(() => {
@@ -24,6 +24,6 @@ export function Dimensions({ graph }: { graph: ModelGraph }) {
     const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(lines.flatMap(d=>[...d.a,...d.b]),3)); return g;
   }, [lines]);
   useEffect(() => () => geometry.dispose(), [geometry]);
-  const scale = Math.max(graph.bounds.length,graph.bounds.width,graph.bounds.height,3) * .04;
+  const scale = Math.max(graph.bounds.length,graph.bounds.width,graph.bounds.height,3) * .09;
   return <><lineSegments geometry={geometry}><lineBasicMaterial color="#6687c5" transparent opacity={.65} /></lineSegments>{lines.map(d=><Label key={d.text} text={d.text} point={d.label} scale={scale} />)}</>;
 }

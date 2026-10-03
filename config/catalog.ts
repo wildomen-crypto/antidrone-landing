@@ -4,7 +4,7 @@ export type ShapeDefinition = ShapeIdentity & Readonly<{
   name: string;
   description: string;
   release: "initial" | "extension";
-  calculatorStatus: "planned" | "preview" | "available";
+  calculatorStatus: "preview" | "preview" | "available";
   parameters: readonly string[];
   variants: readonly Readonly<{ id: string; name: string }>[];
 }>;
@@ -38,14 +38,14 @@ export type ApprovedCombination = Readonly<{
 }>;
 
 export const shapes = [
-  { id: "C1", key: "screen", name: "Линейный экран", description: "Ряд стоек и рам с выбранным заполнением.", release: "initial", calculatorStatus: "planned", parameters: ["Длина", "Высота"], variants: [] },
-  { id: "C2", key: "perimeter", name: "Ограждение по периметру", description: "Прямоугольный контур с независимыми сторонами и проёмами.", release: "initial", calculatorStatus: "planned", parameters: ["Длина", "Ширина", "Высота"], variants: [] },
-  { id: "C3", key: "canopy", name: "Навес", description: "Опоры и покрытие с открытыми боковыми сторонами.", release: "initial", calculatorStatus: "planned", parameters: ["Длина", "Ширина", "Высота"], variants: [] },
-  { id: "C4", key: "enclosure", name: "Объёмное укрытие", description: "Покрытие и выбранные боковые поверхности с доступом к объекту.", release: "initial", calculatorStatus: "planned", parameters: ["Длина", "Ширина", "Высота"], variants: [] },
-  { id: "C5", key: "facade", name: "Пристенный экран / козырёк", description: "Выносные кронштейны и рамы вдоль существующей стены.", release: "initial", calculatorStatus: "planned", parameters: ["Длина", "Высота", "Вынос или вылет"], variants: [{ id: "screen", name: "Пристенный экран" }, { id: "shelter", name: "Козырёк" }] },
-  { id: "C6", key: "passage", name: "Галерея / проезд", description: "Повторяемые пролёты над проездом или проходом.", release: "extension", calculatorStatus: "planned", parameters: ["Длина", "Ширина", "Высота свободного габарита", "Подъём для выбранной формы"], variants: [{ id: "portal", name: "П-образная" }, { id: "arch", name: "Арочная" }, { id: "cable", name: "Канатная" }] },
-  { id: "C7", key: "round", name: "Круглый контур / купол", description: "Кольцевые опоры и радиальное покрытие при выбранном купольном варианте.", release: "extension", calculatorStatus: "planned", parameters: ["Диаметр", "Высота", "Подъём купола"], variants: [{ id: "perimeter", name: "Круглый контур" }, { id: "dome", name: "Купольное укрытие" }] },
-  { id: "C8", key: "complex", name: "Комплексное укрытие", description: "До трёх вложенных контуров с независимыми высотами, опорами и заполнениями.", release: "initial", calculatorStatus: "planned", parameters: ["Габариты объекта", "Контуры", "Отступы", "Высоты"], variants: [] },
+  { id: "C1", key: "screen", name: "Линейный экран", description: "Ряд стоек и рам с выбранным заполнением.", release: "initial", calculatorStatus: "preview", parameters: ["Длина", "Высота"], variants: [] },
+  { id: "C2", key: "perimeter", name: "Ограждение по периметру", description: "Прямоугольный контур с независимыми сторонами и проёмами.", release: "initial", calculatorStatus: "preview", parameters: ["Длина", "Ширина", "Высота"], variants: [] },
+  { id: "C3", key: "canopy", name: "Навес", description: "Опоры и покрытие с открытыми боковыми сторонами.", release: "initial", calculatorStatus: "preview", parameters: ["Длина", "Ширина", "Высота"], variants: [] },
+  { id: "C4", key: "enclosure", name: "Объёмное укрытие", description: "Покрытие и выбранные боковые поверхности с доступом к объекту.", release: "initial", calculatorStatus: "preview", parameters: ["Длина", "Ширина", "Высота"], variants: [] },
+  { id: "C5", key: "facade", name: "Пристенный экран / козырёк", description: "Выносные кронштейны и рамы вдоль существующей стены.", release: "initial", calculatorStatus: "preview", parameters: ["Длина", "Высота", "Вынос или вылет"], variants: [{ id: "screen", name: "Пристенный экран" }, { id: "shelter", name: "Козырёк" }] },
+  { id: "C6", key: "passage", name: "Галерея / проезд", description: "Повторяемые пролёты над проездом или проходом.", release: "extension", calculatorStatus: "preview", parameters: ["Длина", "Ширина", "Высота свободного габарита", "Подъём для выбранной формы"], variants: [{ id: "portal", name: "П-образная" }, { id: "arch", name: "Арочная" }, { id: "cable", name: "Канатная" }] },
+  { id: "C7", key: "round", name: "Круглый контур / купол", description: "Кольцевые опоры и радиальное покрытие при выбранном купольном варианте.", release: "extension", calculatorStatus: "preview", parameters: ["Диаметр", "Высота", "Подъём купола"], variants: [{ id: "perimeter", name: "Круглый контур" }, { id: "dome", name: "Купольное укрытие" }] },
+  { id: "C8", key: "complex", name: "Комплексное укрытие", description: "До трёх вложенных контуров с независимыми высотами, опорами и заполнениями.", release: "initial", calculatorStatus: "preview", parameters: ["Габариты объекта", "Контуры", "Отступы", "Высоты"], variants: [] },
 ] as const satisfies readonly ShapeDefinition[];
 
 export const materials = [
@@ -88,3 +88,4 @@ export const catalog = {
   structuralSystems,
   compatibility,
 } as const;
+

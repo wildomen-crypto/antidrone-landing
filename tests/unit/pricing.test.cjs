@@ -17,3 +17,6 @@ test('duplicates and invalid amounts are rejected',()=>{
   assert.throws(()=>computeBudget([{...lines[0],quantity:NaN}],fixture));
   assert.throws(()=>computeBudget(lines,{...fixture,rates:{frame:{unit:'m',value:-1}}}));
 });
+test('cyclic included work cannot silently produce a zero quote',()=>{
+  assert.throws(()=>computeBudget(lines,{...fixture,rates:{frame:{unit:'m',value:10,includes:['manufacturing']},manufacturing:{unit:'order',value:5,includes:['frame']}}}),/CYCLIC_RATE_INCLUSIONS/);
+});

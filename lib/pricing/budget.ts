@@ -1,4 +1,4 @@
-export type RateUnit = "m2" | "m" | "piece" | "order";
+export type RateUnit = "m2" | "m3" | "m" | "kg" | "piece" | "order";
 export type BudgetLine = { id: string; label: string; quantity: number; unit: RateUnit; required: boolean };
 export type Rate = { unit: RateUnit; value: number; includes?: readonly string[] };
 export type RateBook = { version: string | null; approved: boolean; currency: "RUB"; vat: "included" | "excluded" | "not-applicable" | null; rates: Readonly<Record<string, Rate>> };
@@ -8,6 +8,14 @@ export function computeBudget(lines: readonly BudgetLine[], book: RateBook) {
   if (new Set(lines.map(l => l.id)).size !== lines.length || lines.some(l => !Number.isFinite(l.quantity) || l.quantity < 0)) throw new Error("INVALID_BUDGET_LINES");
   if (!book.approved || !book.version || !book.vat) return { mode: "manual" as const, amount: null, version: book.version, missing: lines.filter(l => l.required).map(l => l.id), items: [] };
   for (const rate of Object.values(book.rates)) if (!Number.isFinite(rate.value) || rate.value < 0) throw new Error("INVALID_RATE");
+  const visited = new Set<string>(), stack = new Set<string>();
+  const visit = (id: string) => {
+    if (stack.has(id)) throw new Error("CYCLIC_RATE_INCLUSIONS");
+    if (visited.has(id)) return;
+    stack.add(id); for (const included of book.rates[id]?.includes ?? []) visit(included);
+    stack.delete(id); visited.add(id);
+  };
+  Object.keys(book.rates).forEach(visit);
   // Included work is suppressed only when its parent rate is used and has matching units.
   const included = new Set(lines.flatMap(l => {
     const rate = book.rates[l.id]; return rate && rate.unit === l.unit && l.quantity > 0 ? rate.includes ?? [] : [];

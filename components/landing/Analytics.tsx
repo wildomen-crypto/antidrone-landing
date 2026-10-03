@@ -4,7 +4,7 @@ import { track } from "@/lib/analytics";
 export default function Analytics() {
   useEffect(() => {
     const click = (event: MouseEvent) => {
-      const link = (event.target as Element)?.closest("a");
+      const link = event.target instanceof Element ? event.target.closest("a") : null;
       const href = link?.getAttribute("href") ?? "";
       if (href.startsWith("tel:")) track("call_click");
       else if (href.startsWith("mailto:")) track("email_click");

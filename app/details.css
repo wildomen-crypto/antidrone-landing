@@ -11,4 +11,4 @@
 .hero-copy,.hero-visual{min-width:0}
 @media(max-width:500px){.hero h1{font-size:clamp(30px,9.2vw,36px)}.field input,.field select,.field textarea,.lead-form .field input,.lead-form .field textarea{font-size:16px}.solution-card p{font-size:12px}.solution-card h3{font-size:14px}.material-card p,.process-grid p,.service-grid p{font-size:12px}.field-hint{font-size:11px}}
 @media(max-width:500px){.node-details{padding-inline:18px}.detail-viewer{height:250px}}
-@media print{.node-details,.viewer-help{display:none!important}}
+@media print{.node-details,.viewer-help{display:none!important}.print-card p{font-size:12px;line-height:1.6}.print-card table{font-size:12px}.print-card svg,tr{break-inside:avoid}}

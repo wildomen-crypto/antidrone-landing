@@ -9,7 +9,13 @@ export const runtime = "nodejs";
 export async function POST(request: Request) {
   try {
     if (process.env.SITE_PUBLIC === "true" && !legal.approved) return NextResponse.json({ error: "Публичная форма ещё не активирована. Свяжитесь с компанией по телефону или email." }, { status: 503 });
-    const origin = request.headers.get("origin"), requestOrigin = new URL(request.url).origin;
+    const origin = request.headers.get("origin");
+    // Next's internal request URL may use localhost even when the browser uses
+    // 127.0.0.1. Public deployments use an explicit canonical origin.
+    const configured = process.env.SITE_ORIGIN;
+    const requestOrigin = configured ? new URL(configured).origin : new URL("http://" + request.headers.get("host")).origin;
+    if (!configured && !["localhost", "127.0.0.1", "[::1]"].includes(new URL(requestOrigin).hostname)) return NextResponse.json({ error: "Адрес сайта ещё не настроен." }, { status: 503 });
+    if (process.env.SITE_PUBLIC === "true" && !configured) return NextResponse.json({ error: "Адрес сайта ещё не настроен." }, { status: 503 });
     if (origin !== requestOrigin) return NextResponse.json({ error: "Запрос должен быть отправлен с сайта." }, { status: 403 });
     if (!request.headers.get("content-type")?.includes("application/json")) return NextResponse.json({ error: "Неверный формат запроса." }, { status: 415 });
     if (Number(request.headers.get("content-length")) > 20000) return NextResponse.json({ error: "Слишком большой запрос." }, { status: 413 });

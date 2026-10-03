@@ -10,7 +10,11 @@
 *.db
 *.db-*
 *.sqlite
+*.sqlite-*
 *.sqlite3
+*.sqlite3-*
+/data/
+/private/
 /uploads/
 Thumbs.db
 .DS_Store

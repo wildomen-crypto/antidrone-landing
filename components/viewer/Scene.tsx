@@ -63,7 +63,7 @@ function MaterialSurface({ panels, materialId }: { panels: Panel[]; materialId: 
   const texture = useMemo(() => {
     const size = 64, data = new Uint8Array(size * size * 4);
     for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
-      const thin = materialId === "M1" ? 1 : 2;
+      const thin = materialId === "M1" ? 2 : materialId === "M5" ? 4 : 3;
       const square = x < thin || y < thin;
       const diagonal = (x + y) % 32 < 2 || (x - y + 64) % 32 < 2;
       const hex = ((y % 32 < 2 && (x % 32) > 8 && (x % 32) < 24) || Math.abs((x % 32) - Math.abs(16 - y % 32) / 2 - 8) < 1.5 || Math.abs((x % 32) + Math.abs(16 - y % 32) / 2 - 24) < 1.5);
