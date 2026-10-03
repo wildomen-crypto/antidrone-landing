@@ -54,7 +54,8 @@ h1 {
 .preview-note p { margin: 0; font-size: 14px; line-height: 1.65; color: var(--muted); }
 .status-dot { flex: 0 0 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-top: 8px; }
 .company-link { display: inline-flex; align-items: center; gap: 18px; min-height: 44px; font-size: 14px; text-underline-offset: 5px; }
-.site-footer { padding: 22px 0; border-top: 1px solid var(--line); }
+.site-footer { padding: 22px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.site-footer a { display: inline-flex; align-items: center; min-height: 44px; text-underline-offset: 4px; }
 
 @media (max-width: 600px) {
   .page-shell { width: calc(100% - 40px); }

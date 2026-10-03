@@ -1,8 +1,10 @@
+import { company } from "@/config/company";
+
 export default function HomePage() {
   return (
     <div className="page-shell">
       <header className="site-header">
-        <span className="brand">Металлоконструкции</span>
+        <span className="brand">{company.shortName}</span>
         <span className="preview-label">Локальная версия</span>
       </header>
 
@@ -21,14 +23,18 @@ export default function HomePage() {
           </p>
         </div>
 
-        <a className="company-link" href="https://topengineer.ru/">
+        <a className="company-link" href={company.websiteUrl}>
           Основной сайт компании <span aria-hidden="true">↗</span>
         </a>
       </main>
 
       <footer className="site-footer">
-        <span>Основа проекта</span>
-        <span>Блок B01.1</span>
+        <a href={company.contacts.general.phone.href}>
+          {company.contacts.general.phone.display}
+        </a>
+        <a href={company.contacts.general.email.href}>
+          {company.contacts.general.email.address}
+        </a>
       </footer>
     </div>
   );
