@@ -225,4 +225,3 @@ finally{
   await writeFile(path.join(output,'browser-report.json'),JSON.stringify(report,null,2));
   console.log('Checks passed: '+report.checks.length+'. Report: .local/qa/browser-report.json');
 }
-

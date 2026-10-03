@@ -88,4 +88,3 @@ export const catalog = {
   structuralSystems,
   compatibility,
 } as const;
-
