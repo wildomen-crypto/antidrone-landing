@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "module": "commonjs", "moduleResolution": "node",
+    "strict": true, "skipLibCheck": true, "esModuleInterop": true,
+    "outDir": ".local/test-build", "rootDir": ".", "types": ["node"]
+  },
+  "include": ["lib/configuration/**/*.ts", "lib/geometry/**/*.ts", "lib/pricing/**/*.ts", "lib/leads/**/*.ts", "config/company.ts", "config/legal.ts"]
+}
