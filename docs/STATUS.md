@@ -11,8 +11,8 @@
 Корень: C:\taran\antidrone-landing.
 Локальный выпуск: VERIFIED. Публичное размещение: WAITING_EXTERNAL.
 Основная ветка продолжения: main; сохранена delivery/local-site.
-Последний проверенный функциональный код: 5f6f35deb026941f40b30389f11fc7de0874f090.
-Рабочая ветка ui/full-width-configurator сохранена; main обновлён fast-forward.
+Последний проверенный функциональный код: 9739aa3f907f276a76d6a5185663b5cd8566d89f.
+Рабочая ветка ui/permanent-right-settings сохранена; main обновлён fast-forward.
 Базовый проверенный функциональный код: f67f7c9836d1e7a46f4e5926261cfa2d5b9f1914.
 Исходный main a3fda4b и промежуточный 487a69e остаются в истории.
 Карточка выпуска: docs/checkpoints/LOCAL-DELIVERY.md.
@@ -62,6 +62,8 @@ Git: локальная настройка Dmitrii Taran,
 ## Резервные копии
 
 Каталог C:\taran\artifacts\antidrone-landing-backups.
+Постоянная правая панель: right-panel-20261003-9739aa3-source.zip и
+одноимённый .bundle; bundle verify PASS. ZIP содержит только tracked-файлы.
 Широкий вариант: wide-configurator-20261003-5f6f35d-source.zip,
 одноимённый .bundle и -manifest.json. Bundle проверен; ZIP проверен
 на отсутствие данных, секретов и служебных каталогов, SHA256 записаны.

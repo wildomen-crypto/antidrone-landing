@@ -4,6 +4,10 @@
 схема / 3D / 2D» на /wide; настройки всегда показывать справа поверх 3D.
 База: 09106cf, проверенный код 5f6f35d.
 Ветка: ui/permanent-right-settings.
+Проверенный код: 9739aa3f907f276a76d6a5185663b5cd8566d89f; main обновлён.
+Архив исходников и проверенный Git bundle: C:\taran\artifacts\
+antidrone-landing-backups\right-panel-20261003-9739aa3-source.zip
+и одноимённый .bundle. История предыдущих вариантов сохранена.
 
 Файлы: Calculator, wide-calculator.css, Scene при необходимости для
 кадра с учётом панели, tests/wide-browser.mjs, документация состояния.
