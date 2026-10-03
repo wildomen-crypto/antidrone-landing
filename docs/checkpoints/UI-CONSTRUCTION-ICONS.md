@@ -3,6 +3,9 @@
 Статус: VERIFIED. Завершено: 4 октября 2026.
 База 540e527, проверенный код 0d77ea6.
 Ветка ui/compact-construction-icons.
+Проверенный код: 697909ab646bf69f03a601323b73db8a9f813923; main обновлён.
+Архив и проверенный bundle: C:\taran\artifacts\antidrone-landing-backups\
+construction-icons-20261004-697909a-source.zip и одноимённый .bundle.
 
 На /wide под ползунками: сечение, два доступных основания и стороны
 в виде локальных SVG 20×20 с названиями/выделением выбранного.
