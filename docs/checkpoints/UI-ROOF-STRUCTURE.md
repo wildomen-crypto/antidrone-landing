@@ -3,6 +3,9 @@
 Статус: VERIFIED. Завершено: 4 октября 2026.
 База 6c37af7, проверенный код b49e1c3.
 Ветка ui/roof-and-structure-cards.
+Проверенный код: 9bc3eb2912e6516311069e44963ca87a6917da79; main обновлён.
+Архив и проверенный bundle: C:\taran\artifacts\antidrone-landing-backups\
+roof-structure-20261004-9bc3eb2-source.zip и одноимённый .bundle.
 
 Результат: на /wide после заполнения стен — независимый ряд карточек
 материала кровли (M1–M8), затем ряд несущих элементов (6 типов).
