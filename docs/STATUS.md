@@ -24,8 +24,8 @@
 Корень: C:\taran\antidrone-landing.
 Локальный выпуск: VERIFIED. Публичное размещение: WAITING_EXTERNAL.
 Основная ветка продолжения: main; сохранена delivery/local-site.
-Последний проверенный функциональный код: 9bc3eb2912e6516311069e44963ca87a6917da79.
-Рабочая ветка ui/roof-and-structure-cards сохранена; main обновлён fast-forward.
+Последний проверенный функциональный код: 0d77ea6e90767bb55c243ac36b52e8bc83103e8b.
+Рабочая ветка ui/section-layer-sliders сохранена; main обновлён fast-forward.
 Базовый проверенный функциональный код: f67f7c9836d1e7a46f4e5926261cfa2d5b9f1914.
 Исходный main a3fda4b и промежуточный 487a69e остаются в истории.
 Карточка выпуска: docs/checkpoints/LOCAL-DELIVERY.md.
@@ -75,6 +75,8 @@ Git: локальная настройка Dmitrii Taran,
 ## Резервные копии
 
 Каталог C:\taran\artifacts\antidrone-landing-backups.
+Шаг и слои: section-layers-20261004-0d77ea6-source.zip
+и одноимённый .bundle; bundle verify PASS. ZIP — только tracked-файлы.
 Кровля и каркас: roof-structure-20261004-9bc3eb2-source.zip
 и одноимённый .bundle; bundle verify PASS. ZIP — только tracked-файлы.
 Материалы и ползунки: material-sliders-20261004-b49e1c3-source.zip

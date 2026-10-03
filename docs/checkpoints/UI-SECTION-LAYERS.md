@@ -3,6 +3,9 @@
 Статус: VERIFIED. Завершено: 4 октября 2026.
 База f213507, проверенный код 9bc3eb2.
 Ветка ui/section-layer-sliders.
+Проверенный код: 0d77ea6e90767bb55c243ac36b52e8bc83103e8b; main обновлён.
+Архив и проверенный bundle: C:\taran\artifacts\antidrone-landing-backups\
+section-layers-20261004-0d77ea6-source.zip и одноимённый .bundle.
 
 Результат: только на /wide перенести глобальный максимальный шаг секции
 и число слоёв к размерам сверху слева поверх 3D. Шаг — ползунок
