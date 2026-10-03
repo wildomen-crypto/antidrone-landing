@@ -5,7 +5,7 @@ import path from 'node:path';
 const { chromium } = await import(process.env.PLAYWRIGHT_MODULE ?? 'file:///C:/Users/Student/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs');
 const base = process.env.QA_URL ?? 'http://127.0.0.1:3100';
 assert.ok(['127.0.0.1', 'localhost'].includes(new URL(base).hostname));
-const output = path.resolve('.local/qa/right-panel');
+const output = path.resolve('.local/qa/material-sliders');
 await mkdir(output, { recursive: true });
 const report = { checks: [], errors: [], date: new Date().toISOString() };
 const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL ?? 'msedge', headless: true });
@@ -15,8 +15,8 @@ async function check(name, fn) { await fn(); report.checks.push(name); console.l
 async function showScene(page) { await page.locator('.shape-picker').evaluate(el => el.scrollIntoView({ block: 'start' })); await page.locator('.viewer canvas').waitFor(); }
 
 try {
-  await check('Five widths: full screen, same scene height, overlays stay inside, no overflow', async () => {
-    for (const width of [360, 390, 768, 1280, 1440]) {
+  await check('Seven widths: full screen, same scene height, overlays stay inside, no overflow', async () => {
+    for (const width of [360, 390, 510, 768, 900, 1280, 1440]) {
       const page = await browser.newPage({ viewport: { width, height: 1000 }, reducedMotion: 'reduce' }); monitor(page);
       await page.goto(base + '/#calculator', { waitUntil: 'networkidle' });
       const original = await page.locator('.viewer').boundingBox();
@@ -33,7 +33,16 @@ try {
       assert.equal(await page.getByRole('button', {name:'Настройки',exact:true}).count(), 0);
       const panel = await page.locator('.parameter-panel').boundingBox();
       assert.ok(panel.y >= scene.y && panel.y + panel.height <= scene.y + scene.height);
-      assert.ok(panel.x > scene.width / 2 && panel.x + panel.width <= width);
+      assert.ok(panel.x >= scene.x && panel.x + panel.width <= width);
+      assert.ok(scene.width - panel.x - panel.width <= 16, 'Settings aligned to the right edge');
+      const dimensions = await page.locator('.dimension-panel').boundingBox();
+      assert.ok(dimensions.x >= scene.x && dimensions.x + dimensions.width < panel.x);
+      assert.ok(dimensions.y >= scene.y && dimensions.y + dimensions.height <= scene.y + scene.height);
+      assert.equal(await page.locator('.dimension-panel input[type=range]').count(), 3);
+      assert.equal(await page.locator('.material-choice').count(), 8);
+      const filling = await page.locator('.material-picker').boundingBox();
+      assert.ok(Math.abs(filling.y - scene.y - scene.height) < 2, 'Filling choices directly below 3D');
+      assert.equal(await page.locator('.parameter-panel').getByRole('combobox', {name:'Заполнение стен / экрана',exact:true}).count(),0);
       const picker = await page.locator('.shape-picker').boundingBox();
       assert.ok(Math.abs(scene.y - picker.y - picker.height) < 2, 'Scene immediately follows thumbnails');
       await page.screenshot({ path: path.join(output, `wide-${width}.png`) });
@@ -55,13 +64,38 @@ try {
       await page.waitForFunction(id => document.querySelector('.calculator')?.dataset.shape === id, 'C' + (i + 1));
       assert.equal(await choice.getAttribute('aria-pressed'), 'true');
       assert.equal(await page.locator('.quantity-grid').count(), 1);
+      assert.equal(await page.locator('.dimension-panel input[type=range]').count(), i===0?2:3);
     }
     await page.locator('.solution-card').nth(3).getByRole('button').click();
     assert.equal(await page.locator('.calculator').getAttribute('data-shape'), 'C4');
   });
+  await check('Eight filling images update graph and JSON without changing roof material', async () => {
+    for (let index=0; index<8; index++) {
+      const card=page.locator('.material-choice').nth(index); await card.click();
+      assert.equal(await card.getAttribute('aria-pressed'),'true');
+      const pending=page.waitForEvent('download'); await page.getByRole('button',{name:'Сохранить JSON'}).click();
+      const download=await pending; const savedPath=path.join(output,'material-'+(index+1)+'.json');await download.saveAs(savedPath);
+      const input=JSON.parse(await readFile(savedPath,'utf8'));
+      assert.equal(input.materialId,'M'+(index+1)); assert.equal(input.roofMaterialId,'M5');
+      await waitTotal(page,index===7?316:188);
+      assert.equal(await page.locator('.input-error').count(),0);
+    }
+    assert.ok(await page.getByRole('combobox',{name:'Материал слоя 1',exact:true}).isVisible());
+    await page.locator('.material-choice').nth(4).click();await waitTotal(page,188);
+  });
   await check('Dimensions, opening, panel scroll and camera controls', async () => {
-    await page.getByLabel('Длина, м', { exact: true }).fill('20'); await waitTotal(page, 328);
-    await page.getByLabel('Длина, м', { exact: true }).fill('10'); await waitTotal(page, 188);
+    await page.getByRole('textbox', { name: 'Длина, м', exact: true }).fill('20'); await waitTotal(page, 328);
+    const slider=page.getByRole('slider',{name:'Длина, м',exact:true});
+    assert.equal(await slider.inputValue(),'20');
+    await slider.focus();await page.keyboard.press('ArrowRight');await waitTotal(page,329.4);
+    assert.equal(await page.getByRole('textbox',{name:'Длина, м',exact:true}).inputValue(),'20,1');
+    await page.keyboard.press('ArrowLeft');await waitTotal(page,328);
+    const sliderRect=await slider.boundingBox();
+    await page.mouse.click(sliderRect.x+sliderRect.width*.18,sliderRect.y+sliderRect.height/2);
+    const dragged=Number(await slider.inputValue());assert.ok(dragged>20 && dragged<60);
+    await page.waitForFunction(value=>Number(document.querySelector('.dimension-exact input').value.replace(',','.'))===value,dragged);
+
+    await page.getByRole('textbox', { name: 'Длина, м', exact: true }).fill('10'); await waitTotal(page, 188);
     await page.getByLabel('Проём в передней стороне', { exact: true }).check(); await waitTotal(page, 179);
     await page.getByRole('button', { name: 'Сверху', exact: true }).click();
     await page.getByRole('button', { name: '3D', exact: true }).click();
@@ -76,12 +110,14 @@ try {
     const pending = page.waitForEvent('download'); await page.getByRole('button', { name: 'Сохранить JSON' }).click();
     const download = await pending; const jsonPath = path.join(output, 'roundtrip.json'); await download.saveAs(jsonPath);
     const saved = JSON.parse(await readFile(jsonPath, 'utf8')); assert.equal(saved.length, 10); assert.equal(saved.opening.enabled, true);
-    await page.getByLabel('Длина, м', { exact: true }).fill('20');
+    await page.getByRole('textbox', { name: 'Длина, м', exact: true }).fill('20');
     await page.locator('input[type=file]').setInputFiles(jsonPath); await waitTotal(page, 179);
     await page.emulateMedia({ media: 'print' });
     assert.ok(await page.locator('.print-card').isVisible());
     assert.equal(await page.locator('.shape-picker').isVisible(), false);
     assert.equal(await page.locator('.parameter-panel').isVisible(), false);
+    assert.equal(await page.locator('.dimension-panel').isVisible(), false);
+    assert.equal(await page.locator('.material-picker').isVisible(), false);
     await page.pdf({ path: path.join(output, 'print-card.pdf'), format: 'A4' });
     await page.emulateMedia({ media: 'screen' });
     await page.getByRole('button', { name: /Получить расчёт/ }).click();
@@ -93,7 +129,7 @@ try {
     const contours = page.locator('.contour-inputs fieldset');
     await contours.nth(2).getByRole('checkbox', { name: 'Контур 3', exact: true }).uncheck();
     await page.getByRole('combobox', { name: 'Внутренний стеновой модуль', exact: true }).selectOption('W2');
-    await page.getByLabel('Длина объекта, м', { exact: true }).fill('12,5');
+    await page.getByRole('textbox', { name: 'Длина объекта, м', exact: true }).fill('12,5');
     assert.equal(await page.locator('.input-error').count(), 0);
     await showScene(page); await page.screenshot({ path: path.join(output, 'mobile-c8.png') });
     assert.ok(await page.locator('.parameter-panel').isVisible());
@@ -112,7 +148,7 @@ try {
     await fallback.locator('.viewer').scrollIntoViewIfNeeded(); await fallback.locator('.viewer svg').waitFor();
     await fallback.getByRole('button', { name: 'Сверху', exact: true }).click();
     await fallback.locator('.viewer svg[aria-label*="сверху"]').waitFor();
-    await fallback.getByLabel('Длина, м', { exact: true }).fill('20'); await waitTotal(fallback, 328);
+    await fallback.getByRole('textbox', { name: 'Длина, м', exact: true }).fill('20'); await waitTotal(fallback, 328);
     await fallback.close();
   });
   assert.deepEqual(report.errors, []);

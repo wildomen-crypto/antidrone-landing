@@ -13,6 +13,8 @@ import DetailViews from "@/components/viewer/DetailViews";
 import NumberInput from "./NumberInput";
 import ContourFields from "./ContourFields";
 import ShapePicker from "./ShapePicker";
+import MaterialPicker from "./MaterialPicker";
+import DimensionSlider from "./DimensionSlider";
 import { track } from "@/lib/analytics";
 
 const Scene = dynamic(() => import("@/components/viewer/Scene"), { ssr: false, loading: () => <div className="viewer-loading">Подготавливаем 3D-схему…</div> });
@@ -22,7 +24,10 @@ function variantFor(shapeId: string) { return shapeId === "C5" ? "screen" : shap
 export default function Calculator({ variant = "standard" }: { variant?: "standard" | "wide" }) {
   const wide = variant === "wide";
   const [rightInset, setRightInset] = useState(0);
+  const [topInset, setTopInset] = useState(0);
+  const [leftInset, setLeftInset] = useState(0);
   const parameterPanel = useRef<HTMLDivElement>(null);
+  const dimensionPanel = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState<LayoutInput>(structuredClone(defaultInput));
   const [view, setView] = useState<CameraView>("perspective");
   const [onlyFrame, setOnlyFrame] = useState(false), [hiddenGroups, setHiddenGroups] = useState<string[]>([]);
@@ -32,11 +37,22 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   useEffect(() => { setCalculatedAt(new Date().toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })); }, [input]);
   const file = useRef<HTMLInputElement>(null), viewer = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const scene = viewer.current, panel = parameterPanel.current;
-    if (!wide || !scene || !panel) return;
-    const fit = () => setRightInset(Math.max(0, scene.getBoundingClientRect().right - panel.getBoundingClientRect().left + 12));
+    const scene = viewer.current, panel = parameterPanel.current, dimensions = dimensionPanel.current;
+    if (!wide || !scene || !panel || !dimensions) return;
+    const fit = () => {
+      const sceneRect = scene.getBoundingClientRect();
+      const dimensionRect = dimensions.getBoundingClientRect();
+      const right = Math.max(0, sceneRect.right - panel.getBoundingClientRect().left + 12);
+      const left = Math.max(0, dimensionRect.right - sceneRect.left + 12);
+      const top = Math.max(0, dimensionRect.bottom - sceneRect.top + 10);
+      const height = Math.max(sceneRect.height, 1);
+      const betweenPanels = Math.min((sceneRect.width - right - left) / height, 1);
+      const belowDimensions = Math.min((sceneRect.width - right) / height, (sceneRect.height - top) / height);
+      const useSides = betweenPanels >= belowDimensions;
+      setRightInset(right); setTopInset(useSides ? 0 : top); setLeftInset(useSides ? left : 0);
+    };
     const observer = new ResizeObserver(fit);
-    observer.observe(scene); observer.observe(panel); fit();
+    observer.observe(scene); observer.observe(panel); observer.observe(dimensions); fit();
     return () => observer.disconnect();
   }, [wide]);
   const shape = shapes.find(s => s.id === input.shapeId)!;
@@ -59,7 +75,11 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     catch (error) { return { graph: null, estimate: null, error: error instanceof Error ? error.message : "Проверьте параметры." }; }
   }, [input]);
   const update = <K extends keyof LayoutInput>(key: K, value: LayoutInput[K]) => { setInput(c => ({ ...c, [key]: value })); setMessage(""); };
-  const number = (key: "length" | "width" | "height" | "diameter" | "rise" | "offset" | "projection" | "step", label: string, max = 200) => <label className="field" key={key}><span>{label}, м</span><NumberInput value={input[key]} min={key === "height" || key === "projection" ? 0.5 : key === "rise" ? 0.2 : key === "offset" ? 0.1 : 1} max={max} onValue={v => update(key, v)} /></label>;
+  const number = (key: "length" | "width" | "height" | "diameter" | "rise" | "offset" | "projection" | "step", label: string, max = 200) => {
+    const min = key === "height" || key === "projection" ? 0.5 : key === "rise" ? 0.2 : key === "offset" ? 0.1 : 1;
+    return wide && key !== "step" ? <DimensionSlider key={key} label={label} value={input[key]} min={min} max={max} onValue={v => update(key, v)} />
+      : <label className="field" key={key}><span>{label}, м</span><NumberInput value={input[key]} min={min} max={max} onValue={v => update(key, v)} /></label>;
+  };
   const choose = (shapeId: LayoutInput["shapeId"]) => { setInput(c => ({ ...c, shapeId, variant: variantFor(shapeId), opening: { ...c.opening, enabled: false } })); setHiddenGroups([]); setMessage(""); };
   function download() {
     try {
@@ -84,7 +104,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   }
   const q = result.estimate?.quantities;
   const dimensions = (
-      <div className="field-grid">
+      <div className={wide ? "dimension-sliders" : "field-grid"}>
         {input.shapeId !== "C7" && number("length", input.shapeId === "C8" ? "Длина объекта" : "Длина")}
         {["C2", "C3", "C4", "C6", "C8"].includes(input.shapeId) && number("width", input.shapeId === "C8" ? "Ширина объекта" : "Ширина", 100)}
         {input.shapeId === "C7" && number("diameter", "Диаметр", 100)}
@@ -99,8 +119,8 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
       {result.error && <p className="input-error" role="alert">{result.error}</p>}
       {!wide && <label className="field"><span>Тип конструкции</span><select value={input.shapeId} onChange={e => choose(e.target.value as LayoutInput["shapeId"])}>{shapes.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}</select></label>}
       {shape.variants.length > 0 && <label className="field"><span>Вариант</span><select value={input.variant} onChange={e => setInput(c => ({ ...c, variant: e.target.value as LayoutInput["variant"], opening: { ...c.opening, enabled: false } }))}>{shape.variants.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}</select></label>}
-      {dimensions}
-      <label className="field"><span>Заполнение стен / экрана</span><select value={input.materialId} onChange={e => update("materialId", e.target.value as LayoutInput["materialId"])}>{materials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select></label>
+      {!wide && dimensions}
+      {!wide && <label className="field"><span>Заполнение стен / экрана</span><select value={input.materialId} onChange={e => update("materialId", e.target.value as LayoutInput["materialId"])}>{materials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select></label>}
       {["C3", "C4", "C6", "C7", "C8"].includes(input.shapeId) || (input.shapeId === "C5" && input.variant === "shelter") ? <label className="field"><span>Материал покрытия</span><select value={input.roofMaterialId} onChange={e => update("roofMaterialId", e.target.value as LayoutInput["materialId"])}>{materials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select></label> : null}
       {!wide && <button className="advanced-toggle" aria-expanded={showAdvanced} onClick={() => setShowAdvanced(v => !v)}>{showAdvanced ? "−" : "+"} Дополнительные настройки</button>}
       {(input.materialId === "M8" || input.roofMaterialId === "M8" || input.contours.some(c => c.materialId === "M8" || c.roofMaterialId === "M8")) && <fieldset><legend>Состав комбинированной панели</legend>{input.combinedMaterials.map((id, i) => <label className="field" key={i}><span>Материал слоя {i + 1}</span><select value={id} onChange={e => update("combinedMaterials", input.combinedMaterials.map((v, j) => j === i ? e.target.value as LayoutInput["materialId"] : v))}>{materials.filter(m => m.id !== "M8").map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select></label>)}<p className="field-hint">Каждый материал учитывается отдельно. Количество повторений комбинации задаётся в дополнительных настройках.</p></fieldset>}
@@ -129,12 +149,14 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     <div className="calculator-output">
       {!wide && <div className="viewer-toolbar"><span className="step-title"><span>02</span> Предварительная схема</span><span className="viewer-badge">{three ? "3D / 2D" : "Аксонометрия"}</span></div>}
       <div className="viewer-stage">
-        <div className="viewer" ref={viewer}>{result.graph ? three ? <Scene graph={result.graph} view={view} onlyFrame={onlyFrame} hiddenGroups={hiddenGroups} rightInset={rightInset} /> : <div className="scene-fallback" style={{ paddingRight: rightInset }}><ModelDiagram graph={result.graph} /></div> : <div className="viewer-error" role="alert">{result.error}</div>}</div>
+        <div className="viewer" ref={viewer}>{result.graph ? three ? <Scene graph={result.graph} view={view} onlyFrame={onlyFrame} hiddenGroups={hiddenGroups} rightInset={rightInset} topInset={topInset} leftInset={leftInset} /> : <div className="scene-fallback" style={{ paddingRight: rightInset, paddingTop: topInset, paddingLeft: leftInset }}><ModelDiagram graph={result.graph} /></div> : <div className="viewer-error" role="alert">{result.error}</div>}</div>
+        {wide && <div className="dimension-panel" ref={dimensionPanel} role="region" aria-label="Размеры конструкции"><strong>Размеры конструкции</strong>{dimensions}</div>}
         {wide && <div id="configuration-parameters" className="parameter-panel" role="region" aria-label="Настройки конструкции" ref={parameterPanel}>
           <div className="parameter-panel-heading"><strong>Параметры конструкции</strong></div>
           {settings}
         </div>}
       </div>
+      {wide && <MaterialPicker value={input.materialId} onChange={id => update("materialId", id)} noWalls={input.shapeId === "C3" || (input.shapeId === "C5" && input.variant === "shelter")} />}
       <p className="viewer-help">Вращение: перетащите схему. Масштаб: колесо мыши или жест двумя пальцами. Без WebGL доступна 2D-схема.</p>
       <div className="viewer-controls"><div className="view-buttons">{([["perspective", "3D"], ["top", "Сверху"], ["front", "Спереди"], ["side", "Сбоку"]] as const).map(([key, label]) => <button key={key} className={view === key ? "selected" : ""} aria-pressed={view === key} onClick={() => setView(key)}>{label}</button>)}</div><label className="check-field"><input type="checkbox" checked={onlyFrame} onChange={e => setOnlyFrame(e.target.checked)} />Только каркас</label></div>
       {input.shapeId === "C8" && <div className="viewer-layers"><span>Видимость (состав заказа не меняется):</span>{input.contours.map((c, i) => c.enabled && <label key={i} className="check-field"><input type="checkbox" checked={!hiddenGroups.includes(`contour${i + 1}`)} onChange={e => setHiddenGroups(old => e.target.checked ? old.filter(g => g !== `contour${i + 1}`) : [...old, `contour${i + 1}`])} />Контур {i + 1}</label>)}</div>}

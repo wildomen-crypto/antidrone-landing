@@ -91,7 +91,7 @@ function MaterialSurface({ panels, materialId }: { panels: Panel[]; materialId: 
   return <mesh geometry={geometry}><meshStandardMaterial map={texture} transparent opacity={materialId === "M7" ? 0.65 : 0.6} alphaTest={0.05} side={THREE.DoubleSide} depthWrite={false} /></mesh>;
 }
 
-function Camera({ graph, view, rightInset }: { graph: ModelGraph; view: CameraView; rightInset: number }) {
+function Camera({ graph, view, rightInset, topInset, leftInset }: { graph: ModelGraph; view: CameraView; rightInset: number; topInset: number; leftInset: number }) {
   const { camera, gl, invalidate, size: viewport } = useThree();
   useEffect(() => {
     const control = new OrbitControls(camera, gl.domElement);
@@ -102,23 +102,25 @@ function Camera({ graph, view, rightInset }: { graph: ModelGraph; view: CameraVi
     if (box.isEmpty()) box.setFromCenterAndSize(new THREE.Vector3(), new THREE.Vector3(1, 1, 1));
     const target = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3()), extent = Math.max(size.x, size.y, size.z, 1);
     const reserved = Math.min(rightInset, viewport.width * .65);
-    const aspect = (viewport.width - reserved) / Math.max(viewport.height, 1);
-    const distance = size.length() * 0.5 / Math.sin(Math.atan(Math.tan(20 * Math.PI / 180) * Math.min(aspect, 1))) * 1.08;
+    const reservedTop = Math.min(topInset, viewport.height * .7);
+    const reservedLeft = Math.min(leftInset, Math.max(0, viewport.width - reserved - 20));
+    const fitRatio = Math.min((viewport.width - reserved - reservedLeft) / Math.max(viewport.height, 1), (viewport.height - reservedTop) / Math.max(viewport.height, 1));
+    const distance = size.length() * 0.5 / Math.sin(Math.atan(Math.tan(20 * Math.PI / 180) * fitRatio)) * 1.08;
     const direction = new THREE.Vector3(...(view === "top" ? [0.001, 1, 0] : view === "front" ? [0, 0, -1] : view === "side" ? [1, 0, 0] : [1.25, 0.8, 1.4]) as [number, number, number]).normalize();
     camera.position.copy(target).addScaledVector(direction, distance); camera.near = 0.01; camera.far = extent * 60;
     if (camera instanceof THREE.PerspectiveCamera) {
-      if (reserved > 0) camera.setViewOffset(viewport.width, viewport.height, reserved / 2, 0, viewport.width, viewport.height);
+      if (reserved > 0 || reservedTop > 0 || reservedLeft > 0) camera.setViewOffset(viewport.width, viewport.height, (reserved - reservedLeft) / 2, -reservedTop / 2, viewport.width, viewport.height);
       else camera.clearViewOffset();
       camera.updateProjectionMatrix();
     }
     const change = () => invalidate();
     control.target.copy(target); control.update(); control.addEventListener("change", change); invalidate();
     return () => { control.removeEventListener("change", change); control.dispose(); };
-  }, [camera, gl, graph.members, graph.solids, view, invalidate, viewport.width, viewport.height, rightInset]);
+  }, [camera, gl, graph.members, graph.solids, view, invalidate, viewport.width, viewport.height, rightInset, topInset, leftInset]);
   return null;
 }
 
-export default function Scene({ graph, view, onlyFrame, hiddenGroups, showDimensions = true, rightInset = 0 }: { graph: ModelGraph; view: CameraView; onlyFrame: boolean; hiddenGroups: string[]; showDimensions?: boolean; rightInset?: number }) {
+export default function Scene({ graph, view, onlyFrame, hiddenGroups, showDimensions = true, rightInset = 0, topInset = 0, leftInset = 0 }: { graph: ModelGraph; view: CameraView; onlyFrame: boolean; hiddenGroups: string[]; showDimensions?: boolean; rightInset?: number; topInset?: number; leftInset?: number }) {
   const [supported, setSupported] = useState<boolean | null>(null);
   useEffect(() => {
     const canvas = document.createElement("canvas");
@@ -127,12 +129,12 @@ export default function Scene({ graph, view, onlyFrame, hiddenGroups, showDimens
   const members = useMemo(() => graph.members.filter(m => !hiddenGroups.includes(m.group) && (!onlyFrame || ["frame", "brace"].includes(m.kind))), [graph.members, hiddenGroups, onlyFrame]);
   const panels = useMemo(() => graph.panels.filter(p => !hiddenGroups.includes(p.group)), [graph.panels, hiddenGroups]);
   const solids = useMemo(() => graph.solids.filter(s => !hiddenGroups.includes(s.group)), [graph.solids, hiddenGroups]);
-  const fallback = <div className="scene-fallback" style={{ paddingRight: rightInset }}><ModelDiagram graph={graph} view={view} onlyFrame={onlyFrame} hiddenGroups={hiddenGroups} /></div>;
+  const fallback = <div className="scene-fallback" style={{ paddingRight: rightInset, paddingTop: topInset, paddingLeft: leftInset }}><ModelDiagram graph={graph} view={view} onlyFrame={onlyFrame} hiddenGroups={hiddenGroups} /></div>;
   if (!supported) return fallback;
   const extent = Math.max(graph.bounds.length, graph.bounds.width, graph.bounds.height, 3);
   return <WebGLBoundary fallback={fallback}><Canvas frameloop="demand" dpr={[1, 1.5]} camera={{ fov: 40, position: [20, 14, 20] }} fallback={fallback} gl={{ antialias: true }}>
     <color attach="background" args={["#f0f4f8"]} /><ambientLight intensity={1.8} /><directionalLight position={[20, 35, 20]} intensity={2.3} />
-    <ContextGuard onLost={() => setSupported(false)} /><Camera graph={graph} view={view} rightInset={rightInset} /><Members members={members} scale={Math.min(0.055, Math.max(0.025, extent / 450))} sectionType={graph.sectionType} />
+    <ContextGuard onLost={() => setSupported(false)} /><Camera graph={graph} view={view} rightInset={rightInset} topInset={topInset} leftInset={leftInset} /><Members members={members} scale={Math.min(0.055, Math.max(0.025, extent / 450))} sectionType={graph.sectionType} />
     {!onlyFrame && <Surfaces panels={panels} />}
     {graph.object && <mesh position={[0, graph.object.height / 2, 0]}><boxGeometry args={[graph.object.length, graph.object.height, graph.object.width]} /><meshStandardMaterial color="#bdc8d1" transparent opacity={0.25} /></mesh>}
     {graph.wall && <mesh position={[0, graph.wall.height / 2, -0.15]}><boxGeometry args={[graph.wall.length, graph.wall.height, 0.12]} /><meshStandardMaterial color="#c8d0d8" transparent opacity={0.45} /></mesh>}
