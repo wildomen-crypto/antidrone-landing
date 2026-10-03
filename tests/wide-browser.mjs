@@ -5,7 +5,7 @@ import path from 'node:path';
 const { chromium } = await import(process.env.PLAYWRIGHT_MODULE ?? 'file:///C:/Users/Student/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs');
 const base = process.env.QA_URL ?? 'http://127.0.0.1:3100';
 assert.ok(['127.0.0.1', 'localhost'].includes(new URL(base).hostname));
-const output = path.resolve('.local/qa/roof-structure');
+const output = path.resolve('.local/qa/section-layer-sliders');
 await mkdir(output, { recursive: true });
 const report = { checks: [], errors: [], date: new Date().toISOString() };
 const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL ?? 'msedge', headless: true });
@@ -38,7 +38,12 @@ try {
       const dimensions = await page.locator('.dimension-panel').boundingBox();
       assert.ok(dimensions.x >= scene.x && dimensions.x + dimensions.width < panel.x);
       assert.ok(dimensions.y >= scene.y && dimensions.y + dimensions.height <= scene.y + scene.height);
-      assert.equal(await page.locator('.dimension-panel input[type=range]').count(), 3);
+      assert.equal(await page.locator('.dimension-panel input[type=range]').count(), 5);
+      assert.equal(await page.locator('.dimension-panel').getByRole('slider',{name:'Максимальный шаг секций, м',exact:true}).count(),1);
+      assert.equal(await page.locator('.dimension-panel').getByRole('slider',{name:'Слои заполнения',exact:true}).count(),1);
+      if(width<=500) assert.ok(await page.locator('.dimension-panel').evaluate(el=>el.scrollHeight<=el.clientHeight+1), 'All five sliders fit in the mobile panel');
+      assert.equal(await page.locator('.parameter-panel').getByRole('combobox',{name:'Слои заполнения',exact:true}).count(),0);
+      assert.equal(await page.locator('.parameter-panel').getByRole('textbox',{name:'Максимальный шаг секций, м',exact:true}).count(),0);
       assert.equal(await page.locator('[data-target="walls"] .material-choice').count(), 8);
       assert.equal(await page.locator('[data-target="roof"] .material-choice').count(), 8);
       assert.equal(await page.locator('.structure-choice').count(), 6);
@@ -54,11 +59,12 @@ try {
       const picker = await page.locator('.shape-picker').boundingBox();
       assert.ok(Math.abs(scene.y - picker.y - picker.height) < 2, 'Scene immediately follows thumbnails');
       await page.screenshot({ path: path.join(output, `wide-${width}.png`) });
-      await page.getByRole('combobox', { name: 'Слои заполнения', exact: true }).selectOption('2');
+      const layerSlider=page.getByRole('slider',{name:'Слои заполнения',exact:true});
+      await layerSlider.focus(); await page.keyboard.press('Home'); await page.keyboard.press('ArrowRight');
       await waitTotal(page, 376);
       await page.keyboard.press('Escape');
       assert.ok(await page.locator('.parameter-panel').isVisible());
-      await page.getByRole('combobox', { name: 'Слои заполнения', exact: true }).selectOption('1');
+      await layerSlider.focus(); await page.keyboard.press('Home');
       await waitTotal(page, 188);
       await page.close();
     }
@@ -72,7 +78,7 @@ try {
       await page.waitForFunction(id => document.querySelector('.calculator')?.dataset.shape === id, 'C' + (i + 1));
       assert.equal(await choice.getAttribute('aria-pressed'), 'true');
       assert.equal(await page.locator('.quantity-grid').count(), 1);
-      assert.equal(await page.locator('.dimension-panel input[type=range]').count(), i===0?2:3);
+      assert.equal(await page.locator('.dimension-panel input[type=range]').count(), i===0?4:5);
     }
     await page.locator('.solution-card').nth(3).getByRole('button').click();
     assert.equal(await page.locator('.calculator').getAttribute('data-shape'), 'C4');
@@ -163,6 +169,41 @@ try {
     await variants.getByLabel('Включить покрытие',{exact:true}).check(); await waitTotal(variants,248);
     await variants.close();
   });
+  await check('Section and layer sliders update supports and quantities and restore from JSON', async () => {
+    const stepSlider=page.getByRole('slider',{name:'Максимальный шаг секций, м',exact:true});
+    const stepInput=page.getByRole('textbox',{name:'Максимальный шаг секций, м',exact:true});
+    const layers=page.getByRole('slider',{name:'Слои заполнения',exact:true});
+    const supports=page.locator('.quantity-grid strong').nth(1);
+    await stepInput.fill('2'); assert.equal(await stepSlider.inputValue(),'2');
+    await page.waitForFunction(()=>document.querySelectorAll('.quantity-grid strong')[1]?.textContent==='16');
+    await stepSlider.focus(); await page.keyboard.press('ArrowRight');
+    await page.waitForFunction(()=>document.querySelector('.dimension-sliders .dimension-slider:nth-last-child(2) input[type=text]')?.value==='2,1');
+    const rect=await stepSlider.boundingBox();
+    await page.mouse.click(rect.x+rect.width*.5,rect.y+rect.height/2);
+    const dragged=Number(await stepSlider.inputValue()); assert.ok(dragged>4 && dragged<7);
+    await page.waitForFunction(()=>document.querySelectorAll('.quantity-grid strong')[1]?.textContent==='8');
+    const layerRect=await layers.boundingBox();
+    await page.mouse.click(layerRect.x+layerRect.width*.5,layerRect.y+layerRect.height/2);
+    assert.equal(await layers.inputValue(),'2'); await waitTotal(page,376);
+    await layers.focus(); await page.keyboard.press('End'); await waitTotal(page,564);
+    assert.equal(await page.locator('.dimension-value').textContent(),'3');
+    await page.keyboard.press('ArrowRight'); assert.equal(await layers.inputValue(),'3');
+    await stepInput.fill('2,5');
+    const pending=page.waitForEvent('download'); await page.getByRole('button',{name:'Сохранить JSON'}).click();
+    const savedPath=path.join(output,'step-layers-roundtrip.json'); await (await pending).saveAs(savedPath);
+    const saved=JSON.parse(await readFile(savedPath,'utf8')); assert.equal(saved.step,2.5); assert.equal(saved.layers,3);
+    await stepInput.fill('3'); await layers.focus(); await page.keyboard.press('Home'); await waitTotal(page,188);
+    await page.locator('input[type=file]').setInputFiles(savedPath); await waitTotal(page,564);
+    assert.equal(await stepSlider.inputValue(),'2.5'); assert.equal(await layers.inputValue(),'3');
+    assert.equal(await supports.textContent(),'14');
+    await stepInput.fill('3'); await layers.focus(); await page.keyboard.press('Home'); await waitTotal(page,188);
+    assert.equal(await supports.textContent(),'12');
+    await page.setViewportSize({width:390,height:1000}); await showScene(page);
+    await layers.scrollIntoViewIfNeeded();
+    await page.screenshot({path:path.join(output,'mobile-left-controls.png')});
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+    await page.setViewportSize({width:1440,height:1000});
+  });
   await check('Dimensions, opening, panel scroll and camera controls', async () => {
     await page.getByRole('textbox', { name: 'Длина, м', exact: true }).fill('20'); await waitTotal(page, 328);
     const slider=page.getByRole('slider',{name:'Длина, м',exact:true});
@@ -229,6 +270,9 @@ try {
     await fallback.getByRole('button', { name: 'Сверху', exact: true }).click();
     await fallback.locator('.viewer svg[aria-label*="сверху"]').waitFor();
     await fallback.getByRole('textbox', { name: 'Длина, м', exact: true }).fill('20'); await waitTotal(fallback, 328);
+    await fallback.getByRole('textbox',{name:'Максимальный шаг секций, м',exact:true}).fill('2');
+    await fallback.getByRole('slider',{name:'Слои заполнения',exact:true}).focus();
+    await fallback.keyboard.press('ArrowRight'); await waitTotal(fallback,656);
     await fallback.close();
   });
   assert.deepEqual(report.errors, []);

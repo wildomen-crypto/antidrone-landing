@@ -81,7 +81,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   const update = <K extends keyof LayoutInput>(key: K, value: LayoutInput[K]) => { setInput(c => ({ ...c, [key]: value })); setMessage(""); };
   const number = (key: "length" | "width" | "height" | "diameter" | "rise" | "offset" | "projection" | "step", label: string, max = 200) => {
     const min = key === "height" || key === "projection" ? 0.5 : key === "rise" ? 0.2 : key === "offset" ? 0.1 : 1;
-    return wide && key !== "step" ? <DimensionSlider key={key} label={label} value={input[key]} min={min} max={max} onValue={v => update(key, v)} />
+    return wide ? <DimensionSlider key={key} label={label} value={input[key]} min={min} max={max} onValue={v => update(key, v)} />
       : <label className="field" key={key}><span>{label}, м</span><NumberInput value={input[key]} min={min} max={max} onValue={v => update(key, v)} /></label>;
   };
   const choose = (shapeId: LayoutInput["shapeId"]) => { setInput(c => ({ ...c, shapeId, variant: variantFor(shapeId), opening: { ...c.opening, enabled: false } })); setHiddenGroups([]); setMessage(""); };
@@ -115,6 +115,10 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
         {number("height", input.shapeId === "C6" ? "Свободная высота" : input.shapeId === "C8" ? "Высота объекта" : "Высота", input.shapeId === "C8" ? 80 : 30)}
         {((input.shapeId === "C6" && input.variant !== "portal") || (input.shapeId === "C7" && input.variant === "dome")) && number("rise", "Подъём покрытия", 30)}
         {input.shapeId === "C5" && (input.variant === "screen" ? number("offset", "Вынос от стены", 20) : number("projection", "Вылет козырька", 30))}
+        {wide && <>
+          {number("step", "Максимальный шаг секций", 10)}
+          <DimensionSlider label="Слои заполнения" value={input.layers} min={1} max={3} step={1} unit="" editable={false} onValue={v => update("layers", v)} />
+        </>}
       </div>
   );
   const settings = (
@@ -134,7 +138,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
         <label className="check-field"><input type="checkbox" checked={input.spatialSupports} onChange={e => update("spatialSupports", e.target.checked)} />Пространственные опоры</label>
         <label className="field"><span>Условный тип основания</span><select value={input.foundation} onChange={e => update("foundation", e.target.value as LayoutInput["foundation"])}><option value="block">Незаглублённый блок</option><option value="pile">Сваи без ростверка</option><option value="pile-cap">Сваи с ростверком</option></select></label>
         <p className="field-hint">Основание показано условно. Выбор требует инженерной проверки грунтов, нагрузок и площадки.</p>
-        <div className="field-grid">{number("step", "Максимальный шаг секций", 10)}<label className="field"><span>Слои заполнения</span><select value={input.layers} onChange={e => update("layers", Number(e.target.value))}><option>1</option><option>2</option><option>3</option></select></label></div>
+        {!wide && <div className="field-grid">{number("step", "Максимальный шаг секций", 10)}<label className="field"><span>Слои заполнения</span><select value={input.layers} onChange={e => update("layers", Number(e.target.value))}><option>1</option><option>2</option><option>3</option></select></label></div>}
         {["C3", "C4", "C6", "C7", "C8"].includes(input.shapeId) && <label className="check-field"><input type="checkbox" checked={input.roof} onChange={e => update("roof", e.target.checked)} />Включить покрытие</label>}
         {["C2", "C4", "C6", "C7", "C8"].includes(input.shapeId) && <fieldset><legend>Включить стороны в заказ</legend><div className="check-grid">{["Передняя", "Правая", "Задняя", "Левая"].map((label, i) => (input.shapeId !== "C6" || [1, 3].includes(i)) && (input.shapeId !== "C7" || i === 0) && <label key={label} className="check-field"><input type="checkbox" checked={input.sides[i]} onChange={e => update("sides", input.sides.map((v, j) => j === i ? e.target.checked : v))} />{input.shapeId === "C7" ? "Боковое заполнение" : label}</label>)}</div></fieldset>}
         {["C1", "C2", "C4"].includes(input.shapeId) || (input.shapeId === "C5" && input.variant === "screen") ? <>
