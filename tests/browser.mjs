@@ -88,7 +88,7 @@ try{
     await page.getByRole('combobox',{name:'Материал покрытия',exact:true}).selectOption('M5');
     for(const id of ['tube-post','spatial-column','frame','spatial-truss','guyed-mast','wall-bracket']){await page.getByRole('combobox',{name:'Несущие элементы',exact:true}).selectOption(id);assert.equal(await page.locator('.viewer-error').count(),0);}
     await page.getByRole('combobox',{name:'Несущие элементы',exact:true}).selectOption('tube-post');
-    for(const id of ['block','pile','pile-cap'])await page.getByRole('combobox',{name:'Условный тип основания',exact:true}).selectOption(id);
+    for(const id of ['block','pile-cap'])await page.getByRole('combobox',{name:'Условный тип основания',exact:true}).selectOption(id);
     await page.getByRole('combobox',{name:'Условный тип основания',exact:true}).selectOption('block');
     await page.locator('.node-details>summary').click();
     for(const name of ['Опора','Ферма','Основание']){await page.locator('.node-details').getByRole('button',{name,exact:true}).click();await page.locator('.detail-viewer canvas').waitFor();}

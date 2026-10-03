@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { createRequire } from 'node:module';
+import { randomUUID } from 'node:crypto';
 
 const { chromium } = await import(process.env.PLAYWRIGHT_MODULE ?? 'file:///C:/Users/Student/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs');
 const base = process.env.QA_URL ?? 'http://127.0.0.1:3100';
 assert.ok(['127.0.0.1', 'localhost'].includes(new URL(base).hostname));
-const output = path.resolve('.local/qa/section-layer-sliders');
+const output = path.resolve('.local/qa/construction-icons');
 await mkdir(output, { recursive: true });
 const report = { checks: [], errors: [], date: new Date().toISOString() };
 const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL ?? 'msedge', headless: true });
@@ -41,7 +43,15 @@ try {
       assert.equal(await page.locator('.dimension-panel input[type=range]').count(), 5);
       assert.equal(await page.locator('.dimension-panel').getByRole('slider',{name:'Максимальный шаг секций, м',exact:true}).count(),1);
       assert.equal(await page.locator('.dimension-panel').getByRole('slider',{name:'Слои заполнения',exact:true}).count(),1);
-      if(width<=500) assert.ok(await page.locator('.dimension-panel').evaluate(el=>el.scrollHeight<=el.clientHeight+1), 'All five sliders fit in the mobile panel');
+      if(width<=500) assert.ok(await page.locator('.dimension-panel').evaluate(el=>el.querySelector('.dimension-sliders').getBoundingClientRect().bottom<=el.getBoundingClientRect().bottom+1), 'All five sliders fit above scrollable icon options');
+      assert.equal(await page.locator('.dimension-panel .compact-option').count(),8);
+      if(width>=1280) assert.ok(await page.locator('.dimension-panel').evaluate(el=>el.scrollHeight<=el.clientHeight+1),'Desktop sliders and icon rows fit without scrolling');
+      assert.ok(await page.locator('.compact-option svg').evaluateAll(icons=>icons.every(el=>el.getBoundingClientRect().width===20&&el.getBoundingClientRect().height===20)));
+      assert.equal(await page.locator('.parameter-panel').getByRole('combobox',{name:'Форма сечения на схеме',exact:true}).count(),0);
+      assert.equal(await page.locator('.parameter-panel').getByRole('combobox',{name:'Условный тип основания',exact:true}).count(),0);
+      assert.equal(await page.getByRole('checkbox',{name:'Пространственные опоры',exact:true}).count(),0);
+      assert.equal(await page.locator('.parameter-panel').getByRole('checkbox',{name:'Передняя',exact:true}).count(),0);
+      assert.equal(await page.locator('option[value="pile"]').count(),0);
       assert.equal(await page.locator('.parameter-panel').getByRole('combobox',{name:'Слои заполнения',exact:true}).count(),0);
       assert.equal(await page.locator('.parameter-panel').getByRole('textbox',{name:'Максимальный шаг секций, м',exact:true}).count(),0);
       assert.equal(await page.locator('[data-target="walls"] .material-choice').count(), 8);
@@ -79,6 +89,7 @@ try {
       assert.equal(await choice.getAttribute('aria-pressed'), 'true');
       assert.equal(await page.locator('.quantity-grid').count(), 1);
       assert.equal(await page.locator('.dimension-panel input[type=range]').count(), i===0?4:5);
+      assert.equal(await page.locator('[data-choice="sides"] .compact-option').count(),[0,4,0,4,0,2,1,4][i]);
     }
     await page.locator('.solution-card').nth(3).getByRole('button').click();
     assert.equal(await page.locator('.calculator').getAttribute('data-shape'), 'C4');
@@ -148,6 +159,7 @@ try {
     await page.locator('[data-target="roof"] .material-choice').nth(4).click();
     await page.locator('.structure-choice').first().click(); await waitTotal(page,188);
     await page.setViewportSize({width:1440,height:1400}); await showScene(page);
+    await page.locator('.dimension-panel').evaluate(el=>el.scrollTop=0);
     await page.screenshot({path:path.join(output,'three-rows-desktop.png')});
     await page.setViewportSize({width:1440,height:1000});
   });
@@ -168,6 +180,82 @@ try {
     await variants.locator('[data-target="roof"] .material-choice').nth(7).click(); await waitTotal(variants,128);
     await variants.getByLabel('Включить покрытие',{exact:true}).check(); await waitTotal(variants,248);
     await variants.close();
+  });
+  await check('Compact section, foundation and side icons control configuration; removed piles cannot import', async () => {
+    const options=page.locator('.compact-options');
+    await options.getByRole('button',{name:'Круглая труба',exact:true}).click();
+    await options.getByRole('button',{name:'Сваи с ростверком',exact:true}).click();
+    for(const [name,total] of [['Передняя',148],['Правая',164],['Задняя',148],['Левая',164]]) {
+      const button=options.getByRole('button',{name,exact:true}); await button.click(); await waitTotal(page,total);
+      assert.equal(await button.getAttribute('aria-pressed'),'false');
+      await button.focus(); await page.keyboard.press('Space'); await waitTotal(page,188);
+    }
+    await page.getByLabel('Проём в передней стороне',{exact:true}).check(); await waitTotal(page,179);
+    await options.getByRole('button',{name:'Передняя',exact:true}).click(); await waitTotal(page,148);
+    assert.equal(await page.getByLabel('Проём в передней стороне',{exact:true}).isChecked(),false);
+    assert.equal(await page.locator('.input-error').count(),0);
+    const pending=page.waitForEvent('download'); await page.getByRole('button',{name:'Сохранить JSON'}).click();
+    const savedPath=path.join(output,'compact-options.json'); await (await pending).saveAs(savedPath);
+    const saved=JSON.parse(await readFile(savedPath,'utf8')); assert.equal(saved.sectionType,'round');assert.equal(saved.foundation,'pile-cap');
+    assert.deepEqual(saved.sides,[false,true,true,true]);
+    await options.getByRole('button',{name:'Профильная труба',exact:true}).click();
+    await options.getByRole('button',{name:'Незаглублённый блок',exact:true}).click();
+    await options.getByRole('button',{name:'Передняя',exact:true}).click(); await waitTotal(page,188);
+    await page.locator('input[type=file]').setInputFiles(savedPath); await waitTotal(page,148);
+    assert.equal(await options.getByRole('button',{name:'Круглая труба',exact:true}).getAttribute('aria-pressed'),'true');
+    assert.equal(await options.getByRole('button',{name:'Сваи с ростверком',exact:true}).getAttribute('aria-pressed'),'true');
+    const rejected=path.join(output,'removed-pile.json'); await writeFile(rejected,JSON.stringify({...saved,foundation:'pile'}));
+    await page.locator('input[type=file]').setInputFiles(rejected);
+    await page.getByText('Сваи без ростверка больше недоступны. Выберите блок или сваи с ростверком.',{exact:true}).waitFor();
+    assert.equal(await options.getByRole('button',{name:'Сваи с ростверком',exact:true}).getAttribute('aria-pressed'),'true');
+    await options.getByRole('button',{name:'Профильная труба',exact:true}).click();
+    await options.getByRole('button',{name:'Незаглублённый блок',exact:true}).click();
+    await options.getByRole('button',{name:'Передняя',exact:true}).click(); await waitTotal(page,188);
+    await page.setViewportSize({width:390,height:1000}); await showScene(page);
+    await options.getByRole('button',{name:'Левая',exact:true}).scrollIntoViewIfNeeded();
+    await page.screenshot({path:path.join(output,'mobile-icon-options.png')});
+    await options.getByRole('button',{name:'Круглая труба',exact:true}).click();
+    await options.getByRole('button',{name:'Профильная труба',exact:true}).click();
+    await page.setViewportSize({width:1440,height:1000});
+  });
+  await check('Spatial column and truss cards combine, deselect independently and restore from JSON', async () => {
+    const columns=page.locator('.structure-choice[data-system="spatial-column"]');
+    const trusses=page.locator('.structure-choice[data-system="spatial-truss"]');
+    const tube=page.locator('.structure-choice[data-system="tube-post"]');
+    await trusses.click(); const trussLength=Number((await page.locator('.quantity-grid strong').nth(2).textContent()).replace(/[^\d,.]/g,'').replace(',','.'));
+    await columns.focus(); await page.keyboard.press('Enter');
+    assert.equal(await columns.getAttribute('aria-pressed'),'true'); assert.equal(await trusses.getAttribute('aria-pressed'),'true');
+    assert.equal(await page.locator('.structure-choice[aria-pressed=true]').count(),2);
+    assert.ok(Number((await page.locator('.quantity-grid strong').nth(2).textContent()).replace(/[^\d,.]/g,'').replace(',','.'))>trussLength);
+    const pending=page.waitForEvent('download'); await page.getByRole('button',{name:'Сохранить JSON'}).click();
+    const savedPath=path.join(output,'combined-structure.json'); await (await pending).saveAs(savedPath);
+    const saved=JSON.parse(await readFile(savedPath,'utf8'));assert.equal(saved.structuralSystem,'spatial-truss');assert.equal(saved.spatialSupports,true);
+    await columns.click(); assert.equal(await columns.getAttribute('aria-pressed'),'false');assert.equal(await trusses.getAttribute('aria-pressed'),'true');
+    await tube.click(); await columns.click(); await trusses.click();
+    assert.equal(await columns.getAttribute('aria-pressed'),'true');assert.equal(await trusses.getAttribute('aria-pressed'),'true');
+    await trusses.click();assert.equal(await columns.getAttribute('aria-pressed'),'true');assert.equal(await trusses.getAttribute('aria-pressed'),'false');
+    await page.locator('.structure-choice[data-system="frame"]').click(); assert.equal(await columns.getAttribute('aria-pressed'),'false');
+    await page.locator('input[type=file]').setInputFiles(savedPath);
+    await page.waitForFunction(()=>document.querySelectorAll('.structure-choice[aria-pressed=true]').length===2);
+    await page.setViewportSize({width:1440,height:1400}); await showScene(page);
+    await page.locator('.dimension-panel').evaluate(el=>el.scrollTop=0);
+    await page.screenshot({path:path.join(output,'combined-structure-desktop.png')});
+    await page.setViewportSize({width:1440,height:1000}); await tube.click(); await waitTotal(page,188);
+    assert.equal(await page.locator('.structure-choice[aria-pressed=true]').count(),1);
+  });
+  await check('Compact original page supports the combination and only two foundations', async () => {
+    const original=await browser.newPage({viewport:{width:1280,height:1000},reducedMotion:'reduce'}); monitor(original);
+    await original.goto(base+'/#calculator',{waitUntil:'networkidle'});
+    await original.getByRole('button',{name:'+ Дополнительные настройки',exact:true}).click();
+    assert.equal(await original.getByRole('checkbox',{name:'Пространственные опоры',exact:true}).count(),0);
+    const foundation=original.getByRole('combobox',{name:'Условный тип основания',exact:true});
+    assert.deepEqual(await foundation.locator('option').evaluateAll(options=>options.map(option=>option.value)),['block','pile-cap']);
+    await original.getByRole('combobox',{name:'Несущие элементы',exact:true}).selectOption('spatial-combined');
+    await waitTotal(original,188); assert.equal(await original.locator('.input-error').count(),0);
+    const pending=original.waitForEvent('download');await original.getByRole('button',{name:'Сохранить JSON'}).click();
+    const savedPath=path.join(output,'original-combined.json');await(await pending).saveAs(savedPath);
+    const saved=JSON.parse(await readFile(savedPath,'utf8'));assert.equal(saved.structuralSystem,'spatial-truss');assert.equal(saved.spatialSupports,true);
+    await original.close();
   });
   await check('Section and layer sliders update supports and quantities and restore from JSON', async () => {
     const stepSlider=page.getByRole('slider',{name:'Максимальный шаг секций, м',exact:true});
@@ -274,6 +362,17 @@ try {
     await fallback.getByRole('slider',{name:'Слои заполнения',exact:true}).focus();
     await fallback.keyboard.press('ArrowRight'); await waitTotal(fallback,656);
     await fallback.close();
+  });
+  await check('API rejects removed global and contour piles before saving a lead', async () => {
+    const require=createRequire(import.meta.url);
+    const {defaultInput}=require('../.local/runtime/lib/configuration/input.js');
+    const {legal}=require('../.local/runtime/config/legal.js');
+    for(const changes of [{foundation:'pile'},{contours:[{enabled:true,offset:1,height:5,foundation:'pile'}]}]) {
+      const response=await fetch(base+'/api/leads',{method:'POST',headers:{'content-type':'application/json',origin:base,'idempotency-key':randomUUID()},
+        body:JSON.stringify({name:'QA invalid configuration',contact:'qa-invalid@example.invalid',region:'',comment:'',website:'',consent:true,consentVersion:legal.consentVersion,configuration:{...structuredClone(defaultInput),...changes}})});
+      assert.equal(response.status,400);
+      const body=await response.json();assert.match(body.error,/Сваи без ростверка больше недоступны/);assert.equal(body.id,undefined);
+    }
   });
   assert.deepEqual(report.errors, []);
 } catch (error) { report.failure = error.stack; console.error(error.stack); process.exitCode = 1; }

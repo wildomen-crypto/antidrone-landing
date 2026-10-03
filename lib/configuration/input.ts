@@ -8,10 +8,10 @@ export type LayoutInput = {
   materialId: MaterialId; roofMaterialId: MaterialId; structuralSystem: StructuralSystemId;
   combinedMaterials: MaterialId[];
   sectionType: "round" | "profile"; spatialSupports: boolean;
-  foundation: "block" | "pile" | "pile-cap";
+  foundation: "block" | "pile-cap";
   step: number; layers: number; sides: boolean[]; roof: boolean;
   opening: { enabled: boolean; width: number; height: number; offset: number };
-  contours: { enabled: boolean; offset: number; height: number; materialId?: MaterialId; roofMaterialId?: MaterialId; layers?: number; structuralSystem?: StructuralSystemId; foundation?: "block" | "pile" | "pile-cap" }[];
+  contours: { enabled: boolean; offset: number; height: number; materialId?: MaterialId; roofMaterialId?: MaterialId; layers?: number; structuralSystem?: StructuralSystemId; foundation?: "block" | "pile-cap" }[];
   wallModule: WallModuleId | "none"; services: ServiceId[];
 };
 
@@ -42,6 +42,7 @@ export function parseInput(value: unknown): LayoutInput {
   const keys = Object.keys(defaultInput);
   if (Object.keys(raw).some(key => !keys.includes(key))) throw new InputError("В конфигурации есть неизвестные поля.");
   if (raw.version !== 1) throw new InputError("Эта версия конфигурации не поддерживается.");
+  if (raw.foundation === "pile") throw new InputError("Сваи без ростверка больше недоступны. Выберите блок или сваи с ростверком.");
   const pick = <T extends string>(field: string, allowed: readonly T[]): T => {
     if (typeof raw[field] !== "string" || !allowed.includes(raw[field] as T)) throw new InputError(`Неверное значение: ${field}.`);
     return raw[field] as T;
@@ -84,7 +85,8 @@ export function parseInput(value: unknown): LayoutInput {
     }
     if (t.layers !== undefined) { if (typeof t.layers !== "number" || !Number.isInteger(t.layers) || t.layers < 1 || t.layers > 3) throw new InputError("Контур: число слоёв от 1 до 3."); overrides.layers = t.layers; }
     if (t.structuralSystem !== undefined) { if (!STRUCTURAL_SYSTEM_IDS.includes(t.structuralSystem as StructuralSystemId)) throw new InputError("Неверная система контура."); overrides.structuralSystem = t.structuralSystem as StructuralSystemId; }
-    if (t.foundation !== undefined) { if (!["block","pile","pile-cap"].includes(t.foundation as string)) throw new InputError("Неверное основание контура."); overrides.foundation = t.foundation as LayoutInput["foundation"]; }
+    if (t.foundation === "pile") throw new InputError("Сваи без ростверка больше недоступны в контурах. Выберите блок или сваи с ростверком.");
+    if (t.foundation !== undefined) { if (!["block","pile-cap"].includes(t.foundation as string)) throw new InputError("Неверное основание контура."); overrides.foundation = t.foundation as LayoutInput["foundation"]; }
     return { enabled: t.enabled, offset: t.offset, height: t.height, ...overrides };
   });
   if (shapeId === "C8" && !contours.some(c => c.enabled)) throw new InputError("Включите хотя бы один контур.");
@@ -103,7 +105,7 @@ export function parseInput(value: unknown): LayoutInput {
     materialId: pick("materialId", MATERIAL_IDS), roofMaterialId: pick("roofMaterialId", MATERIAL_IDS),
     combinedMaterials: [...raw.combinedMaterials] as MaterialId[],
     sectionType: pick("sectionType", ["round", "profile"]), spatialSupports: boolean("spatialSupports"),
-    foundation: pick("foundation", ["block", "pile", "pile-cap"]),
+    foundation: pick("foundation", ["block", "pile-cap"]),
     structuralSystem: pick("structuralSystem", STRUCTURAL_SYSTEM_IDS), step, layers,
     sides: [...raw.sides] as boolean[], roof: boolean("roof"),
     opening: { enabled: o.enabled, width: o.width, height: o.height, offset: o.offset },

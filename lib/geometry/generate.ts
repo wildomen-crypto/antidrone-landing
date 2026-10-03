@@ -207,10 +207,10 @@ export function generateModel(value: LayoutInput): ModelGraph {
     graph.sections = n;
   } else if (c.shapeId === "C8") {
     graph.object = { length: c.length, width: c.width, height: c.height };
-    const inherited = { materialId: c.materialId, roofMaterialId: c.roofMaterialId, layers: c.layers, structuralSystem: c.structuralSystem, foundation: c.foundation };
+    const inherited = { materialId: c.materialId, roofMaterialId: c.roofMaterialId, layers: c.layers, structuralSystem: c.structuralSystem, spatialSupports: c.spatialSupports, foundation: c.foundation };
     for (let i = 0; i < c.contours.length; i++) {
       const t = c.contours[i]; if (!t.enabled) continue;
-      Object.assign(c, { materialId: t.materialId ?? inherited.materialId, roofMaterialId: t.roofMaterialId ?? inherited.roofMaterialId, layers: t.layers ?? inherited.layers, structuralSystem: t.structuralSystem ?? inherited.structuralSystem, foundation: t.foundation ?? inherited.foundation });
+      Object.assign(c, { materialId: t.materialId ?? inherited.materialId, roofMaterialId: t.roofMaterialId ?? inherited.roofMaterialId, layers: t.layers ?? inherited.layers, structuralSystem: t.structuralSystem ?? inherited.structuralSystem, spatialSupports: t.structuralSystem ? false : inherited.spatialSupports, foundation: t.foundation ?? inherited.foundation });
       const L = c.length + 2 * t.offset, W = c.width + 2 * t.offset;
       box(L, W, t.height, `contour${i + 1}`, c.roof, c.sides, false);
       graph.bounds.length = Math.max(graph.bounds.length, L); graph.bounds.width = Math.max(graph.bounds.width, W); graph.bounds.height = Math.max(graph.bounds.height, t.height);
@@ -237,7 +237,7 @@ export function generateModel(value: LayoutInput): ModelGraph {
     if (support.foundation === "block") solid([x, -0.18, z], [0.8, 0.36, 0.8], support.group, "foundation", "concrete");
     else {
       for (const dx of [-0.24, 0.24]) for (const dz of [-0.24, 0.24]) solid([x + dx, -0.55, z + dz], [0.08, 1.1, 0.08], support.group, "foundation", "steel");
-      if (support.foundation === "pile-cap") solid([x, -0.08, z], [0.85, 0.16, 0.85], support.group, "foundation", "steel");
+      solid([x, -0.08, z], [0.85, 0.16, 0.85], support.group, "foundation", "steel");
     }
   }
   // Deduplicated graph is the only source for viewer, plan and quantities.

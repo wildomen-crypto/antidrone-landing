@@ -2,6 +2,7 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const {defaultInput,parseInput}=require('../../.local/test-build/lib/configuration/input.js');
 const {generateModel,quantities,polygonArea}=require('../../.local/test-build/lib/geometry/generate.js');
+const {isStructureSelected,toggleStructure}=require('../../.local/test-build/lib/configuration/structure.js');
 const input=(extra={})=>({...structuredClone(defaultInput),...extra});
 const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-7,actual+' != '+expected);
 test('independent box controls: 188, opening 179, two layers 376',()=>{
@@ -55,8 +56,35 @@ test('spatial chords and lattice are separate elements on four faces',()=>{
   const a=g.members.filter(m=>m.kind==='frame'&&m.a[1]===0&&m.b[1]===2);
   assert.ok(a.length>=4);assert.ok(g.members.filter(m=>m.kind==='brace').length>20);
 });
-test('three foundation assemblies and three wall modules produce different solids',()=>{
-  assert.deepEqual(['block','pile','pile-cap'].map(f=>generateModel(input({shapeId:'C1',foundation:f})).solids.length),[5,20,25]);
+test('spatial columns and trusses combine in either selection order and deselect independently',()=>{
+  const start={structuralSystem:'tube-post',spatialSupports:false};
+  const combined=toggleStructure(toggleStructure(start,'spatial-column'),'spatial-truss');
+  assert.deepEqual(combined,toggleStructure(toggleStructure(start,'spatial-truss'),'spatial-column'));
+  assert.ok(isStructureSelected(combined,'spatial-column')&&isStructureSelected(combined,'spatial-truss'));
+  assert.equal(isStructureSelected(combined,'tube-post'),false);
+  const q=quantities(generateModel(input(combined)));
+  assert.ok(q.memberLength>quantities(generateModel(input({structuralSystem:'spatial-column'}))).memberLength);
+  assert.ok(q.memberLength>quantities(generateModel(input({structuralSystem:'spatial-truss'}))).memberLength);
+  close(q.total,188);
+  assert.deepEqual(toggleStructure(combined,'spatial-column'),{structuralSystem:'spatial-truss',spatialSupports:false});
+  assert.deepEqual(toggleStructure(combined,'spatial-truss'),{structuralSystem:'spatial-column',spatialSupports:false});
+  for(const id of ['tube-post','frame','guyed-mast','wall-bracket']) assert.deepEqual(toggleStructure(combined,id),{structuralSystem:id,spatialSupports:false});
+  assert.deepEqual(parseInput(JSON.parse(JSON.stringify(input(combined)))),input(combined));
+});
+test('removed piles are rejected at both public configuration boundaries',()=>{
+  assert.throws(()=>parseInput(input({foundation:'pile'})),/Сваи без ростверка больше недоступны/);
+  assert.throws(()=>parseInput(input({contours:[{enabled:true,offset:1,height:5,foundation:'pile'}]})),/Сваи без ростверка больше недоступны/);
+});
+test('explicit contour system overrides the global spatial column and truss combination',()=>{
+  const c=input({shapeId:'C8',structuralSystem:'spatial-truss',spatialSupports:true,contours:[
+    {enabled:true,offset:1,height:5},{enabled:true,offset:2,height:6,structuralSystem:'tube-post'}]});
+  const g=generateModel(c),without=generateModel({...c,spatialSupports:false});
+  const geometry=graph=>graph.members.filter(m=>m.group==='contour2').map(({id,...member})=>member);
+  assert.deepEqual(geometry(g),geometry(without));
+  assert.ok(g.members.filter(m=>m.group==='contour1').length>without.members.filter(m=>m.group==='contour1').length);
+});
+test('two available foundation assemblies and three wall modules produce different solids',()=>{
+  assert.deepEqual(['block','pile-cap'].map(f=>generateModel(input({shapeId:'C1',foundation:f})).solids.length),[5,25]);
   for(const wallModule of ['W1','W2','W3']){
     const q=quantities(generateModel(input({shapeId:'C8',wallModule})));assert.ok(q.wallModules>0);assert.ok(q.wallVolume>0);
   }
@@ -89,7 +117,7 @@ test('repeated tubular layers increase actual infill geometry',()=>{
   close(two.infillLength,one.infillLength*2);
 });
 test('each contour can independently override material, layers and foundation',()=>{
-  const c=input({shapeId:'C8',contours:[{enabled:true,offset:1,height:5,materialId:'M1',roofMaterialId:'M1',layers:2,foundation:'pile'},{enabled:true,offset:2,height:6,materialId:'M4',roofMaterialId:'M6',layers:1,foundation:'block'}]});
+  const c=input({shapeId:'C8',contours:[{enabled:true,offset:1,height:5,materialId:'M1',roofMaterialId:'M1',layers:2,foundation:'pile-cap'},{enabled:true,offset:2,height:6,materialId:'M4',roofMaterialId:'M6',layers:1,foundation:'block'}]});
   const g=generateModel(c),q=quantities(g);
   close(q.byMaterial.M1,2*(12*8+2*(12+8)*5));close(q.byMaterial.M4,2*(14+10)*6);close(q.byMaterial.M6,14*10);
   assert.ok(g.solids.filter(s=>s.group==='contour1').every(s=>s.material==='steel'));

@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { structuralSystems } from "@/config/catalog";
 import type { LayoutInput } from "@/lib/configuration/input";
+import { isStructureSelected } from "@/lib/configuration/structure";
 
 function StructureImage({ type }: { type: LayoutInput["structuralSystem"] }) {
   return <svg viewBox="0 0 160 90" aria-hidden="true">
@@ -18,24 +19,28 @@ function StructureImage({ type }: { type: LayoutInput["structuralSystem"] }) {
   </svg>;
 }
 
-export default function StructurePicker({ value, onChange }: {
-  value: LayoutInput["structuralSystem"]; onChange: (id: LayoutInput["structuralSystem"]) => void;
+export default function StructurePicker({ value, spatialSupports, onChange }: {
+  value: LayoutInput["structuralSystem"]; spatialSupports: boolean; onChange: (id: LayoutInput["structuralSystem"]) => void;
 }) {
   const strip = useRef<HTMLDivElement>(null);
+  const lastPicked = useRef<string>(value);
+  const selected = (id: LayoutInput["structuralSystem"]) => isStructureSelected({ structuralSystem: value, spatialSupports }, id);
   useEffect(() => {
-    const row = strip.current, card = row?.querySelector<HTMLElement>('[aria-pressed="true"]');
+    const row = strip.current;
+    const cards = [...(row?.querySelectorAll<HTMLElement>('[aria-pressed="true"]') ?? [])];
+    const card = cards.find(el => el.dataset.system === lastPicked.current) ?? cards.find(el => el.dataset.system === value) ?? cards[0];
     if (!row || !card) return;
     if (card.offsetLeft < row.scrollLeft || card.offsetLeft + card.offsetWidth > row.scrollLeft + row.clientWidth)
       row.scrollTo({ left: card.offsetLeft - (row.clientWidth - card.offsetWidth) / 2 });
-  }, [value]);
+  }, [value, spatialSupports]);
   return <div className="material-picker structure-picker" role="group" aria-label="Несущие элементы">
-    <div className="material-picker-heading"><strong>Несущие элементы</strong><span>Выберите тип опор и каркаса</span></div>
+    <div className="material-picker-heading"><strong>Несущие элементы</strong><span>Пространственную опору и ферму можно выбрать вместе</span></div>
     <div className="material-choice-strip structure-choice-strip" ref={strip}>{structuralSystems.map(system => <button
-      type="button" key={system.id} className="material-choice structure-choice" aria-label={system.name}
-      aria-pressed={value === system.id} title={system.description} onClick={() => onChange(system.id)}>
+      type="button" key={system.id} data-system={system.id} className="material-choice structure-choice" aria-label={system.name}
+      aria-pressed={selected(system.id)} title={system.description} onClick={() => { lastPicked.current = system.id; onChange(system.id); }}>
       <span className="material-choice-image"><StructureImage type={system.id} /></span>
       <span className="material-choice-name">{system.name}</span>
-      <span className="shape-choice-check" aria-hidden="true">{value === system.id ? "✓" : ""}</span>
+      <span className="shape-choice-check" aria-hidden="true">{selected(system.id) ? "✓" : ""}</span>
     </button>)}</div>
   </div>;
 }
