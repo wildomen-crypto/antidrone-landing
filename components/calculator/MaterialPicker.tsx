@@ -30,9 +30,11 @@ function MaterialImage({ id }: { id: LayoutInput["materialId"] }) {
   </svg>;
 }
 
-export default function MaterialPicker({ value, onChange, noWalls = false }: {
+export default function MaterialPicker({ value, onChange, noWalls = false, target = "walls", note }: {
   value: LayoutInput["materialId"]; onChange: (id: LayoutInput["materialId"]) => void; noWalls?: boolean;
+  target?: "walls" | "roof"; note?: string;
 }) {
+  const title = target === "roof" ? "Материал кровли" : "Заполнение стен / экрана";
   const strip = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const row = strip.current, card = row?.querySelector<HTMLElement>('[aria-pressed="true"]');
@@ -40,8 +42,8 @@ export default function MaterialPicker({ value, onChange, noWalls = false }: {
     if (card.offsetLeft < row.scrollLeft || card.offsetLeft + card.offsetWidth > row.scrollLeft + row.clientWidth)
       row.scrollTo({ left: card.offsetLeft - (row.clientWidth - card.offsetWidth) / 2 });
   }, [value]);
-  return <div className="material-picker" role="group" aria-label="Заполнение стен / экрана">
-    <div className="material-picker-heading"><strong>Заполнение стен / экрана</strong><span>{noWalls ? "У этой формы нет стен. Материал покрытия выбирается справа." : "Выберите материал — рисунок на модели обновится"}</span></div>
+  return <div className="material-picker" data-target={target} role="group" aria-label={title}>
+    <div className="material-picker-heading"><strong>{title}</strong><span>{note ?? (noWalls ? "У этой формы нет стен. Материал кровли выбирается ниже." : "Выберите материал — рисунок на модели обновится")}</span></div>
     <div className="material-choice-strip" ref={strip}>{materials.map(material => <button type="button" key={material.id}
       className="material-choice" aria-label={material.name} aria-pressed={value === material.id} onClick={() => onChange(material.id)}>
       <span className="material-choice-image"><MaterialImage id={material.id} /></span>

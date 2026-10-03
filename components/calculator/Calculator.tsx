@@ -14,6 +14,7 @@ import NumberInput from "./NumberInput";
 import ContourFields from "./ContourFields";
 import ShapePicker from "./ShapePicker";
 import MaterialPicker from "./MaterialPicker";
+import StructurePicker from "./StructurePicker";
 import DimensionSlider from "./DimensionSlider";
 import { track } from "@/lib/analytics";
 
@@ -56,6 +57,9 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     return () => observer.disconnect();
   }, [wide]);
   const shape = shapes.find(s => s.id === input.shapeId)!;
+  const hasRoofOptions = ["C3", "C4", "C6", "C8"].includes(input.shapeId)
+    || (input.shapeId === "C7" && input.variant === "dome")
+    || (input.shapeId === "C5" && input.variant === "shelter");
   useEffect(() => {
     const node = viewer.current; if (!node) return;
     const observer = new IntersectionObserver(entries => { if (entries.some(e => e.isIntersecting)) { setThree(true); observer.disconnect(); } }, { rootMargin: "100px" });
@@ -121,11 +125,11 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
       {shape.variants.length > 0 && <label className="field"><span>Вариант</span><select value={input.variant} onChange={e => setInput(c => ({ ...c, variant: e.target.value as LayoutInput["variant"], opening: { ...c.opening, enabled: false } }))}>{shape.variants.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}</select></label>}
       {!wide && dimensions}
       {!wide && <label className="field"><span>Заполнение стен / экрана</span><select value={input.materialId} onChange={e => update("materialId", e.target.value as LayoutInput["materialId"])}>{materials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select></label>}
-      {["C3", "C4", "C6", "C7", "C8"].includes(input.shapeId) || (input.shapeId === "C5" && input.variant === "shelter") ? <label className="field"><span>Материал покрытия</span><select value={input.roofMaterialId} onChange={e => update("roofMaterialId", e.target.value as LayoutInput["materialId"])}>{materials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select></label> : null}
+      {!wide && (["C3", "C4", "C6", "C7", "C8"].includes(input.shapeId) || (input.shapeId === "C5" && input.variant === "shelter")) ? <label className="field"><span>Материал покрытия</span><select value={input.roofMaterialId} onChange={e => update("roofMaterialId", e.target.value as LayoutInput["materialId"])}>{materials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select></label> : null}
       {!wide && <button className="advanced-toggle" aria-expanded={showAdvanced} onClick={() => setShowAdvanced(v => !v)}>{showAdvanced ? "−" : "+"} Дополнительные настройки</button>}
       {(input.materialId === "M8" || input.roofMaterialId === "M8" || input.contours.some(c => c.materialId === "M8" || c.roofMaterialId === "M8")) && <fieldset><legend>Состав комбинированной панели</legend>{input.combinedMaterials.map((id, i) => <label className="field" key={i}><span>Материал слоя {i + 1}</span><select value={id} onChange={e => update("combinedMaterials", input.combinedMaterials.map((v, j) => j === i ? e.target.value as LayoutInput["materialId"] : v))}>{materials.filter(m => m.id !== "M8").map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select></label>)}<p className="field-hint">Каждый материал учитывается отдельно. Количество повторений комбинации задаётся в дополнительных настройках.</p></fieldset>}
       {(wide || showAdvanced) && <div className="advanced-fields">
-        <label className="field"><span>Несущие элементы</span><select value={input.structuralSystem} onChange={e => update("structuralSystem", e.target.value as LayoutInput["structuralSystem"])}>{structuralSystems.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
+        {!wide && <label className="field"><span>Несущие элементы</span><select value={input.structuralSystem} onChange={e => update("structuralSystem", e.target.value as LayoutInput["structuralSystem"])}>{structuralSystems.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}</select></label>}
         <label className="field"><span>Форма сечения на схеме</span><select value={input.sectionType} onChange={e => update("sectionType", e.target.value as LayoutInput["sectionType"])}><option value="profile">Профильная труба</option><option value="round">Круглая труба</option></select></label>
         <label className="check-field"><input type="checkbox" checked={input.spatialSupports} onChange={e => update("spatialSupports", e.target.checked)} />Пространственные опоры</label>
         <label className="field"><span>Условный тип основания</span><select value={input.foundation} onChange={e => update("foundation", e.target.value as LayoutInput["foundation"])}><option value="block">Незаглублённый блок</option><option value="pile">Сваи без ростверка</option><option value="pile-cap">Сваи с ростверком</option></select></label>
@@ -157,6 +161,8 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
         </div>}
       </div>
       {wide && <MaterialPicker value={input.materialId} onChange={id => update("materialId", id)} noWalls={input.shapeId === "C3" || (input.shapeId === "C5" && input.variant === "shelter")} />}
+      {wide && hasRoofOptions && <MaterialPicker target="roof" value={input.roofMaterialId} onChange={id => update("roofMaterialId", id)} note={!input.roof && input.shapeId !== "C5" ? "Покрытие выключено. Включите его справа, чтобы показать кровлю." : undefined} />}
+      {wide && <StructurePicker value={input.structuralSystem} onChange={id => update("structuralSystem", id)} />}
       <p className="viewer-help">Вращение: перетащите схему. Масштаб: колесо мыши или жест двумя пальцами. Без WebGL доступна 2D-схема.</p>
       <div className="viewer-controls"><div className="view-buttons">{([["perspective", "3D"], ["top", "Сверху"], ["front", "Спереди"], ["side", "Сбоку"]] as const).map(([key, label]) => <button key={key} className={view === key ? "selected" : ""} aria-pressed={view === key} onClick={() => setView(key)}>{label}</button>)}</div><label className="check-field"><input type="checkbox" checked={onlyFrame} onChange={e => setOnlyFrame(e.target.checked)} />Только каркас</label></div>
       {input.shapeId === "C8" && <div className="viewer-layers"><span>Видимость (состав заказа не меняется):</span>{input.contours.map((c, i) => c.enabled && <label key={i} className="check-field"><input type="checkbox" checked={!hiddenGroups.includes(`contour${i + 1}`)} onChange={e => setHiddenGroups(old => e.target.checked ? old.filter(g => g !== `contour${i + 1}`) : [...old, `contour${i + 1}`])} />Контур {i + 1}</label>)}</div>}

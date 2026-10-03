@@ -5,7 +5,7 @@ import path from 'node:path';
 const { chromium } = await import(process.env.PLAYWRIGHT_MODULE ?? 'file:///C:/Users/Student/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs');
 const base = process.env.QA_URL ?? 'http://127.0.0.1:3100';
 assert.ok(['127.0.0.1', 'localhost'].includes(new URL(base).hostname));
-const output = path.resolve('.local/qa/material-sliders');
+const output = path.resolve('.local/qa/roof-structure');
 await mkdir(output, { recursive: true });
 const report = { checks: [], errors: [], date: new Date().toISOString() };
 const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL ?? 'msedge', headless: true });
@@ -39,10 +39,18 @@ try {
       assert.ok(dimensions.x >= scene.x && dimensions.x + dimensions.width < panel.x);
       assert.ok(dimensions.y >= scene.y && dimensions.y + dimensions.height <= scene.y + scene.height);
       assert.equal(await page.locator('.dimension-panel input[type=range]').count(), 3);
-      assert.equal(await page.locator('.material-choice').count(), 8);
-      const filling = await page.locator('.material-picker').boundingBox();
+      assert.equal(await page.locator('[data-target="walls"] .material-choice').count(), 8);
+      assert.equal(await page.locator('[data-target="roof"] .material-choice').count(), 8);
+      assert.equal(await page.locator('.structure-choice').count(), 6);
+      const filling = await page.locator('[data-target="walls"]').boundingBox();
       assert.ok(Math.abs(filling.y - scene.y - scene.height) < 2, 'Filling choices directly below 3D');
+      const roofing = await page.locator('[data-target="roof"]').boundingBox();
+      const structure = await page.locator('.structure-picker').boundingBox();
+      assert.ok(Math.abs(roofing.y - filling.y - filling.height) < 2);
+      assert.ok(Math.abs(structure.y - roofing.y - roofing.height) < 2);
       assert.equal(await page.locator('.parameter-panel').getByRole('combobox', {name:'Заполнение стен / экрана',exact:true}).count(),0);
+      assert.equal(await page.locator('.parameter-panel').getByRole('combobox', {name:'Материал покрытия',exact:true}).count(),0);
+      assert.equal(await page.locator('.parameter-panel').getByRole('combobox', {name:'Несущие элементы',exact:true}).count(),0);
       const picker = await page.locator('.shape-picker').boundingBox();
       assert.ok(Math.abs(scene.y - picker.y - picker.height) < 2, 'Scene immediately follows thumbnails');
       await page.screenshot({ path: path.join(output, `wide-${width}.png`) });
@@ -71,7 +79,7 @@ try {
   });
   await check('Eight filling images update graph and JSON without changing roof material', async () => {
     for (let index=0; index<8; index++) {
-      const card=page.locator('.material-choice').nth(index); await card.click();
+      const card=page.locator('[data-target="walls"] .material-choice').nth(index); await card.click();
       assert.equal(await card.getAttribute('aria-pressed'),'true');
       const pending=page.waitForEvent('download'); await page.getByRole('button',{name:'Сохранить JSON'}).click();
       const download=await pending; const savedPath=path.join(output,'material-'+(index+1)+'.json');await download.saveAs(savedPath);
@@ -81,7 +89,79 @@ try {
       assert.equal(await page.locator('.input-error').count(),0);
     }
     assert.ok(await page.getByRole('combobox',{name:'Материал слоя 1',exact:true}).isVisible());
-    await page.locator('.material-choice').nth(4).click();await waitTotal(page,188);
+    await page.locator('[data-target="walls"] .material-choice').nth(4).click();await waitTotal(page,188);
+  });
+  await check('Eight roof images work independently, including combined panels and keyboard', async () => {
+    for (let index=0; index<8; index++) {
+      const card=page.locator('[data-target="roof"] .material-choice').nth(index); await card.click();
+      assert.equal(await card.getAttribute('aria-pressed'),'true');
+      const pending=page.waitForEvent('download'); await page.getByRole('button',{name:'Сохранить JSON'}).click();
+      const savedPath=path.join(output,'roof-'+(index+1)+'.json'); await (await pending).saveAs(savedPath);
+      const input=JSON.parse(await readFile(savedPath,'utf8'));
+      assert.equal(input.roofMaterialId,'M'+(index+1)); assert.equal(input.materialId,'M5');
+      await waitTotal(page,index===7?248:188);
+      assert.equal(await page.locator('.input-error').count(),0);
+    }
+    const roof=page.locator('[data-target="roof"] .material-choice');
+    await roof.nth(5).focus(); await page.keyboard.press('Space');
+    assert.equal(await roof.nth(5).getAttribute('aria-pressed'),'true');
+    await roof.nth(4).click(); await waitTotal(page,188);
+  });
+  await check('Six structural images save system and update graph; JSON restores both new rows', async () => {
+    const ids=['tube-post','spatial-column','frame','spatial-truss','guyed-mast','wall-bracket'];
+    const number=async locator=>Number((await locator.textContent()).replace(/[^\d,.]/g,'').replace(',','.'));
+    const baselineFrame=await number(page.locator('.quantity-grid strong').nth(2));
+    const cables=page.locator('.estimate-result tr').filter({hasText:'Канаты схемы'}).locator('td').nth(1);
+    const baselineCables=await number(cables);
+    for (let index=0;index<ids.length;index++) {
+      const card=page.locator('.structure-choice').nth(index);
+      await card.focus(); await page.keyboard.press('Enter');
+      assert.equal(await card.getAttribute('aria-pressed'),'true');
+      const pending=page.waitForEvent('download'); await page.getByRole('button',{name:'Сохранить JSON'}).click();
+      const savedPath=path.join(output,'structure-'+ids[index]+'.json'); await (await pending).saveAs(savedPath);
+      const input=JSON.parse(await readFile(savedPath,'utf8'));
+      assert.equal(input.structuralSystem,ids[index]);
+      assert.equal(input.materialId,'M5'); assert.equal(input.roofMaterialId,'M5');
+      await waitTotal(page,188);
+      const frame=await number(page.locator('.quantity-grid strong').nth(2)); assert.ok(Number.isFinite(frame));
+      if ([1,3].includes(index)) assert.ok(frame>baselineFrame);
+      if (index===4) assert.ok(await number(cables)>baselineCables);
+      assert.equal(await page.locator('.input-error').count(),0);
+    }
+    await page.locator('[data-target="roof"] .material-choice').nth(5).click();
+    await page.locator('.structure-choice').nth(3).click();
+    const pending=page.waitForEvent('download'); await page.getByRole('button',{name:'Сохранить JSON'}).click();
+    const savedPath=path.join(output,'new-rows-roundtrip.json'); await (await pending).saveAs(savedPath);
+    await page.locator('[data-target="roof"] .material-choice').nth(4).click();
+    await page.locator('.structure-choice').first().click();
+    await page.locator('input[type=file]').setInputFiles(savedPath);
+    await page.waitForFunction(() => document.querySelector('[data-target="roof"] .material-choice:nth-child(6)')?.getAttribute('aria-pressed') === 'true'
+      && document.querySelector('.structure-choice:nth-child(4)')?.getAttribute('aria-pressed') === 'true');
+    assert.equal(await page.locator('[data-target="roof"] .material-choice').nth(5).getAttribute('aria-pressed'),'true');
+    assert.equal(await page.locator('.structure-choice').nth(3).getAttribute('aria-pressed'),'true');
+    await page.locator('[data-target="roof"] .material-choice').nth(4).click();
+    await page.locator('.structure-choice').first().click(); await waitTotal(page,188);
+    await page.setViewportSize({width:1440,height:1400}); await showScene(page);
+    await page.screenshot({path:path.join(output,'three-rows-desktop.png')});
+    await page.setViewportSize({width:1440,height:1000});
+  });
+  await check('Roof row follows forms and variants; disabled roof retains independent preset', async () => {
+    const variants=await browser.newPage({viewport:{width:1280,height:1000},reducedMotion:'reduce'}); monitor(variants);
+    await variants.goto(base+'/wide#calculator',{waitUntil:'networkidle'});
+    for(let i=0;i<8;i++) {
+      await variants.locator('.shape-choice').nth(i).click();
+      assert.equal(await variants.locator('[data-target="roof"] .material-choice').count(),[0,1,4].includes(i)?0:8);
+      if(i===4||i===6) {
+        await variants.getByRole('combobox',{name:'Вариант',exact:true}).selectOption(i===4?'shelter':'perimeter');
+        assert.equal(await variants.locator('[data-target="roof"] .material-choice').count(),i===4?8:0);
+      }
+    }
+    await variants.locator('.shape-choice').nth(3).click();
+    await variants.getByLabel('Включить покрытие',{exact:true}).uncheck(); await waitTotal(variants,128);
+    assert.ok(await variants.locator('[data-target="roof"]').getByText('Покрытие выключено.',{exact:false}).isVisible());
+    await variants.locator('[data-target="roof"] .material-choice').nth(7).click(); await waitTotal(variants,128);
+    await variants.getByLabel('Включить покрытие',{exact:true}).check(); await waitTotal(variants,248);
+    await variants.close();
   });
   await check('Dimensions, opening, panel scroll and camera controls', async () => {
     await page.getByRole('textbox', { name: 'Длина, м', exact: true }).fill('20'); await waitTotal(page, 328);
@@ -117,7 +197,7 @@ try {
     assert.equal(await page.locator('.shape-picker').isVisible(), false);
     assert.equal(await page.locator('.parameter-panel').isVisible(), false);
     assert.equal(await page.locator('.dimension-panel').isVisible(), false);
-    assert.equal(await page.locator('.material-picker').isVisible(), false);
+    for (const picker of await page.locator('.material-picker').all()) assert.equal(await picker.isVisible(),false);
     await page.pdf({ path: path.join(output, 'print-card.pdf'), format: 'A4' });
     await page.emulateMedia({ media: 'screen' });
     await page.getByRole('button', { name: /Получить расчёт/ }).click();
