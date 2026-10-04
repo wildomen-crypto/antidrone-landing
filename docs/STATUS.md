@@ -6,6 +6,7 @@
 Typecheck/build PASS; responsive 6 + compact 5 групп PASS, 12 размеров.
 Размеры C4: 367 px большой / 285 px средний / 369 px телефон; проём 144 px.
 Следующий шаг: обратная связь заказчика.
+Код 43a5527 в main; ZIP/bundle compact-heights-20261004-43a5527 проверены.
 
 
 Предыдущая работа: UI-RESPONSIVE-LAYOUT — VERIFIED; база eff473a.

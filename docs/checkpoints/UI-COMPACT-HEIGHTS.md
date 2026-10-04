@@ -32,4 +32,8 @@ C4: размеры 367,3 px на 1280/1920, 285,3 px на 768/1024/1100,
 Unit и wide не повторялись: геометрия и /wide не изменены. Физические
 телефоны не проверены. Длинные параметры не обрезаны ради высоты.
 Просмотр PID 16884, exec-сессия 7103; localhost:3100/compact#calculator.
-Следующий шаг: Git/backup, затем обратная связь заказчика.
+Код 43a5527b3f6a334b9de76e3e74a434dda95c0996, main обновлён fast-forward.
+Backup C:\taran\artifacts\antidrone-landing-backups\
+compact-heights-20261004-43a5527-source.zip и одноимённый .bundle.
+Bundle verify PASS; ZIP 147 записей, без данных/runtime/секретов,
+пустой .env.example допустим. Следующий шаг — обратная связь заказчика.
