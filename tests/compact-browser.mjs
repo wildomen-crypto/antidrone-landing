@@ -27,12 +27,12 @@ try{
       else assert.ok(panel.y>=viewer.y+viewer.height);
       assert.equal(await page.locator('.calculator-compact').count(),1);
       const after=await page.locator('.material-picker[data-target]').evaluateAll(rows=>rows.map(el=>el.getBoundingClientRect().height));
-      if(width>=768)for(let i=0;i<2;i++)assert.ok(after[i]<before[i]*.75,'Row reduced by at least 25% at '+width);
+      if(width>=768&&width<1280)for(let i=0;i<2;i++)assert.ok(after[i]<before[i]*.75,'Medium row reduced by at least 25% at '+width);
       report.sizes.push({width,wide:before,compact:after});
       for(const row of [wallRow(page),roofRow(page)]){
         assert.equal(await row.locator('.material-choice').count(),8);
         assert.equal(await row.locator('.material-choice').nth(6).getAttribute('aria-pressed'),'true');
-        const image=await row.locator('.material-choice-image').first().boundingBox();assert.equal(image.height,32);
+        const image=await row.locator('.material-choice-image').first().boundingBox();assert.equal(image.height,width>=1280?65:32);
       }
       const roof=await roofRow(page).boundingBox(),works=await page.locator('.service-picker').boundingBox(),structure=await page.locator('.structure-picker').boundingBox();
       assert.ok(works.y>=roof.y+roof.height-1);assert.ok(structure.y>=works.y+works.height-1);

@@ -47,7 +47,8 @@ try{
       const nav=await page.locator('.viewer-stage>.viewer-controls').boundingBox();assert.ok(nav.y>=scene.y+scene.height-1);
       for(const selector of ['.material-choice','.compact-option','.viewer-controls button','.service-picker .check-field','.dimension-exact input','.dimension-slider>input[type=range]']){
         const sizes=await page.locator(selector).evaluateAll(els=>els.map(el=>({w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height})));
-        if(width<768)for(const {w,h} of sizes)assert.ok(w>=44&&h>=44,selector+' touch target');
+        const min=selector.includes('range')?18:selector.includes('dimension-exact')?26:selector==='.compact-option'?32:44;
+        if(width<768)for(const {w,h} of sizes)assert.ok(w>=min&&h>=min,selector+' compact touch target');
       }
       if(!overlay){
         assert.equal(await page.locator('.dimension-exact input').first().evaluate(el=>getComputedStyle(el).fontSize),'16px');
@@ -95,6 +96,35 @@ try{
       assert.equal(await page.locator('.parameter-panel').count(),0);
       await page.close();
     }
+  });
+  await check('Desktop pictures restored; narrow dimensions no taller than desktop, openings and contours compact',async()=>{
+    const page=await browser.newPage({viewport:{width:1920,height:1080},reducedMotion:'reduce'});monitor(page);
+    await page.goto(base+'/compact#calculator',{waitUntil:'networkidle'});
+    const desktopHeight=(await page.locator('.dimension-panel').boundingBox()).height;
+    report.controlHeights=[];
+    for(const width of [1920,1280,1100,1024,768,600,390,360,320]){
+      await page.setViewportSize({width,height:1080});await frame(page);
+      await page.getByRole('checkbox',{name:'Проём в передней стороне',exact:true}).check();
+      const dimensions=(await page.locator('.dimension-panel').boundingBox()).height;
+      if(width<1280)assert.ok(dimensions<=desktopHeight+10,'Dimensions must remain as compact as desktop at '+width);
+      const opening=(await page.locator('.opening-sliders').boundingBox()).height;
+      if(width<1280)assert.ok(opening<=160,'Three opening sliders occupy <=160 px');
+      const imageHeight=(await page.locator('[data-target=walls] .material-choice-image').first().boundingBox()).height;
+      assert.equal(imageHeight,width>=1280?65:32);
+      if(width>=1280)assert.equal((await page.locator('.shape-choice-image').first().boundingBox()).height,76);
+      report.controlHeights.push({width,dimensions,opening,imageHeight});
+      await noOverflow(page);
+      if([1920,1100,390].includes(width)){
+        await page.locator('.dimension-panel').evaluate(el=>el.scrollIntoView({block:'start'}));await page.screenshot({path:path.join(output,'dense-settings-'+width+'.png')});
+      }
+    }
+    await page.locator('.shape-choice').nth(7).click();
+    for(const width of [320,390,768,1100]){
+      await page.setViewportSize({width,height:1080});await frame(page);
+      for(const box of await page.locator('.contour-sliders').evaluateAll(els=>els.map(el=>el.getBoundingClientRect().height)))assert.ok(box<=65,'Contour sliders remain low');
+      await noOverflow(page);
+    }
+    await page.close();
   });
   await check('Resize preserves configuration; keyboard sliders, openings, views, support choices, JSON and lead attachment',async()=>{
     const page=await browser.newPage({viewport:{width:1920,height:1080},reducedMotion:'reduce'});monitor(page);

@@ -1,6 +1,14 @@
 # Состояние разработки
 
-Текущая работа: UI-RESPONSIVE-LAYOUT — VERIFIED; база eff473a.
+Текущая работа: UI-COMPACT-HEIGHTS — VERIFIED; база 17f18aa.
+Ветка ui/compact-control-heights; docs/checkpoints/UI-COMPACT-HEIGHTS.md.
+Крупные картинки на большом окне, компактная высота настроек на узких.
+Typecheck/build PASS; responsive 6 + compact 5 групп PASS, 12 размеров.
+Размеры C4: 367 px большой / 285 px средний / 369 px телефон; проём 144 px.
+Следующий шаг: обратная связь заказчика.
+
+
+Предыдущая работа: UI-RESPONSIVE-LAYOUT — VERIFIED; база eff473a.
 Ветка ui/responsive-layout; карточка docs/checkpoints/UI-RESPONSIVE-LAYOUT.md.
 Три компоновки /compact; 12 размеров 320–2560 px, включая низкое окно.
 Typecheck/build/worker PASS; 19 wide + 5 compact + 5 responsive групп PASS.
@@ -87,7 +95,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 40 VERIFIED (включая тринадцать правок UI и решение не включать upload),
+Реестр: 41 VERIFIED (включая четырнадцать правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
@@ -113,7 +121,7 @@ main обновлён fast-forward.
 http://127.0.0.1:3100 — production build, только этот компьютер.
 Новый вариант: http://127.0.0.1:3100/wide#calculator.
 Адаптивная версия: http://127.0.0.1:3100/compact#calculator.
-PID 20924, exec-сессия 38370. Проверять фактический порт и CommandLine
+PID 16884, exec-сессия 7103. Проверять фактический порт и CommandLine
 перед остановкой; не останавливать чужие процессы. После перезапуска
 компьютера: npm.cmd run start из корня проекта.
 
