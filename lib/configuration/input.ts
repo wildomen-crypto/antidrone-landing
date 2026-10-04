@@ -107,7 +107,7 @@ export function parseInput(value: unknown): LayoutInput {
     sectionType: pick("sectionType", ["round", "profile"]), spatialSupports: boolean("spatialSupports"),
     foundation: pick("foundation", ["block", "pile-cap"]),
     structuralSystem: pick("structuralSystem", STRUCTURAL_SYSTEM_IDS), step, layers,
-    sides: [...raw.sides] as boolean[], roof: boolean("roof"),
+    sides: [...raw.sides] as boolean[], roof: boolean("roof") || (shapeId === "C5" && variant === "shelter"),
     opening: { enabled: o.enabled, width: o.width, height: o.height, offset: o.offset },
     contours, wallModule: pick("wallModule", ["none", ...WALL_MODULE_IDS]), services: [...raw.services] as ServiceId[],
   };

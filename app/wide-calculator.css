@@ -19,6 +19,7 @@
 .parameter-panel .calculator-inputs>.step-title{display:none}
 .parameter-panel .field{margin-bottom:12px}
 .parameter-panel .field select{font-size:12px}
+.opening-sliders{padding:8px 10px 4px;margin:8px 0 12px;background:#f7f9fc;border:1px solid var(--line);border-radius:6px}
 .dimension-panel{position:absolute;z-index:4;top:12px;left:16px;width:224px;max-height:calc(100% - 24px);overflow-y:auto;overscroll-behavior:contain;padding:10px 14px 4px;border:1px solid #d4dfec;border-radius:10px;background:#fffffff0;box-shadow:0 5px 24px #172b4012;display:block;backdrop-filter:blur(10px);scrollbar-width:thin}
 .dimension-panel>strong{font-size:11px;line-height:1.3;display:block;margin-bottom:6px}
 .dimension-slider{margin-bottom:0}
@@ -60,6 +61,7 @@
   .parameter-panel{right:12px;width:260px}
   .dimension-panel{left:12px;width:214px;max-height:calc(100% - 130px)}
   .material-picker{padding-inline:20px}.material-picker-heading>span{display:none}
+  .material-picker[data-target=roof] .material-picker-heading>span{display:block;max-width:58%;font-size:9px;text-align:right}
   .calculator-wide .viewer-help,.calculator-wide .viewer-controls,.calculator-wide .viewer-layers,.calculator-wide .dimension-strip,.calculator-wide .viewer-caption{padding-inline:20px}
   .calculator-wide .node-details,.calculator-wide .estimate-result,.calculator-wide .export-actions,.calculator-wide .calculator-output>.form-message{width:calc(100% - 40px)}
 }

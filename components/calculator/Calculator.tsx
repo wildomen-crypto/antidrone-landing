@@ -18,6 +18,7 @@ import StructurePicker from "./StructurePicker";
 import DimensionSlider from "./DimensionSlider";
 import CompactOptions from "./CompactOptions";
 import { toggleStructure } from "@/lib/configuration/structure";
+import { roofRequired, selectRoof } from "@/lib/configuration/roof";
 import { track } from "@/lib/analytics";
 
 const Scene = dynamic(() => import("@/components/viewer/Scene"), { ssr: false, loading: () => <div className="viewer-loading">Подготавливаем 3D-схему…</div> });
@@ -62,6 +63,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   const hasRoofOptions = ["C3", "C4", "C6", "C8"].includes(input.shapeId)
     || (input.shapeId === "C7" && input.variant === "dome")
     || (input.shapeId === "C5" && input.variant === "shelter");
+  const requiredRoof = roofRequired(input);
   useEffect(() => {
     const node = viewer.current; if (!node) return;
     const observer = new IntersectionObserver(entries => { if (entries.some(e => e.isIntersecting)) { setThree(true); observer.disconnect(); } }, { rootMargin: "100px" });
@@ -71,7 +73,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     const choose = (event: Event) => {
       const shapeId = (event as CustomEvent<string>).detail;
       if (!shapes.some(s => s.id === shapeId)) return;
-      setInput(c => ({ ...c, shapeId: shapeId as LayoutInput["shapeId"], variant: variantFor(shapeId), opening: { ...c.opening, enabled: false } }));
+      setInput(c => ({ ...c, shapeId: shapeId as LayoutInput["shapeId"], variant: variantFor(shapeId), roof: shapeId === "C3" || c.roof, opening: { ...c.opening, enabled: false } }));
       setHiddenGroups([]); setMessage("");
     };
     window.addEventListener("choose-shape", choose); return () => window.removeEventListener("choose-shape", choose);
@@ -82,6 +84,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   }, [input]);
   const update = <K extends keyof LayoutInput>(key: K, value: LayoutInput[K]) => { setInput(c => ({ ...c, [key]: value })); setMessage(""); };
   const chooseStructure = (id: LayoutInput["structuralSystem"]) => { setInput(c => ({ ...c, ...toggleStructure(c, id) })); setMessage(""); };
+  const chooseRoof = (id: LayoutInput["roofMaterialId"]) => { setInput(c => ({ ...c, ...selectRoof(c, id) })); setMessage(""); };
   const toggleSide = (index: number) => {
     setInput(c => ({ ...c, sides: c.sides.map((enabled, i) => i === index ? !enabled : enabled),
       opening: index === 0 && c.sides[0] ? { ...c.opening, enabled: false } : c.opening }));
@@ -92,7 +95,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     return wide ? <DimensionSlider key={key} label={label} value={input[key]} min={min} max={max} onValue={v => update(key, v)} />
       : <label className="field" key={key}><span>{label}, м</span><NumberInput value={input[key]} min={min} max={max} onValue={v => update(key, v)} /></label>;
   };
-  const choose = (shapeId: LayoutInput["shapeId"]) => { setInput(c => ({ ...c, shapeId, variant: variantFor(shapeId), opening: { ...c.opening, enabled: false } })); setHiddenGroups([]); setMessage(""); };
+  const choose = (shapeId: LayoutInput["shapeId"]) => { setInput(c => ({ ...c, shapeId, variant: variantFor(shapeId), roof: shapeId === "C3" || c.roof, opening: { ...c.opening, enabled: false } })); setHiddenGroups([]); setMessage(""); };
   function download() {
     try {
       const value = parseInput(input), blob = new Blob([JSON.stringify(value, null, 2)], { type: "application/json" });
@@ -134,10 +137,13 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
       <div className="step-title"><span>01</span> Конструкция и размеры</div>
       {result.error && <p className="input-error" role="alert">{result.error}</p>}
       {!wide && <label className="field"><span>Тип конструкции</span><select value={input.shapeId} onChange={e => choose(e.target.value as LayoutInput["shapeId"])}>{shapes.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}</select></label>}
-      {shape.variants.length > 0 && <label className="field"><span>Вариант</span><select value={input.variant} onChange={e => setInput(c => ({ ...c, variant: e.target.value as LayoutInput["variant"], opening: { ...c.opening, enabled: false } }))}>{shape.variants.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}</select></label>}
+      {shape.variants.length > 0 && <label className="field"><span>Вариант</span><select value={input.variant} onChange={e => { const variant = e.target.value as LayoutInput["variant"]; setInput(c => ({ ...c, variant, roof: roofRequired({ ...c, variant }) || c.roof, opening: { ...c.opening, enabled: false } })); setMessage(""); }}>{shape.variants.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}</select></label>}
       {!wide && dimensions}
       {!wide && <label className="field"><span>Заполнение стен / экрана</span><select value={input.materialId} onChange={e => update("materialId", e.target.value as LayoutInput["materialId"])}>{materials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select></label>}
-      {!wide && (["C3", "C4", "C6", "C7", "C8"].includes(input.shapeId) || (input.shapeId === "C5" && input.variant === "shelter")) ? <label className="field"><span>Материал покрытия</span><select value={input.roofMaterialId} onChange={e => update("roofMaterialId", e.target.value as LayoutInput["materialId"])}>{materials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select></label> : null}
+      {!wide && hasRoofOptions ? <label className="field"><span>Материал покрытия</span><select value={input.roof ? input.roofMaterialId : "none"}
+        onChange={e => { const id = e.target.value; if (id === "none") update("roof", false); else { setInput(c => ({ ...c, roof: true, roofMaterialId: id as LayoutInput["roofMaterialId"] })); setMessage(""); } }}>
+        {!requiredRoof && <option value="none">Без кровли</option>}{materials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+      </select></label> : null}
       {!wide && <button className="advanced-toggle" aria-expanded={showAdvanced} onClick={() => setShowAdvanced(v => !v)}>{showAdvanced ? "−" : "+"} Дополнительные настройки</button>}
       {(input.materialId === "M8" || input.roofMaterialId === "M8" || input.contours.some(c => c.materialId === "M8" || c.roofMaterialId === "M8")) && <fieldset><legend>Состав комбинированной панели</legend>{input.combinedMaterials.map((id, i) => <label className="field" key={i}><span>Материал слоя {i + 1}</span><select value={id} onChange={e => update("combinedMaterials", input.combinedMaterials.map((v, j) => j === i ? e.target.value as LayoutInput["materialId"] : v))}>{materials.filter(m => m.id !== "M8").map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select></label>)}<p className="field-hint">Каждый материал учитывается отдельно. Количество повторений комбинации задаётся в дополнительных настройках.</p></fieldset>}
       {(wide || showAdvanced) && <div className="advanced-fields">
@@ -151,11 +157,19 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
           <p className="field-hint">Основание показано условно. Выбор требует инженерной проверки грунтов, нагрузок и площадки.</p>
         </>}
         {!wide && <div className="field-grid">{number("step", "Максимальный шаг секций", 10)}<label className="field"><span>Слои заполнения</span><select value={input.layers} onChange={e => update("layers", Number(e.target.value))}><option>1</option><option>2</option><option>3</option></select></label></div>}
-        {["C3", "C4", "C6", "C7", "C8"].includes(input.shapeId) && <label className="check-field"><input type="checkbox" checked={input.roof} onChange={e => update("roof", e.target.checked)} />Включить покрытие</label>}
         {!wide && ["C2", "C4", "C6", "C7", "C8"].includes(input.shapeId) && <fieldset><legend>Включить стороны в заказ</legend><div className="check-grid">{["Передняя", "Правая", "Задняя", "Левая"].map((label, i) => (input.shapeId !== "C6" || [1, 3].includes(i)) && (input.shapeId !== "C7" || i === 0) && <label key={label} className="check-field"><input type="checkbox" checked={input.sides[i]} onChange={() => toggleSide(i)} />{input.shapeId === "C7" ? "Боковое заполнение" : label}</label>)}</div></fieldset>}
         {["C1", "C2", "C4"].includes(input.shapeId) || (input.shapeId === "C5" && input.variant === "screen") ? <>
           <label className="check-field"><input type="checkbox" checked={input.opening.enabled} onChange={e => update("opening", { ...input.opening, enabled: e.target.checked })} />Проём в передней стороне</label>
-          {input.opening.enabled && <div className="field-grid">{(["width", "height", "offset"] as const).map((key, i) => <label className="field" key={key}><span>{["Ширина", "Высота", "Отступ от левого края"][i]}, м</span><NumberInput value={input.opening[key]} min={key === "offset" ? 0 : 0.1} onValue={v => update("opening", { ...input.opening, [key]: v })} /></label>)}</div>}
+          {input.opening.enabled && (wide ? <div className="opening-sliders" role="group" aria-label="Размеры проёма">
+            <DimensionSlider label="Ширина проёма" value={input.opening.width} min={0.1}
+              max={Number.isFinite(input.length - input.opening.offset) ? Math.max(0.1, input.length - input.opening.offset) : 200}
+              onValue={v => update("opening", { ...input.opening, width: v })} />
+            <DimensionSlider label="Высота проёма" value={input.opening.height} min={0.1} max={Number.isFinite(input.height) ? Math.max(0.1, input.height) : 30}
+              onValue={v => update("opening", { ...input.opening, height: v })} />
+            <DimensionSlider label="Отступ от левого края" value={input.opening.offset} min={0}
+              max={Number.isFinite(input.length - input.opening.width) ? Math.max(0, input.length - input.opening.width) : 200}
+              onValue={v => update("opening", { ...input.opening, offset: v })} />
+          </div> : <div className="field-grid">{(["width", "height", "offset"] as const).map((key, i) => <label className="field" key={key}><span>{["Ширина", "Высота", "Отступ от левого края"][i]}, м</span><NumberInput value={input.opening[key]} min={key === "offset" ? 0 : 0.1} onValue={v => update("opening", { ...input.opening, [key]: v })} /></label>)}</div>)}
         </> : null}
       </div>}
       {input.shapeId === "C8" && <div className="contour-inputs"><p className="field-hint">Отступ каждого контура измеряется от габарита объекта, а не от соседнего контура.</p>{input.contours.map((contour, i) => <fieldset key={i}><legend><label className="check-field"><input type="checkbox" checked={contour.enabled} onChange={e => update("contours", input.contours.map((v, j) => j === i ? { ...v, enabled: e.target.checked } : v))} />Контур {i + 1}</label></legend><div className="field-grid">{(["offset", "height"] as const).map(key => <label className="field" key={key}><span>{key === "offset" ? "Отступ" : "Высота"}, м</span><NumberInput value={contour[key]} min={key === "height" ? 0.5 : 0.1} max={key === "height" ? 80 : 20} onValue={amount => update("contours", input.contours.map((v, j) => j === i ? { ...v, [key]: amount } : v))} /></label>)}</div><ContourFields value={contour} onValue={next => update("contours", input.contours.map((v, j) => j === i ? next : v))} /></fieldset>)}<label className="field"><span>Внутренний стеновой модуль</span><select value={input.wallModule} onChange={e => update("wallModule", e.target.value as LayoutInput["wallModule"])}><option value="none">Без стенового модуля</option>{wallModules.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}</select></label></div>}
@@ -179,7 +193,8 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
         </div>}
       </div>
       {wide && <MaterialPicker value={input.materialId} onChange={id => update("materialId", id)} noWalls={input.shapeId === "C3" || (input.shapeId === "C5" && input.variant === "shelter")} />}
-      {wide && hasRoofOptions && <MaterialPicker target="roof" value={input.roofMaterialId} onChange={id => update("roofMaterialId", id)} note={!input.roof && input.shapeId !== "C5" ? "Покрытие выключено. Включите его справа, чтобы показать кровлю." : undefined} />}
+      {wide && hasRoofOptions && <MaterialPicker target="roof" value={input.roofMaterialId} enabled={input.roof} onChange={chooseRoof}
+        note={requiredRoof ? "Покрытие обязательно для этой конструкции" : input.roof ? "Нажмите выбранный материал, чтобы убрать кровлю" : "Без кровли — выберите материал, чтобы включить"} />}
       {wide && <StructurePicker value={input.structuralSystem} spatialSupports={input.spatialSupports} onChange={chooseStructure} />}
       <p className="viewer-help">Вращение: перетащите схему. Масштаб: колесо мыши или жест двумя пальцами. Без WebGL доступна 2D-схема.</p>
       <div className="viewer-controls"><div className="view-buttons">{([["perspective", "3D"], ["top", "Сверху"], ["front", "Спереди"], ["side", "Сбоку"]] as const).map(([key, label]) => <button key={key} className={view === key ? "selected" : ""} aria-pressed={view === key} onClick={() => setView(key)}>{label}</button>)}</div><label className="check-field"><input type="checkbox" checked={onlyFrame} onChange={e => setOnlyFrame(e.target.checked)} />Только каркас</label></div>

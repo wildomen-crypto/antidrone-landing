@@ -3,12 +3,34 @@ const assert=require('node:assert/strict');
 const {defaultInput,parseInput}=require('../../.local/test-build/lib/configuration/input.js');
 const {generateModel,quantities,polygonArea}=require('../../.local/test-build/lib/geometry/generate.js');
 const {isStructureSelected,toggleStructure}=require('../../.local/test-build/lib/configuration/structure.js');
+const {roofRequired,selectRoof}=require('../../.local/test-build/lib/configuration/roof.js');
 const input=(extra={})=>({...structuredClone(defaultInput),...extra});
 const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-7,actual+' != '+expected);
 test('independent box controls: 188, opening 179, two layers 376',()=>{
   let q=quantities(generateModel(input())); close(q.roof,60);close(q.walls,128);close(q.total,188);
   q=quantities(generateModel(input({opening:{enabled:true,width:3,height:3,offset:3.5}})));close(q.total,179);
   close(quantities(generateModel(input({layers:2}))).total,376);
+});
+test('roof material toggles optional cover without altering walls or combined material settings',()=>{
+  const c=input(),off={...c,...selectRoof(c,'M5')};
+  assert.equal(off.roof,false);assert.equal(off.roofMaterialId,'M5');
+  close(quantities(generateModel(off)).total,128);
+  const on={...off,...selectRoof(off,'M5')};assert.equal(on.roof,true);close(quantities(generateModel(on)).total,188);
+  const changed={...off,...selectRoof(off,'M8')};assert.equal(changed.roof,true);close(quantities(generateModel(changed)).total,248);
+  assert.equal(changed.materialId,'M5');assert.deepEqual(changed.combinedMaterials,c.combinedMaterials);
+  assert.deepEqual(parseInput(JSON.parse(JSON.stringify(off))),off);
+});
+test('canopy and wall shelter always retain their required cover',()=>{
+  for(const shape of [{shapeId:'C3'},{shapeId:'C5',variant:'shelter'}]) {
+    const c=input(shape);assert.equal(roofRequired(c),true);
+    assert.equal(selectRoof(c,c.roofMaterialId).roof,true);
+    assert.equal(selectRoof({...c,roof:false},'M1').roof,true);
+  }
+  assert.equal(roofRequired(input()),false);
+  assert.equal(roofRequired(input({shapeId:'C5',variant:'screen'})),false);
+  // Old shelter files rendered a cover regardless of the flag: restore that exact behavior explicitly.
+  const shelter=parseInput(input({shapeId:'C5',variant:'shelter',roof:false}));assert.equal(shelter.roof,true);
+  close(quantities(generateModel(shelter)).roof,30);
 });
 test('perimeter 10x6 with maximum bay 3 has 12 sections and 12 unique supports',()=>{
   const g=generateModel(input({shapeId:'C2'}));assert.equal(g.sections,12);assert.equal(g.supports.length,12);

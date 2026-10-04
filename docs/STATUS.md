@@ -1,6 +1,12 @@
 # Состояние разработки
 
-Текущая работа: UI-CONSTRUCTION-ICONS — VERIFIED; база 540e527.
+Текущая работа: UI-ROOF-OPENING — VERIFIED; база 1a8858e.
+Ветка ui/roof-toggle-opening-sliders; карточка docs/checkpoints/UI-ROOF-OPENING.md.
+Обязательная кровля навеса, отключение кровли через карточки материала,
+размеры активного проёма ползунками на /wide.
+Typecheck, 30 unit, build и 16 групп browser PASS; семь ширин.
+
+Предыдущая работа: UI-CONSTRUCTION-ICONS — VERIFIED; база 540e527.
 Ветка ui/compact-construction-icons; карточка docs/checkpoints/UI-CONSTRUCTION-ICONS.md.
 Сечение, основания и стороны переносятся иконками под размеры;
 опоры и ферма выбираются вместе, сваи без ростверка исключены из выбора/импорта.
@@ -45,7 +51,7 @@
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 33 VERIFIED (включая шесть правок UI и решение не включать upload),
+Реестр: 34 VERIFIED (включая семь правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
@@ -70,7 +76,7 @@
 
 http://127.0.0.1:3100 — production build, только этот компьютер.
 Новый вариант: http://127.0.0.1:3100/wide#calculator.
-PID 4824, exec-сессия 10220. Проверять фактический порт и CommandLine
+PID 6124, exec-сессия 39806. Проверять фактический порт и CommandLine
 перед остановкой; не останавливать чужие процессы. После перезапуска
 компьютера: npm.cmd run start из корня проекта.
 

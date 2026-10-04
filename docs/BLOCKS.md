@@ -9,6 +9,7 @@ B10.2 необязателен: решение об объёме записыв�
 
 | ID | Статус | Результат | Проверка | Карточка |
 | --- | --- | --- | --- | --- |
+| UI-ROOF-OPENING | VERIFIED | Кровля через карточки материала, обязательный навес без checkbox, проём ползунками на /wide | Typecheck, 30 unit, build; 16 групп browser, семь ширин, пересчёт/JSON/API/печать/2D | docs/checkpoints/UI-ROOF-OPENING.md |
 | UI-CONSTRUCTION-ICONS | VERIFIED | /wide: сечение, два основания и стороны иконками 20×20; совместный выбор опоры и фермы; pile исключён | Типизация, 28 unit, сборка; 15 групп browser, семь ширин, JSON/API/печать/2D | docs/checkpoints/UI-CONSTRUCTION-ICONS.md |
 | UI-SECTION-LAYERS | VERIFIED | /wide: шаг секций и целые слои ползунками рядом с размерами сверху слева | Типизация, сборка; 11 групп браузерных сценариев, семь ширин, пересчёт/JSON/печать/2D | docs/checkpoints/UI-SECTION-LAYERS.md |
 | UI-ROOF-STRUCTURE | VERIFIED | /wide: отдельные ряды восьми материалов кровли и шести несущих систем под 3D | Типизация, сборка; 10 групп браузерных сценариев, семь ширин, JSON/печать/2D | docs/checkpoints/UI-ROOF-STRUCTURE.md |
