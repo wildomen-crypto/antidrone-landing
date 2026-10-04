@@ -24,4 +24,9 @@ Build с типизацией/worker PASS, responsive 7 групп PASS на 12 
 Ошибок JS/overflow нет. Скриншоты 390/1024/1920 просмотрены.
 Отчёт .local/qa/responsive/report.json. Геометрия не менялась;
 unit/wide/compact отдельно не повторялись, физические телефоны не проверены.
-Следующий шаг: main/архив/bundle, затем обратная связь.
+Код ea2871dbc6006af3a835fc6e0e5172f5aeff7907 в main (fast-forward).
+Ветка сохранена, ZIP/bundle adaptive-shapes-20261005-ea2871d проверены;
+ZIP 150 записей без данных/секретов/runtime, bundle verify PASS.
+Каталог C:\taran\artifacts\antidrone-landing-backups.
+HTTP /compact 200, PID 28860, скрытый production-процесс на порту 3100.
+Следующий шаг: обратная связь заказчика.

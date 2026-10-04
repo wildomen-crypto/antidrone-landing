@@ -6,7 +6,9 @@
 Build с типизацией/worker и 7 responsive групп PASS, 12 окон 320–2560 px.
 Рисунки 32 px на узких окнах; все типы видны, сетка как у стен.
 Выбор C1–C8, touch, resize, JSON/печать/SVG PASS; 390/1024/1920 просмотрены.
-Следующий шаг: сохранение в main и резервные копии, затем обратная связь.
+Код ea2871dbc6006af3a835fc6e0e5172f5aeff7907 в main (fast-forward).
+ZIP/bundle adaptive-shapes-20261005-ea2871d проверены.
+Следующий шаг: обратная связь заказчика.
 
 Предыдущая работа: UI-CONTAINED-SCENE — VERIFIED; база 3960811.
 Ветка ui/contained-scene-icons; docs/checkpoints/UI-CONTAINED-SCENE.md.
@@ -153,6 +155,9 @@ Git: локальная настройка Dmitrii Taran,
 ## Резервные копии
 
 Каталог C:\taran\artifacts\antidrone-landing-backups.
+Адаптивные типы: adaptive-shapes-20261005-ea2871d-source.zip и .bundle;
+bundle verify PASS, ZIP 150 записей, без данных/секретов/runtime.
+Шаблон .env.example содержит пустые значения/false.
 Ширина сцены и ракурсы: contained-scene-20261005-34ce5b6-source.zip
 и одноимённый .bundle; bundle verify PASS. ZIP — только tracked-файлы;
 шаблон .env.example содержит пустые значения/false, без секретов.
