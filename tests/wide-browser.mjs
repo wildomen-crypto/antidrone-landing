@@ -7,7 +7,7 @@ import { randomUUID } from 'node:crypto';
 const { chromium } = await import(process.env.PLAYWRIGHT_MODULE ?? 'file:///C:/Users/Student/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs');
 const base = process.env.QA_URL ?? 'http://127.0.0.1:3100';
 assert.ok(['127.0.0.1', 'localhost'].includes(new URL(base).hostname));
-const output = path.resolve('.local/qa/contour-sliders');
+const output = path.resolve('.local/qa/narrow-dimensions');
 await mkdir(output, { recursive: true });
 const report = { checks: [], errors: [], date: new Date().toISOString() };
 const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL ?? 'msedge', headless: true });
@@ -38,6 +38,10 @@ try {
       assert.ok(panel.x >= scene.x && panel.x + panel.width <= width);
       assert.ok(scene.width - panel.x - panel.width <= 16, 'Settings aligned to the right edge');
       const dimensions = await page.locator('.dimension-panel').boundingBox();
+      assert.ok(dimensions.width<=190,'Narrow dimension panel at '+width);
+      if(width>500) assert.equal(dimensions.width,190);
+      assert.ok(await page.locator('.dimension-panel .dimension-exact input').evaluateAll((inputs,expected)=>inputs.every(el=>el.getBoundingClientRect().width===expected),width<=500?40:32),'Compact exact input widths');
+      assert.ok(await page.locator('.dimension-panel .compact-options').evaluate(el=>el.scrollWidth<=el.clientWidth+1),'Icons fit narrow panel');
       assert.ok(dimensions.x >= scene.x && dimensions.x + dimensions.width < panel.x);
       assert.ok(dimensions.y >= scene.y && dimensions.y + dimensions.height <= scene.y + scene.height);
       assert.equal(await page.locator('.dimension-panel input[type=range]').count(), 5);
@@ -411,10 +415,12 @@ try {
     const slider=page.getByRole('slider',{name:'Длина, м',exact:true});
     assert.equal(await slider.inputValue(),'20');
     await slider.focus();await page.keyboard.press('ArrowRight');await waitTotal(page,329.4);
+    await page.waitForFunction(()=>document.querySelector('.dimension-panel .dimension-exact input')?.value==='20,1');
     assert.equal(await page.getByRole('textbox',{name:'Длина, м',exact:true}).inputValue(),'20,1');
     await page.keyboard.press('ArrowLeft');await waitTotal(page,328);
     const sliderRect=await slider.boundingBox();
-    await page.mouse.click(sliderRect.x+sliderRect.width*.18,sliderRect.y+sliderRect.height/2);
+    await slider.click({position:{x:sliderRect.width*.25,y:sliderRect.height/2}});
+    await page.waitForFunction(()=>{const value=Number(document.querySelector('.dimension-panel input[type=range]')?.value);return value>20&&value<60;});
     const dragged=Number(await slider.inputValue());assert.ok(dragged>20 && dragged<60);
     await page.waitForFunction(value=>Number(document.querySelector('.dimension-exact input').value.replace(',','.'))===value,dragged);
 
