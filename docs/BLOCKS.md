@@ -9,6 +9,7 @@ B10.2 необязателен: решение об объёме записыв�
 
 | ID | Статус | Результат | Проверка | Карточка |
 | --- | --- | --- | --- | --- |
+| UI-WALL-MATERIAL | VERIFIED | M7 по умолчанию; стены через материал, каркас сохраняется; пункт C7 удалён, JSON совместим | Check: 34 unit/build; 19 групп browser, семь ширин, формы/JSON/SVG/API | docs/checkpoints/UI-WALL-MATERIAL.md |
 | UI-NARROW-DIMENSIONS | VERIFIED | /wide: левая панель 190 px и компактные числовые поля по скриншоту | Build; 18 групп browser, семь ширин, ввод/иконки/камера/JSON/SVG | docs/checkpoints/UI-NARROW-DIMENSIONS.md |
 | UI-CONTOUR-SLIDERS | VERIFIED | /wide: отступы и высоты трёх контуров C8 компактными ползунками с точным вводом | Typecheck/build; 18 групп browser, семь ширин, компактность/пересчёт/JSON/SVG | docs/checkpoints/UI-CONTOUR-SLIDERS.md |
 | UI-ROUND-ROOF | VERIFIED | C7: купол/открытый контур через материал кровли, отдельный вариант удалён; совместимость JSON | Typecheck, 31 unit, build; 17 групп browser, семь ширин, старый/новый JSON, основной / и SVG | docs/checkpoints/UI-ROUND-ROOF.md |

@@ -4,9 +4,39 @@ const {defaultInput,parseInput}=require('../../.local/test-build/lib/configurati
 const {generateModel,quantities,polygonArea}=require('../../.local/test-build/lib/geometry/generate.js');
 const {isStructureSelected,toggleStructure}=require('../../.local/test-build/lib/configuration/structure.js');
 const {roofRequired,selectRoof}=require('../../.local/test-build/lib/configuration/roof.js');
+const {hasWallOptions,wallFillingEnabled,selectWalls}=require('../../.local/test-build/lib/configuration/walls.js');
 const input=(extra={})=>({...structuredClone(defaultInput),...extra});
 const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-7,actual+' != '+expected);
 
+test('PVL defaults and legacy configurations preserve their saved materials and wall state',()=>{
+  assert.equal(defaultInput.materialId,'M7');assert.equal(defaultInput.roofMaterialId,'M7');
+  const legacy=input({materialId:'M5',roofMaterialId:'M1'});delete legacy.walls;
+  const restored=parseInput(legacy);assert.equal(restored.walls,true);assert.equal(restored.materialId,'M5');assert.equal(restored.roofMaterialId,'M1');
+  assert.deepEqual(generateModel(restored),generateModel({...legacy,walls:true}));
+  assert.throws(()=>parseInput(input({walls:'false'})),/Неверное поле walls/);
+  const off=parseInput(input({walls:false}));assert.deepEqual(parseInput(JSON.parse(JSON.stringify(off))),off);
+});
+test('wall material toggles fill independently, retains sides and restores legacy empty round sides',()=>{
+  const c=input({sides:[true,false,true,false],opening:{enabled:true,width:3,height:3,offset:3.5}});
+  const off={...c,...selectWalls(c,'M7')};assert.equal(off.walls,false);assert.equal(off.opening.enabled,false);
+  assert.deepEqual(off.sides,c.sides);close(quantities(generateModel(off)).walls,0);close(quantities(generateModel(off)).roof,60);
+  const on={...off,...selectWalls(off,'M7')};assert.equal(on.walls,true);assert.deepEqual(on.sides,c.sides);
+  close(quantities(generateModel(on)).walls,80);assert.equal(on.roofMaterialId,c.roofMaterialId);
+  const oldRound=input({shapeId:'C7',variant:'dome',sides:[false,true,true,true]});
+  assert.equal(wallFillingEnabled(oldRound),false);
+  assert.equal(selectWalls(oldRound,'M7').sides[0],true);
+  for(const shape of [{shapeId:'C3'},{shapeId:'C5',variant:'shelter'}])assert.equal(hasWallOptions(input(shape)),false);
+});
+test('all wall-capable shapes keep structure and roof quantities with filling disabled',()=>{
+  for(const shapeId of ['C1','C2','C4','C5','C6','C7','C8']){
+    const c=input({shapeId,variant:shapeId==='C5'?'screen':shapeId==='C7'?'dome':'portal'});
+    const full=generateModel(c),bare=generateModel({...c,walls:false});
+    close(quantities(bare).walls,0);close(quantities(bare).roof,quantities(full).roof);
+    assert.ok(bare.members.length>0);assert.deepEqual(bare.supports,full.supports);
+    assert.ok(bare.panels.every(panel=>panel.role==='roof'));
+    const noFill=generateModel({...c,walls:false,roof:false});close(quantities(noFill).total,0);assert.ok(noFill.members.length>0);
+  }
+});
 test('round roof controls dome; legacy perimeter preserves open geometry and exports canonical input',()=>{
   const legacy=input({shapeId:'C7',variant:'perimeter',roof:true});
   const ring=parseInput(legacy);
@@ -27,7 +57,7 @@ test('independent box controls: 188, opening 179, two layers 376',()=>{
   close(quantities(generateModel(input({layers:2}))).total,376);
 });
 test('roof material toggles optional cover without altering walls or combined material settings',()=>{
-  const c=input(),off={...c,...selectRoof(c,'M5')};
+  const c=input({materialId:'M5',roofMaterialId:'M5'}),off={...c,...selectRoof(c,'M5')};
   assert.equal(off.roof,false);assert.equal(off.roofMaterialId,'M5');
   close(quantities(generateModel(off)).total,128);
   const on={...off,...selectRoof(off,'M5')};assert.equal(on.roof,true);close(quantities(generateModel(on)).total,188);

@@ -47,6 +47,7 @@
 .material-choice-strip{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:10px;position:relative;overflow-x:auto;scroll-snap-type:x proximity}
 .material-choice{position:relative;min-width:0;padding:7px 10px 12px;display:flex;align-items:center;flex-direction:column;border:1px solid var(--line);border-radius:8px;background:white;color:var(--ink);scroll-snap-align:start}
 .material-choice:hover{border-color:#8ca9ee}.material-choice[aria-pressed=true]{border-color:var(--accent);background:#f0f5ff;box-shadow:inset 0 0 0 1px var(--accent)}
+.material-choice:disabled{opacity:.5;cursor:default}.material-choice:disabled:hover{border-color:var(--line)}
 .material-choice-image{display:block;width:100%;height:65px}.material-choice-image svg{width:100%;height:100%;display:block}
 .material-choice-name{font-size:10px;line-height:1.4;max-width:145px;text-align:center}
 .structure-picker .structure-choice-strip{grid-template-columns:repeat(6,minmax(0,1fr))}

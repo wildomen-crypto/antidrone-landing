@@ -1,6 +1,12 @@
 # Состояние разработки
 
-Текущая работа: UI-NARROW-DIMENSIONS — VERIFIED; база 6baba4c.
+Текущая работа: UI-WALL-MATERIAL — VERIFIED; база 7a32257.
+Ветка ui/wall-material-toggle; карточка docs/checkpoints/UI-WALL-MATERIAL.md.
+M7 по умолчанию; стены включаются/отключаются выбором материала.
+Check: 34 unit, типизация/build; 19 групп browser PASS, семь ширин, JSON/SVG.
+Следующий запрос: отдельная компактная версия, работы ниже материалов.
+
+Предыдущая работа: UI-NARROW-DIMENSIONS — VERIFIED; база 6baba4c.
 Ветка ui/narrow-dimension-panel; карточка docs/checkpoints/UI-NARROW-DIMENSIONS.md.
 Левая панель размеров — 190 px, поля — 32/40 px, как в скриншоте заказчика.
 Build и 18 групп browser PASS; семь ширин, ввод/камера/JSON/SVG.
@@ -66,7 +72,7 @@ Typecheck, 30 unit, build и 16 групп browser PASS; семь ширин.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 37 VERIFIED (включая десять правок UI и решение не включать upload),
+Реестр: 38 VERIFIED (включая одиннадцать правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
@@ -91,7 +97,7 @@ Typecheck, 30 unit, build и 16 групп browser PASS; семь ширин.
 
 http://127.0.0.1:3100 — production build, только этот компьютер.
 Новый вариант: http://127.0.0.1:3100/wide#calculator.
-PID 19864, exec-сессия 45675. Проверять фактический порт и CommandLine
+PID 21544, exec-сессия 88565. Проверять фактический порт и CommandLine
 перед остановкой; не останавливать чужие процессы. После перезапуска
 компьютера: npm.cmd run start из корня проекта.
 

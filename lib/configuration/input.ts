@@ -9,7 +9,7 @@ export type LayoutInput = {
   combinedMaterials: MaterialId[];
   sectionType: "round" | "profile"; spatialSupports: boolean;
   foundation: "block" | "pile-cap";
-  step: number; layers: number; sides: boolean[]; roof: boolean;
+  step: number; layers: number; sides: boolean[]; roof: boolean; walls: boolean;
   opening: { enabled: boolean; width: number; height: number; offset: number };
   contours: { enabled: boolean; offset: number; height: number; materialId?: MaterialId; roofMaterialId?: MaterialId; layers?: number; structuralSystem?: StructuralSystemId; foundation?: "block" | "pile-cap" }[];
   wallModule: WallModuleId | "none"; services: ServiceId[];
@@ -18,10 +18,10 @@ export type LayoutInput = {
 export const defaultInput: LayoutInput = {
   version: 1, shapeId: "C4", length: 10, width: 6, height: 4, diameter: 8,
   rise: 2, offset: 1, projection: 3, variant: "portal",
-  materialId: "M5", roofMaterialId: "M5", structuralSystem: "tube-post",
+  materialId: "M7", roofMaterialId: "M7", structuralSystem: "tube-post",
   combinedMaterials: ["M1", "M4"],
   sectionType: "profile", spatialSupports: false, foundation: "block",
-  step: 3, layers: 1, sides: [true, true, true, true], roof: true,
+  step: 3, layers: 1, sides: [true, true, true, true], roof: true, walls: true,
   opening: { enabled: false, width: 3, height: 3, offset: 3.5 },
   contours: [
     { enabled: true, offset: 0.8, height: 4.5 },
@@ -55,6 +55,7 @@ export function parseInput(value: unknown): LayoutInput {
   };
   const boolean = (field: string) => { if (typeof raw[field] !== "boolean") throw new InputError(`Неверное поле ${field}.`); return raw[field] as boolean; };
   const shapeId = pick("shapeId", SHAPE_IDS);
+  const walls = raw.walls === undefined ? true : boolean("walls");
   const height = number("height", 0.5, shapeId === "C8" ? 80 : 30);
   const length = number("length", 1, 200), width = number("width", 1, 100);
   const diameter = number("diameter", 1, 100), rise = number("rise", 0.2, 30);
@@ -96,7 +97,7 @@ export function parseInput(value: unknown): LayoutInput {
     if (active.some((c, i) => i > 0 && c.offset <= active[i - 1].offset)) throw new InputError("Отступы включённых контуров должны возрастать от внутреннего к внешнему.");
   }
   if (shapeId === "C3" && raw.roof !== true) throw new InputError("Для навеса необходимо включить покрытие.");
-  if (["C2", "C4", "C8"].includes(shapeId) && !raw.sides.some(Boolean) && (shapeId === "C2" || !raw.roof)) throw new InputError("Включите хотя бы одну сторону или покрытие.");
+  if (walls && ["C2", "C4", "C8"].includes(shapeId) && !raw.sides.some(Boolean) && (shapeId === "C2" || !raw.roof)) throw new InputError("Включите хотя бы одну сторону или покрытие.");
   if (!Array.isArray(raw.services) || raw.services.some(v => !SERVICE_IDS.includes(v as ServiceId)) || new Set(raw.services).size !== raw.services.length) throw new InputError("Проверьте перечень услуг.");
   if (!Array.isArray(raw.combinedMaterials) || raw.combinedMaterials.length < 2 || raw.combinedMaterials.length > 3 || raw.combinedMaterials.some(v => v === "M8" || !MATERIAL_IDS.includes(v as MaterialId)) || new Set(raw.combinedMaterials).size !== raw.combinedMaterials.length) throw new InputError("Для комбинированной панели выберите 2–3 разных материала без вложенной комбинации.");
   const roof = boolean("roof");
@@ -110,7 +111,7 @@ export function parseInput(value: unknown): LayoutInput {
     sectionType: pick("sectionType", ["round", "profile"]), spatialSupports: boolean("spatialSupports"),
     foundation: pick("foundation", ["block", "pile-cap"]),
     structuralSystem: pick("structuralSystem", STRUCTURAL_SYSTEM_IDS), step, layers,
-    sides: [...raw.sides] as boolean[], roof: normalizedRoof,
+    sides: [...raw.sides] as boolean[], roof: normalizedRoof, walls,
     opening: { enabled: o.enabled, width: o.width, height: o.height, offset: o.offset },
     contours, wallModule: pick("wallModule", ["none", ...WALL_MODULE_IDS]), services: [...raw.services] as ServiceId[],
   };

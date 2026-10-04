@@ -21,7 +21,7 @@ export default function CompactOptions({ input, onSection, onFoundation, onSide 
   input: LayoutInput; onSection: (value: LayoutInput["sectionType"]) => void;
   onFoundation: (value: LayoutInput["foundation"]) => void; onSide: (index: number) => void;
 }) {
-  const hasSides = ["C2", "C4", "C6", "C7", "C8"].includes(input.shapeId);
+  const hasSides = ["C2", "C4", "C6", "C8"].includes(input.shapeId);
   return <div className="compact-options">
     <div className="compact-options-pair">
       <div className="compact-option-group" data-choice="section" role="group" aria-label="Форма сечения на схеме">
@@ -46,13 +46,12 @@ export default function CompactOptions({ input, onSection, onFoundation, onSide 
       </div>
     </div>
     {hasSides && <div className="compact-option-group" data-choice="sides" role="group" aria-label="Включить стороны в заказ">
-      <span>{input.shapeId === "C7" ? "Боковое заполнение" : "Стороны в заказе"}</span>
+      <span>Стороны в заказе</span>
       <div className="compact-option-buttons">{sideNames.map((name, index) =>
-        (input.shapeId !== "C6" || [1, 3].includes(index)) && (input.shapeId !== "C7" || index === 0) &&
-        <IconButton key={name} name={input.shapeId === "C7" ? "Боковое заполнение" : name} option={sideIds[index]}
-          selected={input.sides[index]} onClick={() => onSide(index)}>
-          {input.shapeId === "C7" ? <><ellipse cx="10" cy="5" rx="7" ry="3" /><path d="M3 5V15C3 19 17 19 17 15V5" /><ellipse cx="10" cy="15" rx="7" ry="3" opacity=".3" /></> :
-            <><path d="M2 8L10 5L18 8V15L10 18L2 15ZM10 11L2 8M10 11L18 8M10 11V18" opacity=".35" /><polygon points={faces[index]} fill="currentColor" fillOpacity=".25" /></>}
+        (input.shapeId !== "C6" || [1, 3].includes(index)) &&
+        <IconButton key={name} name={name} option={sideIds[index]}
+          selected={input.walls && input.sides[index]} onClick={() => onSide(index)}>
+          <path d="M2 8L10 5L18 8V15L10 18L2 15ZM10 11L2 8M10 11L18 8M10 11V18" opacity=".35" /><polygon points={faces[index]} fill="currentColor" fillOpacity=".25" />
         </IconButton>)}</div>
     </div>}
   </div>;

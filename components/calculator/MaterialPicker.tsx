@@ -45,7 +45,7 @@ export default function MaterialPicker({ value, onChange, noWalls = false, targe
   return <div className="material-picker" data-target={target} data-enabled={enabled} role="group" aria-label={title}>
     <div className="material-picker-heading"><strong>{title}</strong><span>{note ?? (noWalls ? "У этой формы нет стен. Материал кровли выбирается ниже." : "Выберите материал — рисунок на модели обновится")}</span></div>
     <div className="material-choice-strip" ref={strip}>{materials.map(material => <button type="button" key={material.id}
-      className="material-choice" aria-label={material.name} aria-pressed={enabled && value === material.id} onClick={() => onChange(material.id)}>
+      className="material-choice" disabled={noWalls} aria-label={material.name} aria-pressed={enabled && value === material.id} onClick={() => onChange(material.id)}>
       <span className="material-choice-image"><MaterialImage id={material.id} /></span>
       <span className="material-choice-name">{material.name}</span>
       <span className="shape-choice-check" aria-hidden="true">{enabled && value === material.id ? "✓" : ""}</span>

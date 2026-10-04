@@ -7,7 +7,7 @@ import { randomUUID } from 'node:crypto';
 const { chromium } = await import(process.env.PLAYWRIGHT_MODULE ?? 'file:///C:/Users/Student/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs');
 const base = process.env.QA_URL ?? 'http://127.0.0.1:3100';
 assert.ok(['127.0.0.1', 'localhost'].includes(new URL(base).hostname));
-const output = path.resolve('.local/qa/narrow-dimensions');
+const output = path.resolve('.local/qa/wall-material');
 await mkdir(output, { recursive: true });
 const report = { checks: [], errors: [], date: new Date().toISOString() };
 const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL ?? 'msedge', headless: true });
@@ -61,6 +61,8 @@ try {
       assert.equal(await page.locator('.parameter-panel').getByRole('textbox',{name:'Максимальный шаг секций, м',exact:true}).count(),0);
       assert.equal(await page.locator('[data-target="walls"] .material-choice').count(), 8);
       assert.equal(await page.locator('[data-target="roof"] .material-choice').count(), 8);
+      assert.equal(await page.locator('[data-target="walls"] .material-choice').nth(6).getAttribute('aria-pressed'),'true');
+      assert.equal(await page.locator('[data-target="roof"] .material-choice').nth(6).getAttribute('aria-pressed'),'true');
       assert.equal(await page.locator('.structure-choice').count(), 6);
       const filling = await page.locator('[data-target="walls"]').boundingBox();
       assert.ok(Math.abs(filling.y - scene.y - scene.height) < 2, 'Filling choices directly below 3D');
@@ -104,7 +106,7 @@ try {
       assert.equal(await choice.getAttribute('aria-pressed'), 'true');
       assert.equal(await page.locator('.quantity-grid').count(), 1);
       assert.equal(await page.locator('.dimension-panel input[type=range]').count(), i===0?4:5);
-      assert.equal(await page.locator('[data-choice="sides"] .compact-option').count(),[0,4,0,4,0,2,1,4][i]);
+      assert.equal(await page.locator('[data-choice="sides"] .compact-option').count(),[0,4,0,4,0,2,0,4][i]);
     }
     await page.locator('.solution-card').nth(3).getByRole('button').click();
     assert.equal(await page.locator('.calculator').getAttribute('data-shape'), 'C4');
@@ -116,7 +118,7 @@ try {
       const pending=page.waitForEvent('download'); await page.getByRole('button',{name:'Сохранить JSON'}).click();
       const download=await pending; const savedPath=path.join(output,'material-'+(index+1)+'.json');await download.saveAs(savedPath);
       const input=JSON.parse(await readFile(savedPath,'utf8'));
-      assert.equal(input.materialId,'M'+(index+1)); assert.equal(input.roofMaterialId,'M5');
+      assert.equal(input.materialId,'M'+(index+1)); assert.equal(input.roofMaterialId,'M7');
       await waitTotal(page,index===7?316:188);
       assert.equal(await page.locator('.input-error').count(),0);
     }
@@ -178,9 +180,60 @@ try {
     await page.screenshot({path:path.join(output,'three-rows-desktop.png')});
     await page.setViewportSize({width:1440,height:1000});
   });
+  await check('Wall cards toggle all wall-capable forms, preserve roof and structure, and restore JSON', async () => {
+    const wallsPage=await browser.newPage({viewport:{width:1440,height:1100},reducedMotion:'reduce'});monitor(wallsPage);
+    await wallsPage.goto(base+'/wide#calculator',{waitUntil:'networkidle'});
+    const wallRow=wallsPage.locator('[data-target="walls"]'),roofRow=wallsPage.locator('[data-target="roof"]');
+    const waitWalls=enabled=>wallsPage.waitForFunction(enabled=>{const row=[...document.querySelectorAll('.estimate-result tr')].find(row=>row.textContent.startsWith('Стены'));return row&&(parseFloat(row.children[1].textContent.replace(',','.'))>0)===enabled;},enabled);
+    const roofArea=()=>wallsPage.locator('.estimate-result tr').filter({hasText:'Покрытие, без повторения слоёв'}).locator('td').nth(1).textContent();
+    assert.equal(await wallRow.locator('.material-choice').nth(6).getAttribute('aria-pressed'),'true');
+    assert.equal(await roofRow.locator('.material-choice').nth(6).getAttribute('aria-pressed'),'true');
+    await wallsPage.getByLabel('Проём в передней стороне',{exact:true}).check();await waitTotal(wallsPage,179);
+    await wallRow.locator('.material-choice').nth(6).click();await waitTotal(wallsPage,60);
+    assert.equal(await wallsPage.getByLabel('Проём в передней стороне',{exact:true}).isChecked(),false);
+    assert.equal(await wallsPage.getByLabel('Проём в передней стороне',{exact:true}).isEnabled(),false);
+    assert.equal(await wallsPage.locator('[data-choice="sides"] [aria-pressed=true]').count(),0);
+    await wallsPage.locator('[data-choice="sides"]').getByRole('button',{name:'Передняя',exact:true}).click();await waitTotal(wallsPage,188);
+    for(const index of [0,1,3,4,5,6,7]){
+      await wallsPage.locator('.shape-choice').nth(index).click();await waitWalls(true);
+      const before=await roofArea(),supports=await wallsPage.locator('.quantity-grid strong').nth(1).textContent();
+      await wallRow.locator('.material-choice[aria-pressed=true]').click();await waitWalls(false);
+      assert.equal(await wallRow.locator('[aria-pressed=true]').count(),0);
+      assert.equal(await roofArea(),before);assert.equal(await wallsPage.locator('.quantity-grid strong').nth(1).textContent(),supports);
+      assert.equal(await wallsPage.locator('.input-error').count(),0);
+      await wallRow.locator('.material-choice').nth(6).focus();await wallsPage.keyboard.press('Space');await waitWalls(true);
+    }
+    await wallsPage.locator('.shape-choice').nth(6).click();
+    assert.equal(await wallsPage.getByRole('button',{name:'Боковое заполнение',exact:true}).count(),0);
+    assert.equal(await wallsPage.getByText('Боковое заполнение',{exact:true}).count(),0);
+    await showScene(wallsPage);await wallsPage.screenshot({path:path.join(output,'pvl-round.png')});
+    await wallRow.locator('.material-choice').nth(6).click();await waitWalls(false);
+    const pending=wallsPage.waitForEvent('download');await wallsPage.getByRole('button',{name:'Сохранить JSON'}).click();
+    const savedPath=path.join(output,'without-walls.json');await(await pending).saveAs(savedPath);
+    const saved=JSON.parse(await readFile(savedPath,'utf8'));assert.equal(saved.walls,false);assert.equal(saved.materialId,'M7');assert.equal(saved.roofMaterialId,'M7');assert.equal(saved.roof,true);
+    await wallRow.locator('.material-choice').nth(5).click();await waitWalls(true);
+    await wallsPage.locator('input[type=file]').setInputFiles(savedPath);await waitWalls(false);
+    assert.equal(await wallRow.locator('[aria-pressed=true]').count(),0);
+    await roofRow.locator('.material-choice[aria-pressed=true]').click();await waitTotal(wallsPage,0);
+    assert.equal(await wallsPage.getByRole('button',{name:'Сохранить JSON'}).isEnabled(),true);
+    const {walls,...legacy}=saved;
+    await wallsPage.locator('input[type=file]').setInputFiles({name:'legacy.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({...legacy,materialId:'M5',roofMaterialId:'M1'}))});await waitWalls(true);
+    assert.equal(await wallRow.locator('.material-choice').nth(4).getAttribute('aria-pressed'),'true');
+    assert.equal(await roofRow.locator('.material-choice').nth(0).getAttribute('aria-pressed'),'true');
+    await wallsPage.setViewportSize({width:390,height:1000});await showScene(wallsPage);
+    await wallRow.locator('.material-choice').nth(6).click();await waitWalls(true);
+    await wallRow.locator('.material-choice').nth(6).click();await waitWalls(false);
+    await showScene(wallsPage);await wallsPage.screenshot({path:path.join(output,'without-walls-mobile.png')});
+    await wallsPage.goto(base+'/#calculator',{waitUntil:'networkidle'});
+    await wallsPage.getByRole('combobox',{name:'Тип конструкции',exact:true}).selectOption('C7');
+    const filling=wallsPage.getByRole('combobox',{name:'Заполнение стен / экрана',exact:true});assert.equal(await filling.inputValue(),'M7');
+    await filling.selectOption('none');await waitWalls(false);await filling.selectOption('M7');await waitWalls(true);
+    await wallsPage.close();
+  });
   await check('Roof card toggles optional cover; canopy and shelter keep mandatory cover', async () => {
     const variants=await browser.newPage({viewport:{width:1280,height:1000},reducedMotion:'reduce'}); monitor(variants);
     await variants.goto(base+'/wide#calculator',{waitUntil:'networkidle'});
+    await variants.locator('[data-target="roof"] .material-choice').nth(4).click();
     for(let i=0;i<8;i++) {
       await variants.locator('.shape-choice').nth(i).click();
       assert.equal(await variants.locator('[data-target="roof"] .material-choice').count(),[0,1,4].includes(i)?0:8);
@@ -550,13 +603,16 @@ try {
     await first.getByRole('textbox',{name:'Высота, м',exact:true}).fill('5,2');
     await fallback.waitForFunction(()=>document.querySelectorAll('.contour-sliders input[type=range]')[1].value==='5.2');
     await fallback.locator('.viewer svg').waitFor();assert.equal(await fallback.locator('.input-error').count(),0);
+    await fallback.locator('[data-target="walls"] .material-choice[aria-pressed=true]').click();
+    await fallback.waitForFunction(()=>[...document.querySelectorAll('.estimate-result tr')].find(row=>row.textContent.startsWith('Стены'))?.children[1]?.textContent==='0 м²');
+    await fallback.locator('.viewer svg').waitFor();
     await fallback.close();
   });
   await check('API rejects removed piles and a canopy without its mandatory roof before saving a lead', async () => {
     const require=createRequire(import.meta.url);
     const {defaultInput}=require('../.local/runtime/lib/configuration/input.js');
     const {legal}=require('../.local/runtime/config/legal.js');
-    for(const [changes,error] of [[{foundation:'pile'},/Сваи без ростверка больше недоступны/],[{contours:[{enabled:true,offset:1,height:5,foundation:'pile'}]},/Сваи без ростверка больше недоступны/],[{shapeId:'C3',roof:false},/Для навеса необходимо включить покрытие/]]) {
+    for(const [changes,error] of [[{walls:'false'},/Неверное поле walls/],[{foundation:'pile'},/Сваи без ростверка больше недоступны/],[{contours:[{enabled:true,offset:1,height:5,foundation:'pile'}]},/Сваи без ростверка больше недоступны/],[{shapeId:'C3',roof:false},/Для навеса необходимо включить покрытие/]]) {
       const response=await fetch(base+'/api/leads',{method:'POST',headers:{'content-type':'application/json',origin:base,'idempotency-key':randomUUID()},
         body:JSON.stringify({name:'QA invalid configuration',contact:'qa-invalid@example.invalid',region:'',comment:'',website:'',consent:true,consentVersion:legal.consentVersion,configuration:{...structuredClone(defaultInput),...changes}})});
       assert.equal(response.status,400);

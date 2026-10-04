@@ -145,16 +145,16 @@ export function generateModel(value: LayoutInput): ModelGraph {
 
   if (c.shapeId === "C1") {
     graph.bounds.width = 0.6;
-    side([-c.length / 2, 0, 0], [c.length / 2, 0, 0], c.height, c.materialId, "front", "main", c.opening.enabled);
+    side([-c.length / 2, 0, 0], [c.length / 2, 0, 0], c.height, c.materialId, "front", "main", c.opening.enabled, c.walls);
   } else if (["C2", "C3", "C4"].includes(c.shapeId)) {
     const roof = c.shapeId !== "C2" && c.roof;
-    box(c.length, c.width, c.height, "main", roof, c.shapeId === "C3" ? [false, false, false, false] : c.sides, c.opening.enabled);
+    box(c.length, c.width, c.height, "main", roof, c.shapeId === "C3" ? [false, false, false, false] : c.sides, c.opening.enabled, c.walls);
   } else if (c.shapeId === "C5") {
     graph.wall = { length: c.length + 2, height: c.height + 1 };
     const d = c.variant === "screen" ? c.offset : c.projection;
     graph.bounds.width = d;
     const n = Math.ceil(c.length / c.step);
-    if (c.variant === "screen") side([-c.length / 2, 0, d], [c.length / 2, 0, d], c.height, c.materialId, "front", "main", c.opening.enabled);
+    if (c.variant === "screen") side([-c.length / 2, 0, d], [c.length / 2, 0, d], c.height, c.materialId, "front", "main", c.opening.enabled, c.walls);
     else {
       panel([[-c.length / 2, c.height, 0], [c.length / 2, c.height, 0], [c.length / 2, c.height, d], [-c.length / 2, c.height, d]], c.roofMaterialId, "roof", "main");
       beam([-c.length / 2, c.height, d], [c.length / 2, c.height, d], "main");
@@ -188,8 +188,8 @@ export function generateModel(value: LayoutInput): ModelGraph {
       }
     }
     graph.sections = n;
-    if (c.sides[3]) panel([[-c.length / 2, 0, -c.width / 2], [c.length / 2, 0, -c.width / 2], [c.length / 2, c.height, -c.width / 2], [-c.length / 2, c.height, -c.width / 2]], c.materialId, "left", "main");
-    if (c.sides[1]) panel([[-c.length / 2, 0, c.width / 2], [c.length / 2, 0, c.width / 2], [c.length / 2, c.height, c.width / 2], [-c.length / 2, c.height, c.width / 2]], c.materialId, "right", "main");
+    if (c.walls && c.sides[3]) panel([[-c.length / 2, 0, -c.width / 2], [c.length / 2, 0, -c.width / 2], [c.length / 2, c.height, -c.width / 2], [-c.length / 2, c.height, -c.width / 2]], c.materialId, "left", "main");
+    if (c.walls && c.sides[1]) panel([[-c.length / 2, 0, c.width / 2], [c.length / 2, 0, c.width / 2], [c.length / 2, c.height, c.width / 2], [-c.length / 2, c.height, c.width / 2]], c.materialId, "right", "main");
     // Ends remain open: this is a passage, with the free-height datum at H.
   } else if (c.shapeId === "C7") {
     const r = c.diameter / 2, n = Math.max(12, Math.ceil(Math.PI * c.diameter / c.step));
@@ -198,7 +198,7 @@ export function generateModel(value: LayoutInput): ModelGraph {
       const t = i * 2 * Math.PI / n, s = (i + 1) * 2 * Math.PI / n;
       const a: Point = [r * Math.cos(t), c.height, r * Math.sin(t)], b: Point = [r * Math.cos(s), c.height, r * Math.sin(s)];
       post(a[0], a[2], c.height, "main"); member(a, b, "frame", "main");
-      if (c.sides[0]) panel([[a[0], 0, a[2]], [b[0], 0, b[2]], b, a], c.materialId, "circumference", "main");
+      if (c.walls && c.sides[0]) panel([[a[0], 0, a[2]], [b[0], 0, b[2]], b, a], c.materialId, "circumference", "main");
       if (c.variant === "dome" && c.roof) {
         const apex: Point = [0, c.height + c.rise, 0];
         beam(a, apex, "main"); panel([a, b, apex], c.roofMaterialId, "roof", "main");
@@ -212,7 +212,7 @@ export function generateModel(value: LayoutInput): ModelGraph {
       const t = c.contours[i]; if (!t.enabled) continue;
       Object.assign(c, { materialId: t.materialId ?? inherited.materialId, roofMaterialId: t.roofMaterialId ?? inherited.roofMaterialId, layers: t.layers ?? inherited.layers, structuralSystem: t.structuralSystem ?? inherited.structuralSystem, spatialSupports: t.structuralSystem ? false : inherited.spatialSupports, foundation: t.foundation ?? inherited.foundation });
       const L = c.length + 2 * t.offset, W = c.width + 2 * t.offset;
-      box(L, W, t.height, `contour${i + 1}`, c.roof, c.sides, false);
+      box(L, W, t.height, `contour${i + 1}`, c.roof, c.sides, false, c.walls);
       graph.bounds.length = Math.max(graph.bounds.length, L); graph.bounds.width = Math.max(graph.bounds.width, W); graph.bounds.height = Math.max(graph.bounds.height, t.height);
     }
     Object.assign(c, inherited);
