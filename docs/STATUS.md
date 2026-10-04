@@ -6,6 +6,7 @@
 Typecheck/build/worker PASS; 19 wide + 5 compact + 5 responsive групп PASS.
 Все формы, ввод/resize, JSON/печать/SVG, touch-эмуляция, без ошибок JS.
 Следующий шаг: обратная связь заказчика по адаптивному варианту.
+Код 5a5b0f1 в main, ZIP/bundle responsive-layout-20261004-5a5b0f1 проверены.
 
 Предыдущая работа: UI-COMPACT-MATERIALS — VERIFIED; база eca536b.
 Ветка ui/compact-material-layout; карточка docs/checkpoints/UI-COMPACT-MATERIALS.md.

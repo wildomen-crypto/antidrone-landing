@@ -66,4 +66,9 @@ wall-material/report.json. Просмотрены hero и 3D на 390/1024/1920,
 Финальный compact-regression PASS: пять групп, ошибок JS нет.
 Всего 29 браузерных групп PASS (19 wide + 5 compact + 5 responsive).
 Просмотр: PID 20924, exec-сессия 38370; localhost:3100/compact#calculator.
-Следующий шаг: сохранение коммита/backup, затем обратная связь заказчика.
+Проверенный код: 5a5b0f153552474b1380803485bc9be8eb0dc8b5.
+main обновлён fast-forward; ветка ui/responsive-layout сохранена.
+Backup: C:\taran\artifacts\antidrone-landing-backups\
+responsive-layout-20261004-5a5b0f1-source.zip и одноимённый .bundle.
+Bundle verify PASS; ZIP 146 записей, без runtime/данных/секретов;
+пустой шаблон .env.example допустим. Следующий шаг — обратная связь заказчика.
