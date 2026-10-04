@@ -29,4 +29,9 @@ Canvas/SVG ракурсы и каркас реально меняют карти
 Отчёты .local/qa/responsive/report.json и .local/qa/compact/report.json.
 Скриншоты calculator-390/1024/1920 просмотрены. Unit/wide повторно не
 запускались (геометрия не менялась); физические телефоны не проверены.
-Следующий шаг: main/архив исходников/Git bundle, затем обратная связь.
+Код 34ce5b6458e34a78e75811045ebd5ce48e357b56 в main (fast-forward).
+Ветка сохранена. ZIP/bundle contained-scene-20261005-34ce5b6 в каталоге
+C:\taran\artifacts\antidrone-landing-backups; bundle verify PASS.
+ZIP без данных/секретов/runtime; .env.example — пустые значения/false.
+HTTP /compact 200; PID 10744, скрытый production-процесс, порт 3100.
+Следующий шаг: обратная связь заказчика.
