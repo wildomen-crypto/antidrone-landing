@@ -37,6 +37,14 @@
 }
 
 /* Medium windows and short desktop windows: a clear scene, two settings columns. */
+@media (max-width:1279px){
+  .calculator-compact .shape-picker{grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;padding:10px 24px;overflow:visible;scroll-snap-type:none}
+  .calculator-compact .shape-choice{min-height:72px;padding:5px 4px 7px;justify-content:center}
+  .calculator-compact .shape-choice-image{height:32px;padding:0}
+  .calculator-compact .shape-choice-name{font-size:11px;line-height:1.3;overflow-wrap:normal}
+  .calculator-compact .shape-choice-number{display:none}
+  .calculator-compact .shape-choice-check{font-size:11px;right:4px;top:1px}
+}
 @media (max-width:1279px), (max-height:650px){
   .calculator-compact .viewer-stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;padding:0 24px 20px;background:#f2f5fa;align-items:start}
   .calculator-compact .viewer{grid-column:1/-1;grid-row:1;height:clamp(340px,50vh,460px);width:calc(100% + 48px);margin-inline:-24px}
@@ -85,10 +93,8 @@
   .calculator-compact .dimension-panel{padding:10px 12px 6px}
   .calculator-compact .parameter-panel .calculator-inputs{padding:10px 12px}
   .calculator-compact .parameter-panel-heading{padding:10px 12px;font-size:11px}
-  .calculator-compact .shape-picker{grid-template-columns:repeat(8,120px);padding:12px 16px;gap:8px}
-  .calculator-compact .shape-choice{min-height:110px}
-  .calculator-compact .shape-choice-image{height:58px}
-  .calculator-compact .shape-choice-name{font-size:11px}
+  .calculator-compact .shape-picker{grid-template-columns:repeat(4,minmax(0,1fr));padding:10px 16px 12px}
+  .calculator-compact .shape-choice{min-height:76px;padding:5px 3px 7px}
   .calculator-compact .dimension-sliders{grid-template-columns:minmax(0,1fr);gap:0}
   .calculator-compact .material-picker{padding:10px 16px 12px}
   .calculator-compact .material-picker-heading{margin-bottom:8px}
@@ -107,7 +113,7 @@
 }
 @media (max-width:359px){
   .calculator-compact .dimension-sliders{grid-template-columns:minmax(0,1fr)}
-  .calculator-compact .material-choice-strip{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .calculator-compact .shape-picker,.calculator-compact .material-choice-strip{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media (max-height:500px) and (min-width:600px){
   .calculator-compact .viewer{height:300px}

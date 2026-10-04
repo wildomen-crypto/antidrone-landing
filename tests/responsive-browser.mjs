@@ -52,7 +52,7 @@ try{
       for(const selector of ['.dimension-panel','.parameter-panel']){
         if(await page.locator(selector).count())assert.equal(intersects(nav,await page.locator(selector).boundingBox()),false);
       }
-      for(const selector of ['.material-choice','.compact-option','.scene-view-controls button','.service-picker .check-field','.dimension-exact input','.dimension-slider>input[type=range]']){
+      for(const selector of ['.shape-choice','.material-choice','.compact-option','.scene-view-controls button','.service-picker .check-field','.dimension-exact input','.dimension-slider>input[type=range]']){
         const sizes=await page.locator(selector).evaluateAll(els=>els.map(el=>({w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height})));
         const min=selector.includes('range')?18:selector.includes('dimension-exact')?26:selector==='.compact-option'||selector.includes('scene-view')?32:44;
         if(width<768)for(const {w,h} of sizes)assert.ok(w>=min&&h>=min,selector+' compact touch target');
@@ -63,8 +63,17 @@ try{
       }
       const cardLayout=await page.locator('[data-target=walls] .material-choice').evaluateAll(els=>els.map(el=>({x:el.getBoundingClientRect().x,y:el.getBoundingClientRect().y,w:el.getBoundingClientRect().width})));
       if(width<768)for(const card of cardLayout)assert.ok(card.x>=0&&card.x+card.w<=width+1,'All phone materials visible without horizontal scrolling');
+      const shapes=await page.locator('.shape-picker').boundingBox();
+      const shapeCards=await page.locator('.shape-choice').evaluateAll(els=>els.map(el=>({x:el.getBoundingClientRect().x,y:el.getBoundingClientRect().y,w:el.getBoundingClientRect().width})));
+      assert.equal(shapeCards.length,8);
+      for(const card of shapeCards)assert.ok(card.x>=shapes.x&&card.x+card.w<=shapes.x+shapes.width+1,'All construction types visible without horizontal scrolling');
+      assert.equal(await page.locator('.shape-picker').evaluate(el=>el.scrollWidth<=el.clientWidth+1),true);
+      assert.equal(await page.locator('.shape-choice-name').evaluateAll(els=>els.every(el=>el.scrollWidth<=el.clientWidth+1&&el.scrollHeight<=el.clientHeight+1)),true,'Construction names are not clipped');
+      const shapeRows=new Set(shapeCards.map(card=>Math.round(card.y))).size;
+      assert.equal(shapeRows,new Set(cardLayout.map(card=>Math.round(card.y))).size,'Construction and wall choices wrap into the same number of rows');
+      assert.equal((await page.locator('.shape-choice-image').first().boundingBox()).height,width>=1280?76:32);
       await noOverflow(page);
-      report.viewports.push({width,height,mode:overlay?'large':width>=768?'medium':'phone',sceneHeight:scene.height,sceneWidth:scene.width,containerWidth:container.width});
+      report.viewports.push({width,height,mode:overlay?'large':width>=768?'medium':'phone',sceneHeight:scene.height,sceneWidth:scene.width,containerWidth:container.width,shapeRows,shapePickerHeight:shapes.height});
       if([390,1024,1920].includes(width)){
         await page.locator('.shape-picker').evaluate(el=>el.scrollIntoView({block:'start'}));await frame(page);
         await page.screenshot({path:path.join(output,'calculator-'+width+'.png')});
@@ -218,6 +227,10 @@ try{
   await check('Touch phone: rotate the model, choose filling and move sliders with real touch events',async()=>{
     const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,isMobile:true,hasTouch:true,reducedMotion:'reduce'});monitor(page);
     await page.goto(base+'/compact#calculator',{waitUntil:'networkidle'});await show(page);await clearScene(page);await noOverflow(page);
+    for(const index of [6,3]){
+      const shape=page.locator('.shape-choice').nth(index);await shape.evaluate(el=>el.scrollIntoView({block:'center'}));await shape.tap();
+      await page.waitForFunction(i=>document.querySelectorAll('.shape-choice')[i].getAttribute('aria-pressed')==='true',index);
+    }
     const card=page.locator('[data-target=walls] .material-choice').nth(3);await card.evaluate(el=>el.scrollIntoView({block:'center'}));await card.tap();
     await page.waitForFunction(()=>document.querySelectorAll('[data-target=walls] .material-choice')[3].getAttribute('aria-pressed')==='true');
     const layers=page.getByRole('slider',{name:'Слои заполнения',exact:true});await layers.evaluate(el=>el.scrollIntoView({block:'center'}));await layers.tap();

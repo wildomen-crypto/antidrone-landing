@@ -1,6 +1,14 @@
 # Состояние разработки
 
-Текущая работа: UI-CONTAINED-SCENE — VERIFIED; база 3960811.
+Текущая работа: UI-ADAPTIVE-SHAPES — VERIFIED; база e37fc1b.
+Ветка ui/adaptive-shape-cards; docs/checkpoints/UI-ADAPTIVE-SHAPES.md.
+Карточки типов конструкций на узких окнах адаптируются как заполнение стен.
+Build с типизацией/worker и 7 responsive групп PASS, 12 окон 320–2560 px.
+Рисунки 32 px на узких окнах; все типы видны, сетка как у стен.
+Выбор C1–C8, touch, resize, JSON/печать/SVG PASS; 390/1024/1920 просмотрены.
+Следующий шаг: сохранение в main и резервные копии, затем обратная связь.
+
+Предыдущая работа: UI-CONTAINED-SCENE — VERIFIED; база 3960811.
 Ветка ui/contained-scene-icons; docs/checkpoints/UI-CONTAINED-SCENE.md.
 3D по ширине контейнера сайта, ракурсы и каркас иконками на сцене.
 Typecheck/build/worker PASS; responsive 7 + compact 5 групп PASS.
@@ -107,7 +115,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 42 VERIFIED (включая пятнадцать правок UI и решение не включать upload),
+Реестр: 43 VERIFIED (включая шестнадцать правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
@@ -133,7 +141,7 @@ main обновлён fast-forward.
 http://127.0.0.1:3100 — production build, только этот компьютер.
 Новый вариант: http://127.0.0.1:3100/wide#calculator.
 Адаптивная версия: http://127.0.0.1:3100/compact#calculator.
-PID 10744, скрытый фоновый процесс; логи .local/preview.stdout.log и
+PID 28860, скрытый фоновый процесс; логи .local/preview.stdout.log и
 .local/preview.stderr.log. Проверять фактический порт и CommandLine
 перед остановкой; не останавливать чужие процессы. После перезапуска
 компьютера: npm.cmd run start из корня проекта.

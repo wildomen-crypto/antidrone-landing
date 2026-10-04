@@ -1,5 +1,19 @@
 # Проверка локальной версии
 
+## Адаптивные карточки конструкций — 5 октября 2026
+
+UI-ADAPTIVE-SHAPES VERIFIED. Production build с типизацией и worker PASS;
+test:responsive 7 групп PASS на 12 окнах 320–2560 px, включая 844×390.
+Рисунки типов 32 px ниже 1280 и 76 px на большом окне. Все восемь карточек
+в границах селектора без горизонтального скролла и обрезанных названий;
+число рядов совпадает с заполнением стен: 1 средний, 2 телефон, 3 на 320.
+Проверены C1–C8, touch-выбор типа, resize, настройки, JSON/печать,
+Canvas/SVG и ракурсы. Ошибок JS/overflow нет.
+Скриншоты calculator-390/1024/1920 просмотрены; отчёт
+.local/qa/responsive/report.json, shapeRows/shapePickerHeight.
+Изменение только CSS текущего /compact; геометрия не менялась.
+Unit/wide/compact отдельно не повторялись; физические телефоны не проверены.
+
 ## Ширина сцены и иконки ракурсов — 5 октября 2026
 
 UI-CONTAINED-SCENE VERIFIED. Typecheck/build/worker PASS; test:responsive
