@@ -104,4 +104,29 @@
   .calculator-wide .node-details,.calculator-wide .estimate-result,.calculator-wide .export-actions,.calculator-wide .calculator-output>.form-message{width:calc(100% - 32px)}
   .calculator-wide .quote-row{flex-direction:column;align-items:flex-start}.calculator-wide .quote-row .button{width:100%}
 }
-@media print{.shape-picker,.parameter-panel,.dimension-panel,.material-picker,.layout-comparison{display:none!important}.calculator-wide{width:100%;border:0}}
+.calculator-compact .material-picker{padding:8px 16px 9px}
+.calculator-compact .parameter-panel{bottom:auto;max-height:calc(100% - 24px)}
+.calculator-compact .material-picker-heading{margin-bottom:5px;gap:8px}
+.calculator-compact .material-picker-heading strong{font-size:11px}
+.calculator-compact .material-picker-heading>span{display:none}
+.calculator-compact .material-choice-strip{display:flex;gap:6px;scroll-padding-inline:6px}
+.calculator-compact .material-choice{flex:0 0 86px;padding:4px 5px 5px;min-height:65px}
+.calculator-compact .structure-picker .material-choice{flex-basis:96px}
+.calculator-compact .material-choice-image{height:32px}
+.calculator-compact .material-choice-name{font-size:9px;line-height:1.25;overflow-wrap:anywhere}
+.calculator-compact .material-choice .shape-choice-check{font-size:11px;right:4px;top:1px}
+.service-picker{margin:0;padding:8px 16px 10px;border:0;border-top:1px solid var(--line);border-radius:0;background:#f7f9fc}
+.service-picker legend{font-size:11px;font-weight:600;color:var(--ink);padding:0 4px}
+.service-picker .check-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px 16px;max-width:680px}
+.service-picker .check-field{margin:0;align-items:center;min-height:24px}
+@media(max-width:800px){
+  .calculator-compact .material-picker{padding-inline:12px}
+  .calculator-compact .material-picker[data-target=roof] .material-picker-heading>span{display:none}
+  .service-picker{padding-inline:12px}
+}
+@media(max-width:500px){
+  .calculator-compact .parameter-panel{max-height:calc(100% - 16px)}
+  .service-picker .check-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-width:360px}
+  .layout-comparison{flex-wrap:wrap;gap:6px 14px}
+}
+@media print{.shape-picker,.parameter-panel,.dimension-panel,.material-picker,.service-picker,.layout-comparison{display:none!important}.calculator-wide{width:100%;border:0}}

@@ -31,5 +31,9 @@ test:wide PASS, 19 групп, семь ширин, ошибок JavaScript не
 заполнений, стороны/проём, новый и старый JSON, обычный /, SVG и API-проверка
 типа walls. Desktop-представление ПВЛ просмотрено.
 Отчёт: .local/qa/wall-material/report.json.
+Проверенный код: eca536bad776732c914b0544c2202af1f81d6157;
+main обновлён fast-forward, ветка сохранена. Backup:
+C:\taran\artifacts\antidrone-landing-backups\wall-material-20261004-eca536b-source.zip
+и одноимённый .bundle; bundle verify PASS.
 Следующий шаг: сохранить блок, затем отдельный компактный вариант по
 новому запросу пользователя (маленькие карточки, работы ниже, пустая панель).

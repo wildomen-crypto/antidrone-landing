@@ -1,6 +1,12 @@
 # Состояние разработки
 
-Текущая работа: UI-WALL-MATERIAL — VERIFIED; база 7a32257.
+Текущая работа: UI-COMPACT-MATERIALS — VERIFIED; база eca536b.
+Ветка ui/compact-material-layout; карточка docs/checkpoints/UI-COMPACT-MATERIALS.md.
+Новый /compact: маленькие карточки, работы ниже кровли, пустая панель скрыта.
+Typecheck/build PASS; 19 групп test:wide и 5 test:compact PASS.
+Семь ширин; ряды материалов 103,5 px вместо 165–174 px, JSON/печать/SVG.
+
+Предыдущая работа: UI-WALL-MATERIAL — VERIFIED; база 7a32257.
 Ветка ui/wall-material-toggle; карточка docs/checkpoints/UI-WALL-MATERIAL.md.
 M7 по умолчанию; стены включаются/отключаются выбором материала.
 Check: 34 unit, типизация/build; 19 групп browser PASS, семь ширин, JSON/SVG.
@@ -57,8 +63,8 @@ Typecheck, 30 unit, build и 16 групп browser PASS; семь ширин.
 Корень: C:\taran\antidrone-landing.
 Локальный выпуск: VERIFIED. Публичное размещение: WAITING_EXTERNAL.
 Основная ветка продолжения: main; сохранена delivery/local-site.
-Последний проверенный функциональный код: 268edc9e4aa1b4108b429763a56a3c7d5343b348.
-Рабочая ветка ui/narrow-dimension-panel сохранена; main обновлён fast-forward.
+Последний проверенный функциональный код: eca536bad776732c914b0544c2202af1f81d6157.
+Рабочая ветка ui/wall-material-toggle сохранена; main обновлён fast-forward.
 Базовый проверенный функциональный код: f67f7c9836d1e7a46f4e5926261cfa2d5b9f1914.
 Исходный main a3fda4b и промежуточный 487a69e остаются в истории.
 Карточка выпуска: docs/checkpoints/LOCAL-DELIVERY.md.
@@ -72,7 +78,7 @@ Typecheck, 30 unit, build и 16 групп browser PASS; семь ширин.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 38 VERIFIED (включая одиннадцать правок UI и решение не включать upload),
+Реестр: 39 VERIFIED (включая двенадцать правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
@@ -97,7 +103,8 @@ Typecheck, 30 unit, build и 16 групп browser PASS; семь ширин.
 
 http://127.0.0.1:3100 — production build, только этот компьютер.
 Новый вариант: http://127.0.0.1:3100/wide#calculator.
-PID 21544, exec-сессия 88565. Проверять фактический порт и CommandLine
+Маленькие карточки: http://127.0.0.1:3100/compact#calculator.
+PID 20800, exec-сессия 30824. Проверять фактический порт и CommandLine
 перед остановкой; не останавливать чужие процессы. После перезапуска
 компьютера: npm.cmd run start из корня проекта.
 

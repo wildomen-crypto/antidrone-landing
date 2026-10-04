@@ -13,6 +13,7 @@
     "test:unit": "tsc -p tsconfig.tests.json && node --test tests/unit/geometry.test.cjs tests/unit/leads.test.cjs tests/unit/pricing.test.cjs",
     "test:browser": "node tests/browser.mjs",
     "test:wide": "node tests/wide-browser.mjs",
+    "test:compact": "node tests/compact-browser.mjs",
     "build:worker": "tsc -p tsconfig.tests.json --outDir .local/runtime",
     "leads": "npm run build:worker && node scripts/leads.cjs",
     "start": "next start --hostname 127.0.0.1 --port 3100"

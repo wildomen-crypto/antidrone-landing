@@ -30,9 +30,11 @@ function MaterialImage({ id }: { id: LayoutInput["materialId"] }) {
   </svg>;
 }
 
-export default function MaterialPicker({ value, onChange, noWalls = false, target = "walls", note, enabled = true }: {
+const compactNames = { M1: "Полимерная сеть", M2: "Плетёная сетка", M3: "Кручёная сетка", M4: "Сварная сетка", M5: "Тросовая сеть", M6: "Трубчатая решётка", M7: "ПВЛ / перфорация", M8: "Комбинация" };
+
+export default function MaterialPicker({ value, onChange, noWalls = false, target = "walls", note, enabled = true, compact = false }: {
   value: LayoutInput["materialId"]; onChange: (id: LayoutInput["materialId"]) => void; noWalls?: boolean;
-  target?: "walls" | "roof"; note?: string; enabled?: boolean;
+  target?: "walls" | "roof"; note?: string; enabled?: boolean; compact?: boolean;
 }) {
   const title = target === "roof" ? "Материал кровли" : "Заполнение стен / экрана";
   const strip = useRef<HTMLDivElement>(null);
@@ -45,9 +47,9 @@ export default function MaterialPicker({ value, onChange, noWalls = false, targe
   return <div className="material-picker" data-target={target} data-enabled={enabled} role="group" aria-label={title}>
     <div className="material-picker-heading"><strong>{title}</strong><span>{note ?? (noWalls ? "У этой формы нет стен. Материал кровли выбирается ниже." : "Выберите материал — рисунок на модели обновится")}</span></div>
     <div className="material-choice-strip" ref={strip}>{materials.map(material => <button type="button" key={material.id}
-      className="material-choice" disabled={noWalls} aria-label={material.name} aria-pressed={enabled && value === material.id} onClick={() => onChange(material.id)}>
+      className="material-choice" disabled={noWalls} title={compact ? `${material.name}. ${note ?? "Выберите материал"}` : undefined} aria-label={material.name} aria-pressed={enabled && value === material.id} onClick={() => onChange(material.id)}>
       <span className="material-choice-image"><MaterialImage id={material.id} /></span>
-      <span className="material-choice-name">{material.name}</span>
+      <span className="material-choice-name">{compact ? compactNames[material.id] : material.name}</span>
       <span className="shape-choice-check" aria-hidden="true">{enabled && value === material.id ? "✓" : ""}</span>
     </button>)}</div>
   </div>;
