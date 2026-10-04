@@ -36,7 +36,9 @@ try{
       assert.equal(await page.locator('.hero h1').evaluate(el=>el.scrollWidth<=el.clientWidth),true);
       if([390,1024,1920].includes(width))await page.screenshot({path:path.join(output,'hero-'+width+'.png')});
       await show(page);
-      const scene=await page.locator('.viewer').boundingBox();assert.equal(scene.width,width);assert.ok(scene.height>=300);
+      const scene=await page.locator('.viewer').boundingBox();
+      const container=await page.locator('#calculator>.container').first().boundingBox();
+      assert.ok(Math.abs(scene.width-container.width)<=2);assert.ok(Math.abs(scene.x-container.x)<=1);assert.ok(scene.height>=300);
       const overlay=width>=1280&&height>650;
       if(!overlay)await clearScene(page);
       else{
@@ -44,10 +46,15 @@ try{
           const panel=await page.locator(selector).boundingBox();assert.ok(intersects(scene,panel));assert.ok(panel.y+panel.height<=scene.y+scene.height+1);
         }
       }
-      const nav=await page.locator('.viewer-stage>.viewer-controls').boundingBox();assert.ok(nav.y>=scene.y+scene.height-1);
-      for(const selector of ['.material-choice','.compact-option','.viewer-controls button','.service-picker .check-field','.dimension-exact input','.dimension-slider>input[type=range]']){
+      const nav=await page.locator('.scene-view-controls').boundingBox();
+      assert.ok(nav.x>=scene.x&&nav.x+nav.width<=scene.x+scene.width&&nav.y>=scene.y&&nav.y+nav.height<=scene.y+scene.height);
+      assert.equal(await page.locator('.calculator-compact .viewer-controls').count(),0);
+      for(const selector of ['.dimension-panel','.parameter-panel']){
+        if(await page.locator(selector).count())assert.equal(intersects(nav,await page.locator(selector).boundingBox()),false);
+      }
+      for(const selector of ['.material-choice','.compact-option','.scene-view-controls button','.service-picker .check-field','.dimension-exact input','.dimension-slider>input[type=range]']){
         const sizes=await page.locator(selector).evaluateAll(els=>els.map(el=>({w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height})));
-        const min=selector.includes('range')?18:selector.includes('dimension-exact')?26:selector==='.compact-option'?32:44;
+        const min=selector.includes('range')?18:selector.includes('dimension-exact')?26:selector==='.compact-option'||selector.includes('scene-view')?32:44;
         if(width<768)for(const {w,h} of sizes)assert.ok(w>=min&&h>=min,selector+' compact touch target');
       }
       if(!overlay){
@@ -57,7 +64,7 @@ try{
       const cardLayout=await page.locator('[data-target=walls] .material-choice').evaluateAll(els=>els.map(el=>({x:el.getBoundingClientRect().x,y:el.getBoundingClientRect().y,w:el.getBoundingClientRect().width})));
       if(width<768)for(const card of cardLayout)assert.ok(card.x>=0&&card.x+card.w<=width+1,'All phone materials visible without horizontal scrolling');
       await noOverflow(page);
-      report.viewports.push({width,height,mode:overlay?'large':width>=768?'medium':'phone',sceneHeight:scene.height});
+      report.viewports.push({width,height,mode:overlay?'large':width>=768?'medium':'phone',sceneHeight:scene.height,sceneWidth:scene.width,containerWidth:container.width});
       if([390,1024,1920].includes(width)){
         await page.locator('.shape-picker').evaluate(el=>el.scrollIntoView({block:'start'}));await frame(page);
         await page.screenshot({path:path.join(output,'calculator-'+width+'.png')});
@@ -140,7 +147,7 @@ try{
     await page.getByRole('checkbox',{name:'Проём в передней стороне',exact:true}).check();
     await page.getByRole('textbox',{name:'Ширина проёма, м',exact:true}).fill('2,5');
     for(const label of ['Сверху','Спереди','Сбоку','3D']){
-      const button=page.locator('.viewer-controls').getByRole('button',{name:label,exact:true});await button.click();assert.equal(await button.getAttribute('aria-pressed'),'true');
+      const button=page.locator('.scene-view-controls').getByRole('button',{name:label,exact:true});await button.click();assert.equal(await button.getAttribute('aria-pressed'),'true');
     }
     await page.locator('.structure-choice[data-system=spatial-column]').click();await page.locator('.structure-choice[data-system=spatial-truss]').click();
     await page.locator('.service-picker').getByLabel('Монтаж',{exact:true}).check();
@@ -166,7 +173,7 @@ try{
   await check('SVG camera space follows actual panel overlap across breakpoints and short windows',async()=>{
     const page=await browser.newPage({viewport:{width:1920,height:1080},reducedMotion:'reduce'});monitor(page);
     await page.addInitScript(()=>{const original=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(kind,...args){return /^webgl/.test(kind)?null:original.call(this,kind,...args);};});
-    await page.goto(base+'/compact#calculator',{waitUntil:'networkidle'});await page.locator('.viewer svg').waitFor();
+    await page.goto(base+'/compact#calculator',{waitUntil:'networkidle'});await page.locator('.scene-fallback>svg').waitFor();
     for(const [width,height,overlay] of [[1920,1080,true],[1024,768,false],[390,844,false],[1440,600,false],[1920,1080,true]]){
       await page.setViewportSize({width,height});
       await page.waitForFunction(overlay=>{const style=getComputedStyle(document.querySelector('.scene-fallback'));return overlay?parseFloat(style.paddingRight)>0:style.paddingRight==='0px'&&style.paddingLeft==='0px'&&style.paddingTop==='0px';},overlay);
@@ -175,6 +182,38 @@ try{
     }
     await page.emulateMedia({media:'print'});assert.equal(await page.locator('.viewer-stage').isVisible(),false);assert.equal(await page.locator('.print-card').isVisible(),true);
     await page.close();
+  });
+  await check('Scene icons select camera views and frame with keyboard, without changing quantities; SVG works too',async()=>{
+    const page=await browser.newPage({viewport:{width:1440,height:900},reducedMotion:'reduce'});monitor(page);
+    await page.goto(base+'/compact#calculator',{waitUntil:'networkidle'});await show(page);
+    const toolbar=page.locator('.scene-view-controls');assert.equal(await toolbar.getByRole('button').count(),5);
+    for(const size of await toolbar.locator('svg').evaluateAll(els=>els.map(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height})))){
+      assert.equal(size.width,20);assert.equal(size.height,20);
+    }
+    const quantity=await page.locator('.quantity-grid').textContent();
+    let pixels=await page.locator('.viewer canvas').screenshot();
+    for(const label of ['Сверху','Спереди','Сбоку','3D']){
+      const button=toolbar.getByRole('button',{name:label,exact:true});await button.focus();await page.keyboard.press('Enter');await frame(page);
+      assert.equal(await button.getAttribute('aria-pressed'),'true');
+      assert.equal(await toolbar.locator('button[aria-pressed=true]:not(.scene-frame-toggle)').count(),1);
+      const next=await page.locator('.viewer canvas').screenshot();assert.notDeepEqual(next,pixels,'Camera image changes for '+label);pixels=next;
+    }
+    const frameButton=toolbar.getByRole('button',{name:'Только каркас',exact:true});await frameButton.click();await frame(page);
+    assert.equal(await frameButton.getAttribute('aria-pressed'),'true');assert.notDeepEqual(await page.locator('.viewer canvas').screenshot(),pixels);
+    assert.equal(await page.locator('.quantity-grid').textContent(),quantity);await frameButton.click();
+    await page.setViewportSize({width:390,height:844});await frame(page);await clearScene(page);
+    assert.equal(await frameButton.getAttribute('aria-pressed'),'false');assert.equal(await toolbar.getByRole('button',{name:'3D',exact:true}).getAttribute('aria-pressed'),'true');
+    await page.close();
+    const fallback=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});monitor(fallback);
+    await fallback.addInitScript(()=>{const original=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(kind,...args){return /^webgl/.test(kind)?null:original.call(this,kind,...args);};});
+    await fallback.goto(base+'/compact#calculator',{waitUntil:'networkidle'});await fallback.locator('.scene-fallback>svg').waitFor();
+    let svg=await fallback.locator('.scene-fallback>svg').innerHTML();
+    for(const label of ['Сверху','Спереди','Сбоку']){
+      await fallback.locator('.scene-view-controls').getByRole('button',{name:label,exact:true}).click();await frame(fallback);
+      const next=await fallback.locator('.scene-fallback>svg').innerHTML();assert.notEqual(next,svg);svg=next;
+    }
+    await fallback.locator('.scene-frame-toggle').click();assert.equal(await fallback.locator('.scene-frame-toggle').getAttribute('aria-pressed'),'true');
+    assert.equal(await fallback.locator('.quantity-grid').textContent(),quantity);await fallback.close();
   });
   await check('Touch phone: rotate the model, choose filling and move sliders with real touch events',async()=>{
     const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,isMobile:true,hasTouch:true,reducedMotion:'reduce'});monitor(page);
@@ -185,6 +224,9 @@ try{
     await page.waitForFunction(()=>document.querySelector('.dimension-panel input[type=range][max="3"]').value==='2');
     const works=page.locator('.service-picker').getByLabel('Монтаж',{exact:true});await works.evaluate(el=>el.scrollIntoView({block:'center'}));await works.tap();
     await page.waitForFunction(()=>document.querySelectorAll('.service-picker input')[3].checked);
+    const topButton=page.locator('.scene-view-controls').getByRole('button',{name:'Сверху',exact:true});await topButton.tap();
+    await page.waitForFunction(()=>document.querySelector('.scene-view-controls button[aria-label="Сверху"]').getAttribute('aria-pressed')==='true');
+    await page.locator('.scene-view-controls').getByRole('button',{name:'3D',exact:true}).tap();
     // Keep manual CDP gestures after ordinary taps: Chromium suppresses the next
     // synthetic click when these two input injection methods are mixed.
     await show(page);

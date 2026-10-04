@@ -1,5 +1,5 @@
 /* The adaptive version keeps one set of controls and configuration at every width. */
-.calculator-compact{--scene-height:clamp(440px,56vh,620px)}
+.calculator-compact{--scene-height:clamp(440px,56vh,620px);border-inline:1px solid var(--line);border-radius:10px}
 .calculator-compact .viewer{height:var(--scene-height)}
 .calculator-compact .dimension-panel,.calculator-compact .parameter-panel{max-height:calc(var(--scene-height) - 24px)}
 .calculator-compact .shape-picker{padding:16px 24px;gap:8px}
@@ -13,8 +13,12 @@
 .calculator-compact .material-choice-name{font-size:11px;line-height:1.3;overflow-wrap:normal}
 .calculator-compact .service-picker{padding:8px 24px 10px}
 .calculator-compact .service-picker .check-field{min-height:32px;font-size:12px}
-.calculator-compact .viewer-controls .view-buttons button{min-height:44px;min-width:44px;font-size:12px}
-.calculator-compact .viewer-controls .check-field{min-height:44px;align-items:center;font-size:12px}
+.calculator-compact .viewer>.scene-view-controls{position:absolute;z-index:5;left:50%;bottom:10px;transform:translateX(-50%);display:flex;gap:2px;width:max-content;height:auto;padding:3px;border:1px solid #d4dfec;border-radius:7px;background:#fffffff2;box-shadow:0 2px 12px #172b4014}
+.scene-view-controls button{display:grid;place-items:center;width:32px;height:32px;min-width:32px;padding:5px;background:transparent;border:1px solid transparent;border-radius:4px;color:#63748a}
+.scene-view-controls button svg{display:block;width:20px;height:20px}
+.scene-view-controls button:hover{background:#edf2ff;color:var(--accent)}
+.scene-view-controls button[aria-pressed=true]{border-color:#bfd0f7;background:#edf2ff;color:var(--accent)}
+.scene-view-controls .scene-frame-toggle{margin-left:4px}
 .calculator-compact .viewer-layers .check-field{min-height:44px;align-items:center;font-size:12px}
 .calculator-compact .parameter-panel .field select{min-height:44px}
 .calculator-compact .parameter-panel .check-field{min-height:32px;align-items:center;font-size:12px}
@@ -36,10 +40,9 @@
 @media (max-width:1279px), (max-height:650px){
   .calculator-compact .viewer-stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;padding:0 24px 20px;background:#f2f5fa;align-items:start}
   .calculator-compact .viewer{grid-column:1/-1;grid-row:1;height:clamp(340px,50vh,460px);width:calc(100% + 48px);margin-inline:-24px}
-  .calculator-compact .viewer-stage>.viewer-controls{grid-column:1/-1;grid-row:2;margin:-16px -24px 0;background:white}
   .calculator-compact .dimension-panel,.calculator-compact .parameter-panel{position:static;width:100%;max-width:none;max-height:none;margin:0;box-shadow:none;backdrop-filter:none;overflow:visible}
   .calculator-compact .dimension-panel{grid-column:1;padding:10px 12px 6px}
-  .calculator-compact .parameter-panel{grid-column:2;grid-row:3}
+  .calculator-compact .parameter-panel{grid-column:2;grid-row:2}
   .calculator-compact .parameter-panel .calculator-inputs{overflow:visible;padding:10px 12px}
   .calculator-compact .parameter-panel-heading{padding:10px 12px;font-size:11px}
   .calculator-compact .dimension-panel>strong{font-size:11px;margin-bottom:6px}
@@ -78,8 +81,7 @@
 @media (max-width:767px){
   .calculator-compact .viewer-stage{grid-template-columns:minmax(0,1fr);gap:12px;padding:0 16px 16px}
   .calculator-compact .viewer{height:clamp(300px,48svh,400px);width:calc(100% + 32px);margin-inline:-16px}
-  .calculator-compact .viewer-stage>.viewer-controls{margin:-12px -16px 0}
-  .calculator-compact .parameter-panel{grid-column:1;grid-row:4}
+  .calculator-compact .parameter-panel{grid-column:1;grid-row:3}
   .calculator-compact .dimension-panel{padding:10px 12px 6px}
   .calculator-compact .parameter-panel .calculator-inputs{padding:10px 12px}
   .calculator-compact .parameter-panel-heading{padding:10px 12px;font-size:11px}
@@ -97,7 +99,6 @@
   .calculator-compact .service-picker .check-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-width:none;gap:4px 12px}
   .calculator-compact .service-picker .check-field{min-height:44px}
   .calculator-compact .check-field input{width:18px;height:18px;margin:0}
-  .calculator-compact .viewer-controls{gap:4px;padding-block:8px}
   .calculator-compact .export-actions{gap:6px 16px}
   .calculator-compact .export-actions button{min-height:44px;font-size:12px}
   .calculator-compact .dimension-strip{font-size:11px}
@@ -184,5 +185,6 @@
   .contact-departments{flex-direction:column;gap:20px}
 }
 @media print{
+  .calculator-compact{border:0;border-radius:0}
   .calculator-compact .viewer-stage{display:none!important}
 }

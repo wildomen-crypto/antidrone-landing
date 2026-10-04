@@ -9,6 +9,7 @@ B10.2 необязателен: решение об объёме записыв�
 
 | ID | Статус | Результат | Проверка | Карточка |
 | --- | --- | --- | --- | --- |
+| UI-CONTAINED-SCENE | VERIFIED | /compact в ширине сайта, ракурсы и каркас иконками на 3D | Typecheck/build; 7 responsive + 5 compact групп, 12 размеров, Canvas/SVG, клавиатура/touch/JSON/печать | docs/checkpoints/UI-CONTAINED-SCENE.md |
 | UI-COMPACT-HEIGHTS | VERIFIED | /compact: крупные изображения на большом окне и плотные настройки на узких | Typecheck/build, 6 responsive + 5 compact групп; высоты C4 367/285/369 px, проём 144 px | docs/checkpoints/UI-COMPACT-HEIGHTS.md |
 | UI-RESPONSIVE-LAYOUT | VERIFIED | Три компоновки /compact, свободная мобильная 3D, настройки под сценой и адаптация лендинга | Typecheck/build; 19 wide + 5 compact + 5 responsive групп, 12 размеров 320–2560 px, touch/resize/JSON/печать/SVG | docs/checkpoints/UI-RESPONSIVE-LAYOUT.md |
 | UI-COMPACT-MATERIALS | VERIFIED | Отдельный /compact: маленькие карточки, работы под кровлей, пустая панель скрыта, непустая по содержимому | Typecheck/build; 19 групп wide + 5 compact, семь ширин, JSON/печать/SVG | docs/checkpoints/UI-COMPACT-MATERIALS.md |

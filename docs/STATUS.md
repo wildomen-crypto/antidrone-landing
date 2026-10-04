@@ -1,6 +1,15 @@
 # Состояние разработки
 
-Текущая работа: UI-COMPACT-HEIGHTS — VERIFIED; база 17f18aa.
+Текущая работа: UI-CONTAINED-SCENE — VERIFIED; база 3960811.
+Ветка ui/contained-scene-icons; docs/checkpoints/UI-CONTAINED-SCENE.md.
+3D по ширине контейнера сайта, ракурсы и каркас иконками на сцене.
+Typecheck/build/worker PASS; responsive 7 + compact 5 групп PASS.
+12 размеров 320–2560 px, Canvas/SVG, ракурсы/каркас, touch/клавиатура,
+resize/JSON/печать; скриншоты 390/1024/1920 просмотрены.
+Следующий шаг: сохранение в main и резервные копии, затем обратная связь.
+
+
+Предыдущая работа: UI-COMPACT-HEIGHTS — VERIFIED; база 17f18aa.
 Ветка ui/compact-control-heights; docs/checkpoints/UI-COMPACT-HEIGHTS.md.
 Крупные картинки на большом окне, компактная высота настроек на узких.
 Typecheck/build PASS; responsive 6 + compact 5 групп PASS, 12 размеров.
@@ -76,7 +85,7 @@ Typecheck, 30 unit, build и 16 групп browser PASS; семь ширин.
 Высота и ширина сохранены; основной лендинг / сохранён.
 Проверка: 7 групп сценариев, семь ширин.
 
-Обновлено: 4 октября 2026 года, Europe/Moscow.
+Обновлено: 5 октября 2026 года, Europe/Moscow.
 Корень: C:\taran\antidrone-landing.
 Локальный выпуск: VERIFIED. Публичное размещение: WAITING_EXTERNAL.
 Основная ветка продолжения: main; сохранена delivery/local-site.
@@ -96,7 +105,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 41 VERIFIED (включая четырнадцать правок UI и решение не включать upload),
+Реестр: 42 VERIFIED (включая пятнадцать правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
@@ -122,7 +131,8 @@ main обновлён fast-forward.
 http://127.0.0.1:3100 — production build, только этот компьютер.
 Новый вариант: http://127.0.0.1:3100/wide#calculator.
 Адаптивная версия: http://127.0.0.1:3100/compact#calculator.
-PID 16884, exec-сессия 7103. Проверять фактический порт и CommandLine
+PID 10744, скрытый фоновый процесс; логи .local/preview.stdout.log и
+.local/preview.stderr.log. Проверять фактический порт и CommandLine
 перед остановкой; не останавливать чужие процессы. После перезапуска
 компьютера: npm.cmd run start из корня проекта.
 

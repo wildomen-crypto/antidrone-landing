@@ -21,7 +21,8 @@ try{
       const wideHeight=(await page.locator('.viewer').boundingBox()).height;
       const before=await page.locator('.material-picker[data-target]').evaluateAll(rows=>rows.map(el=>el.getBoundingClientRect().height));
       await page.goto(base+'/compact#calculator',{waitUntil:'networkidle'});await scene(page);
-      const viewer=await page.locator('.viewer').boundingBox();assert.ok(viewer.height>=wideHeight);assert.equal(viewer.width,width);
+      const viewer=await page.locator('.viewer').boundingBox();assert.ok(viewer.height>=wideHeight);
+      const container=await page.locator('#calculator>.container').first().boundingBox();assert.ok(Math.abs(viewer.width-container.width)<=2);
       const panel=await page.locator('.parameter-panel').boundingBox();
       if(width>=1280)assert.ok(panel.y>=viewer.y&&panel.y+panel.height<=viewer.y+viewer.height);
       else assert.ok(panel.y>=viewer.y+viewer.height);
@@ -97,7 +98,7 @@ try{
   await check('No-WebGL compact fallback reclaims space when panel disappears',async()=>{
     const fallback=await browser.newPage({viewport:{width:390,height:1000},reducedMotion:'reduce'});monitor(fallback);
     await fallback.addInitScript(()=>{const original=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(kind,...args){return /^webgl/.test(kind)?null:original.call(this,kind,...args);};});
-    await fallback.goto(base+'/compact#calculator',{waitUntil:'networkidle'});await fallback.locator('.shape-choice').nth(6).click();await fallback.locator('.viewer svg').waitFor();
+    await fallback.goto(base+'/compact#calculator',{waitUntil:'networkidle'});await fallback.locator('.shape-choice').nth(6).click();await fallback.locator('.scene-fallback>svg').waitFor();
     await fallback.waitForFunction(()=>getComputedStyle(document.querySelector('.scene-fallback')).paddingRight==='0px');assert.equal(await fallback.locator('.parameter-panel').count(),0);
     await roofRow(fallback).locator('.material-choice').nth(7).click();await fallback.locator('.parameter-panel').waitFor();
     await fallback.waitForFunction(()=>getComputedStyle(document.querySelector('.scene-fallback')).paddingRight==='0px');
@@ -106,7 +107,7 @@ try{
     await fallback.setViewportSize({width:390,height:1000});
     await fallback.waitForFunction(()=>getComputedStyle(document.querySelector('.scene-fallback')).paddingRight==='0px');
     await roofRow(fallback).locator('.material-choice').nth(7).click();await fallback.waitForFunction(()=>getComputedStyle(document.querySelector('.scene-fallback')).paddingRight==='0px');
-    await fallback.locator('.viewer svg').waitFor();assert.equal(await fallback.locator('.input-error').count(),0);await fallback.close();
+    await fallback.locator('.scene-fallback>svg').waitFor();assert.equal(await fallback.locator('.input-error').count(),0);await fallback.close();
   });
   assert.deepEqual(report.errors,[]);
 }catch(error){report.failure=error.stack;console.error(error.stack);process.exitCode=1;}
