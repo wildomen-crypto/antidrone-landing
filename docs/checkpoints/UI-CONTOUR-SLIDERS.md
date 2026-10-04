@@ -27,4 +27,12 @@ Desktop/mobile-скриншоты просмотрены. После восст�
 двух animation frame, свежий снимок .local/qa/contour-sliders/capture.mjs
 подтверждает отображение модели. Отчёт: .local/qa/contour-sliders/report.json.
 Основной / сохраняет прежние поля; движок, контракт и версия JSON не менялись.
-Следующий шаг: сохранить проверенный код и резервную копию, показать сайт.
+Проверенный код: 4b512b31119f12c6780b0d776c72c7cc9e5bb266;
+main обновлён fast-forward, рабочая ветка сохранена.
+Просмотр localhost:3100: PID 20540, exec-сессия 75805;
+проверять фактический процесс перед остановкой.
+Backup: C:\taran\artifacts\antidrone-landing-backups\
+contour-sliders-20261004-4b512b3-source.zip и одноимённый .bundle.
+Bundle verify PASS; ZIP проверен, 136 записей, нет данных/секретов,
+допустим пустой шаблон .env.example.
+Блок завершён; следующий шаг — обратная связь заказчика.
