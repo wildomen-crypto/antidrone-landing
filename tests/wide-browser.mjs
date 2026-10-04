@@ -7,7 +7,7 @@ import { randomUUID } from 'node:crypto';
 const { chromium } = await import(process.env.PLAYWRIGHT_MODULE ?? 'file:///C:/Users/Student/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs');
 const base = process.env.QA_URL ?? 'http://127.0.0.1:3100';
 assert.ok(['127.0.0.1', 'localhost'].includes(new URL(base).hostname));
-const output = path.resolve('.local/qa/roof-opening');
+const output = path.resolve('.local/qa/round-roof');
 await mkdir(output, { recursive: true });
 const report = { checks: [], errors: [], date: new Date().toISOString() };
 const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL ?? 'msedge', headless: true });
@@ -180,9 +180,9 @@ try {
     for(let i=0;i<8;i++) {
       await variants.locator('.shape-choice').nth(i).click();
       assert.equal(await variants.locator('[data-target="roof"] .material-choice').count(),[0,1,4].includes(i)?0:8);
-      if(i===4||i===6) {
-        await variants.getByRole('combobox',{name:'Вариант',exact:true}).selectOption(i===4?'shelter':'perimeter');
-        assert.equal(await variants.locator('[data-target="roof"] .material-choice').count(),i===4?8:0);
+      if(i===4) {
+        await variants.getByRole('combobox',{name:'Вариант',exact:true}).selectOption('shelter');
+        assert.equal(await variants.locator('[data-target="roof"] .material-choice').count(),8);
       }
     }
     await variants.locator('.shape-choice').nth(3).click();
@@ -217,6 +217,37 @@ try {
     }
     assert.equal(await variants.getByRole('checkbox',{name:'Включить покрытие',exact:true}).count(),0);
     await variants.close();
+  });
+  await check('Round form has one roof control, preserves legacy rings and exports both states', async () => {
+    const round=await browser.newPage({viewport:{width:1440,height:1100},reducedMotion:'reduce'});monitor(round);
+    await round.goto(base+'/wide#calculator',{waitUntil:'networkidle'});
+    await round.locator('.shape-choice').nth(6).click();
+    const roof=round.locator('[data-target="roof"]');
+    const rise=round.getByRole('slider',{name:'Подъём покрытия, м',exact:true});
+    const roofZero=()=>round.waitForFunction(()=>[...document.querySelectorAll('.estimate-result tr')].find(row=>row.textContent.startsWith('Покрытие, без повторения слоёв'))?.children[1]?.textContent==='0 м²');
+    const roofPresent=()=>round.waitForFunction(()=>{const row=[...document.querySelectorAll('.estimate-result tr')].find(row=>row.textContent.startsWith('Покрытие, без повторения слоёв'));return row&&parseFloat(row.children[1].textContent.replace(',','.'))>0;});
+    const save=async name=>{const pending=round.waitForEvent('download');await round.getByRole('button',{name:'Сохранить JSON'}).click();const file=path.join(output,name);await(await pending).saveAs(file);return JSON.parse(await readFile(file,'utf8'));};
+    assert.equal(await round.getByRole('combobox',{name:'Вариант',exact:true}).count(),0);
+    assert.equal(await roof.locator('.material-choice').count(),8);await roofPresent();
+    assert.equal(await rise.count(),1);
+    const dome=await save('dome.json');
+    await round.locator('input[type=file]').setInputFiles({name:'legacy-ring.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({...dome,variant:'perimeter',roof:true}))});
+    await roofZero();assert.equal(await roof.locator('[aria-pressed=true]').count(),0);
+    assert.equal(await rise.count(),0);assert.equal(await round.locator('.viewer-caption').count(),0);
+    assert.equal(await roof.locator('.material-choice').count(),8);
+    const ring=await save('ring.json');assert.equal(ring.variant,'dome');assert.equal(ring.roof,false);assert.equal(ring.rise,dome.rise);
+    await showScene(round);await round.screenshot({path:path.join(output,'round-open-desktop.png')});
+    await roof.locator('.material-choice').nth(4).click();await roofPresent();
+    assert.equal(await rise.inputValue(),String(dome.rise));
+    await showScene(round);await round.screenshot({path:path.join(output,'round-dome-desktop.png')});
+    const restored=await save('restored-dome.json');assert.equal(restored.variant,'dome');assert.equal(restored.roof,true);
+    await round.locator('input[type=file]').setInputFiles(path.join(output,'ring.json'));await roofZero();
+    await round.setViewportSize({width:390,height:1000});await showScene(round);
+    assert.equal(await round.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+    await roof.locator('.material-choice').nth(5).click();await roofPresent();
+    await showScene(round);await round.screenshot({path:path.join(output,'round-dome-mobile.png')});
+    await roof.locator('.material-choice').nth(5).click();await roofZero();
+    assert.equal(await round.locator('.input-error').count(),0);await round.close();
   });
   await check('Compact section, foundation and side icons control configuration; removed piles cannot import', async () => {
     const options=page.locator('.compact-options');
@@ -297,6 +328,13 @@ try {
     await original.getByRole('combobox',{name:'Тип конструкции',exact:true}).selectOption('C3');await waitTotal(original,60);
     assert.equal(await roofing.locator('option[value=none]').count(),0);
     assert.equal(await original.getByRole('checkbox',{name:'Включить покрытие',exact:true}).count(),0);
+    await original.getByRole('combobox',{name:'Тип конструкции',exact:true}).selectOption('C7');
+    assert.equal(await original.getByRole('combobox',{name:'Вариант',exact:true}).count(),0);
+    await roofing.selectOption('none');
+    await original.waitForFunction(()=>[...document.querySelectorAll('.estimate-result tr')].find(row=>row.textContent.startsWith('Покрытие, без повторения слоёв'))?.children[1]?.textContent==='0 м²');
+    assert.equal(await original.getByRole('textbox',{name:'Подъём покрытия, м',exact:true}).count(),0);
+    await roofing.selectOption('M5');
+    await original.getByRole('textbox',{name:'Подъём покрытия, м',exact:true}).waitFor();
     await original.close();
   });
   await check('Section and layer sliders update supports and quantities and restore from JSON', async () => {
@@ -436,6 +474,15 @@ try {
     await fallback.getByRole('textbox',{name:'Максимальный шаг секций, м',exact:true}).fill('2');
     await fallback.getByRole('slider',{name:'Слои заполнения',exact:true}).focus();
     await fallback.keyboard.press('ArrowRight'); await waitTotal(fallback,656);
+    await fallback.locator('.shape-choice').nth(6).click();
+    assert.equal(await fallback.getByRole('combobox',{name:'Вариант',exact:true}).count(),0);
+    const roof=fallback.locator('[data-target="roof"]');
+    await roof.locator('.material-choice[aria-pressed=true]').click();
+    await fallback.waitForFunction(()=>[...document.querySelectorAll('.estimate-result tr')].find(row=>row.textContent.startsWith('Покрытие, без повторения слоёв'))?.children[1]?.textContent==='0 м²');
+    await fallback.locator('.viewer svg').waitFor();
+    await roof.locator('.material-choice').nth(4).click();
+    await fallback.getByRole('slider',{name:'Подъём покрытия, м',exact:true}).waitFor();
+    await fallback.locator('.viewer svg').waitFor();
     await fallback.close();
   });
   await check('API rejects removed piles and a canopy without its mandatory roof before saving a lead', async () => {

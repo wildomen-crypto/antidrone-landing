@@ -59,9 +59,16 @@ try{
     for(const id of ['C1','C2','C3','C4','C5','C6','C7','C8']){
       await shape.selectOption(id);await page.locator('.quantity-grid strong').first().waitFor();
       assert.equal(await page.locator('.viewer-error').count(),0,id);
-      if(['C5','C6','C7'].includes(id))for(const variant of id==='C5'?['screen','shelter']:id==='C6'?['portal','arch','cable']:['perimeter','dome']){
+      if(['C5','C6'].includes(id))for(const variant of id==='C5'?['screen','shelter']:['portal','arch','cable']){
         await page.getByRole('combobox',{name:'Вариант',exact:true}).selectOption(variant);
         assert.equal(await page.locator('.viewer-error').count(),0,variant);
+      }
+      if(id==='C7'){
+        assert.equal(await page.getByRole('combobox',{name:'Вариант',exact:true}).count(),0);
+        for(const material of ['none','M5']){
+          await page.getByRole('combobox',{name:'Материал покрытия',exact:true}).selectOption(material);
+          assert.equal(await page.locator('.viewer-error').count(),0,material);
+        }
       }
     }
     await shape.selectOption('C4');await waitTotal(page,188);

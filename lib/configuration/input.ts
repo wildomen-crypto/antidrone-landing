@@ -99,15 +99,18 @@ export function parseInput(value: unknown): LayoutInput {
   if (["C2", "C4", "C8"].includes(shapeId) && !raw.sides.some(Boolean) && (shapeId === "C2" || !raw.roof)) throw new InputError("Включите хотя бы одну сторону или покрытие.");
   if (!Array.isArray(raw.services) || raw.services.some(v => !SERVICE_IDS.includes(v as ServiceId)) || new Set(raw.services).size !== raw.services.length) throw new InputError("Проверьте перечень услуг.");
   if (!Array.isArray(raw.combinedMaterials) || raw.combinedMaterials.length < 2 || raw.combinedMaterials.length > 3 || raw.combinedMaterials.some(v => v === "M8" || !MATERIAL_IDS.includes(v as MaterialId)) || new Set(raw.combinedMaterials).size !== raw.combinedMaterials.length) throw new InputError("Для комбинированной панели выберите 2–3 разных материала без вложенной комбинации.");
+  const roof = boolean("roof");
+  // Legacy perimeter ignored the roof flag; preserve its open ring on import.
+  const normalizedRoof = shapeId === "C7" && variant === "perimeter" ? false : roof || (shapeId === "C5" && variant === "shelter");
   return {
     version: 1, shapeId, length, width, height, diameter, rise,
-    offset: number("offset", 0.1, 20), projection: number("projection", 0.5, 30), variant,
+    offset: number("offset", 0.1, 20), projection: number("projection", 0.5, 30), variant: shapeId === "C7" ? "dome" : variant,
     materialId: pick("materialId", MATERIAL_IDS), roofMaterialId: pick("roofMaterialId", MATERIAL_IDS),
     combinedMaterials: [...raw.combinedMaterials] as MaterialId[],
     sectionType: pick("sectionType", ["round", "profile"]), spatialSupports: boolean("spatialSupports"),
     foundation: pick("foundation", ["block", "pile-cap"]),
     structuralSystem: pick("structuralSystem", STRUCTURAL_SYSTEM_IDS), step, layers,
-    sides: [...raw.sides] as boolean[], roof: boolean("roof") || (shapeId === "C5" && variant === "shelter"),
+    sides: [...raw.sides] as boolean[], roof: normalizedRoof,
     opening: { enabled: o.enabled, width: o.width, height: o.height, offset: o.offset },
     contours, wallModule: pick("wallModule", ["none", ...WALL_MODULE_IDS]), services: [...raw.services] as ServiceId[],
   };

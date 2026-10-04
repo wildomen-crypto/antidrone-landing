@@ -60,8 +60,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     return () => observer.disconnect();
   }, [wide]);
   const shape = shapes.find(s => s.id === input.shapeId)!;
-  const hasRoofOptions = ["C3", "C4", "C6", "C8"].includes(input.shapeId)
-    || (input.shapeId === "C7" && input.variant === "dome")
+  const hasRoofOptions = ["C3", "C4", "C6", "C7", "C8"].includes(input.shapeId)
     || (input.shapeId === "C5" && input.variant === "shelter");
   const requiredRoof = roofRequired(input);
   useEffect(() => {
@@ -124,7 +123,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
         {["C2", "C3", "C4", "C6", "C8"].includes(input.shapeId) && number("width", input.shapeId === "C8" ? "Ширина объекта" : "Ширина", 100)}
         {input.shapeId === "C7" && number("diameter", "Диаметр", 100)}
         {number("height", input.shapeId === "C6" ? "Свободная высота" : input.shapeId === "C8" ? "Высота объекта" : "Высота", input.shapeId === "C8" ? 80 : 30)}
-        {((input.shapeId === "C6" && input.variant !== "portal") || (input.shapeId === "C7" && input.variant === "dome")) && number("rise", "Подъём покрытия", 30)}
+        {((input.shapeId === "C6" && input.variant !== "portal") || (input.shapeId === "C7" && input.roof)) && number("rise", "Подъём покрытия", 30)}
         {input.shapeId === "C5" && (input.variant === "screen" ? number("offset", "Вынос от стены", 20) : number("projection", "Вылет козырька", 30))}
         {wide && <>
           {number("step", "Максимальный шаг секций", 10)}
@@ -200,7 +199,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
       <div className="viewer-controls"><div className="view-buttons">{([["perspective", "3D"], ["top", "Сверху"], ["front", "Спереди"], ["side", "Сбоку"]] as const).map(([key, label]) => <button key={key} className={view === key ? "selected" : ""} aria-pressed={view === key} onClick={() => setView(key)}>{label}</button>)}</div><label className="check-field"><input type="checkbox" checked={onlyFrame} onChange={e => setOnlyFrame(e.target.checked)} />Только каркас</label></div>
       {input.shapeId === "C8" && <div className="viewer-layers"><span>Видимость (состав заказа не меняется):</span>{input.contours.map((c, i) => c.enabled && <label key={i} className="check-field"><input type="checkbox" checked={!hiddenGroups.includes(`contour${i + 1}`)} onChange={e => setHiddenGroups(old => e.target.checked ? old.filter(g => g !== `contour${i + 1}`) : [...old, `contour${i + 1}`])} />Контур {i + 1}</label>)}</div>}
       {result.graph && <div className="dimension-strip"><span>L {format(result.graph.bounds.length)} м</span><span>W {format(result.graph.bounds.width)} м</span><span>H {format(result.graph.bounds.height)} м</span><span>Профили показаны условно</span></div>}
-      {input.shapeId === "C7" && input.variant === "dome" && <p className="field-hint viewer-caption">Форма покрытия: секторное шатровое покрытие. Площадь рассчитана по граням схемы.</p>}
+      {input.shapeId === "C7" && input.roof && <p className="field-hint viewer-caption">Форма покрытия: секторное шатровое покрытие. Площадь рассчитана по граням схемы.</p>}
       <DetailViews foundation={input.foundation} sectionType={input.sectionType} />
       {q && <div className="estimate-result" aria-live="polite"><div className="step-title"><span>03</span> Объёмы и следующий шаг</div><div className="quantity-grid"><div><strong>{format(q.total)}<small> м²</small></strong><span>Заполнение, с учётом слоёв</span></div><div><strong>{q.supports}</strong><span>Опор в предварительной схеме</span></div><div><strong>{format(q.memberLength)}<small> м</small></strong><span>Элементов каркаса</span></div></div><details><summary>Посмотреть ведомость</summary><div className="table-scroll"><table><tbody><tr><td>Покрытие, без повторения слоёв</td><td>{format(q.roof)} м²</td></tr><tr><td>Стены, без повторения слоёв</td><td>{format(q.walls)} м²</td></tr>{Object.entries(q.byMaterial).map(([id, area]) => <tr key={id}><td>{materials.find(m => m.id === id)?.name}</td><td>{format(area!)} м²</td></tr>)}<tr><td>Трубы заполнения</td><td>{format(q.infillLength)} м</td></tr><tr><td>Стеновых модулей (условно)</td><td>{q.wallModules} шт.</td></tr><tr><td>Объём стеновых модулей (условно)</td><td>{format(q.wallVolume)} м³</td></tr><tr><td>Канаты схемы</td><td>{format(q.cableLength)} м</td></tr></tbody></table></div><p className="field-hint">Масса, крепления, фундамент и расход на раскрой определяются после подбора профилей и технологии. Трубчатый рисунок и провис условны.</p></details><div className="quote-row"><div><strong>Стоимость — по запросу</strong><p>Инженер проверит схему и подготовит предложение.</p></div><button className="button button-primary" onClick={request}>Получить расчёт <span aria-hidden="true">↗</span></button></div></div>}
       <div className="export-actions"><button onClick={download} disabled={!result.graph}>Сохранить JSON</button><button onClick={() => file.current?.click()}>Открыть JSON</button><button onClick={() => window.print()} disabled={!result.graph}>Печатная карточка</button><input className="visually-hidden" type="file" ref={file} accept=".json,application/json" onChange={e => void importFile(e.target.files?.[0])} /></div>

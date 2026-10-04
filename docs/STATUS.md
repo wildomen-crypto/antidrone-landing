@@ -1,6 +1,11 @@
 # Состояние разработки
 
-Текущая работа: UI-ROOF-OPENING — VERIFIED; база 1a8858e.
+Текущая работа: UI-ROUND-ROOF — VERIFIED; база 306fc17.
+Ветка ui/round-roof-control; карточка docs/checkpoints/UI-ROUND-ROOF.md.
+Дублирующий переключатель C7 удалён; форма управляется материалом кровли.
+Typecheck, 31 unit, build, 17 групп browser PASS; семь ширин, JSON и SVG.
+
+Предыдущая работа: UI-ROOF-OPENING — VERIFIED; база 1a8858e.
 Ветка ui/roof-toggle-opening-sliders; карточка docs/checkpoints/UI-ROOF-OPENING.md.
 Обязательная кровля навеса, отключение кровли через карточки материала,
 размеры активного проёма ползунками на /wide.
@@ -51,7 +56,7 @@ Typecheck, 30 unit, build и 16 групп browser PASS; семь ширин.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 34 VERIFIED (включая семь правок UI и решение не включать upload),
+Реестр: 35 VERIFIED (включая восемь правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
@@ -76,7 +81,7 @@ Typecheck, 30 unit, build и 16 групп browser PASS; семь ширин.
 
 http://127.0.0.1:3100 — production build, только этот компьютер.
 Новый вариант: http://127.0.0.1:3100/wide#calculator.
-PID 6124, exec-сессия 39806. Проверять фактический порт и CommandLine
+PID 20696, exec-сессия 36491. Проверять фактический порт и CommandLine
 перед остановкой; не останавливать чужие процессы. После перезапуска
 компьютера: npm.cmd run start из корня проекта.
 

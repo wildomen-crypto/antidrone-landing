@@ -6,6 +6,21 @@ const {isStructureSelected,toggleStructure}=require('../../.local/test-build/lib
 const {roofRequired,selectRoof}=require('../../.local/test-build/lib/configuration/roof.js');
 const input=(extra={})=>({...structuredClone(defaultInput),...extra});
 const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-7,actual+' != '+expected);
+
+test('round roof controls dome; legacy perimeter preserves open geometry and exports canonical input',()=>{
+  const legacy=input({shapeId:'C7',variant:'perimeter',roof:true});
+  const ring=parseInput(legacy);
+  assert.equal(ring.variant,'dome');assert.equal(ring.roof,false);
+  assert.deepEqual(ring,parseInput({...legacy,roof:false}));
+  assert.deepEqual(generateModel(legacy),generateModel(ring));
+  assert.deepEqual(parseInput(JSON.parse(JSON.stringify(ring))),ring);
+  const open=generateModel(ring),covered=generateModel({...ring,...selectRoof(ring,'M5')});
+  close(quantities(open).roof,0);assert.ok(quantities(covered).roof>0);
+  close(quantities(open).walls,quantities(covered).walls);
+  close(open.bounds.height,ring.height);close(covered.bounds.height,ring.height+ring.rise);
+  assert.equal(parseInput(input({shapeId:'C7',variant:'dome',roof:false})).roof,false);
+  assert.throws(()=>parseInput({...legacy,roof:'true'}),/Неверное поле roof/);
+});
 test('independent box controls: 188, opening 179, two layers 376',()=>{
   let q=quantities(generateModel(input())); close(q.roof,60);close(q.walls,128);close(q.total,188);
   q=quantities(generateModel(input({opening:{enabled:true,width:3,height:3,offset:3.5}})));close(q.total,179);
