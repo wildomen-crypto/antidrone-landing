@@ -63,8 +63,9 @@ Typecheck, 30 unit, build и 16 групп browser PASS; семь ширин.
 Корень: C:\taran\antidrone-landing.
 Локальный выпуск: VERIFIED. Публичное размещение: WAITING_EXTERNAL.
 Основная ветка продолжения: main; сохранена delivery/local-site.
-Последний проверенный функциональный код: eca536bad776732c914b0544c2202af1f81d6157.
-Рабочая ветка ui/wall-material-toggle сохранена; main обновлён fast-forward.
+Последний проверенный функциональный код: f03a175d1bdd574f708300ca495682f12d1a8a3d.
+Рабочие ветки ui/wall-material-toggle и ui/compact-material-layout сохранены;
+main обновлён fast-forward.
 Базовый проверенный функциональный код: f67f7c9836d1e7a46f4e5926261cfa2d5b9f1914.
 Исходный main a3fda4b и промежуточный 487a69e остаются в истории.
 Карточка выпуска: docs/checkpoints/LOCAL-DELIVERY.md.
@@ -115,6 +116,11 @@ Git: локальная настройка Dmitrii Taran,
 ## Резервные копии
 
 Каталог C:\taran\artifacts\antidrone-landing-backups.
+Компактные материалы: compact-materials-20261004-f03a175-source.zip
+и одноимённый .bundle; bundle verify PASS. ZIP проверен, 143 записи.
+Заполнение стен: wall-material-20261004-eca536b-source.zip
+и одноимённый .bundle; bundle verify PASS. ZIP проверен, 139 записей.
+Оба ZIP — только tracked-файлы, без данных/секретов; пустой .env.example допустим.
 Узкая панель: narrow-dimensions-20261004-268edc9-source.zip
 и одноимённый .bundle; bundle verify PASS. ZIP — только tracked-файлы,
 137 записей; нет данных/секретов, допустим пустой .env.example.

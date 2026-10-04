@@ -35,5 +35,7 @@ test:wide PASS, 19 групп, семь ширин, ошибок JavaScript не
 main обновлён fast-forward, ветка сохранена. Backup:
 C:\taran\artifacts\antidrone-landing-backups\wall-material-20261004-eca536b-source.zip
 и одноимённый .bundle; bundle verify PASS.
+ZIP проверен: 139 записей, только tracked-файлы, без данных/секретов;
+пустой .env.example допустим.
 Следующий шаг: сохранить блок, затем отдельный компактный вариант по
 новому запросу пользователя (маленькие карточки, работы ниже, пустая панель).
