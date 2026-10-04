@@ -57,9 +57,12 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     const fit = () => {
       const sceneRect = scene.getBoundingClientRect();
       const dimensionRect = dimensions.getBoundingClientRect();
-      const right = panel ? Math.max(0, sceneRect.right - panel.getBoundingClientRect().left + 12) : 0;
-      const left = Math.max(0, dimensionRect.right - sceneRect.left + 12);
-      const top = Math.max(0, dimensionRect.bottom - sceneRect.top + 10);
+      const overlaps = (rect: DOMRect) => rect.top < sceneRect.bottom && rect.bottom > sceneRect.top
+        && rect.left < sceneRect.right && rect.right > sceneRect.left;
+      const panelRect = panel?.getBoundingClientRect();
+      const right = panelRect && overlaps(panelRect) ? Math.max(0, sceneRect.right - panelRect.left + 12) : 0;
+      const left = overlaps(dimensionRect) ? Math.max(0, dimensionRect.right - sceneRect.left + 12) : 0;
+      const top = overlaps(dimensionRect) ? Math.max(0, dimensionRect.bottom - sceneRect.top + 10) : 0;
       const height = Math.max(sceneRect.height, 1);
       const betweenPanels = Math.min((sceneRect.width - right - left) / height, 1);
       const belowDimensions = Math.min((sceneRect.width - right) / height, (sceneRect.height - top) / height);
@@ -68,7 +71,8 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     };
     const observer = new ResizeObserver(fit);
     observer.observe(scene); if (panel) observer.observe(panel); observer.observe(dimensions); fit();
-    return () => observer.disconnect();
+    window.addEventListener("resize", fit);
+    return () => { observer.disconnect(); window.removeEventListener("resize", fit); };
   }, [wide, showSettingsPanel]);
   useEffect(() => {
     const node = viewer.current; if (!node) return;
@@ -204,6 +208,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
       <p className="field-hint">Размеры и шаг задают предварительную компоновку. Сечения, основания и допустимые пролёты проверяет проектировщик.</p>
     </div>
   );
+  const viewerControls = <div className="viewer-controls"><div className="view-buttons">{([["perspective", "3D"], ["top", "Сверху"], ["front", "Спереди"], ["side", "Сбоку"]] as const).map(([key, label]) => <button key={key} className={view === key ? "selected" : ""} aria-pressed={view === key} onClick={() => setView(key)}>{label}</button>)}</div><label className="check-field"><input type="checkbox" checked={onlyFrame} onChange={e => setOnlyFrame(e.target.checked)} />Только каркас</label></div>;
   return <div className={wide ? `calculator calculator-wide${compact ? " calculator-compact" : ""}` : "calculator"} data-shape={input.shapeId}>
     {wide && <ShapePicker value={input.shapeId} onChange={choose} />}
     {!wide && settings}
@@ -211,6 +216,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
       {!wide && <div className="viewer-toolbar"><span className="step-title"><span>02</span> Предварительная схема</span><span className="viewer-badge">{three ? "3D / 2D" : "Аксонометрия"}</span></div>}
       <div className="viewer-stage">
         <div className="viewer" ref={viewer}>{result.graph ? three ? <Scene graph={result.graph} view={view} onlyFrame={onlyFrame} hiddenGroups={hiddenGroups} rightInset={rightInset} topInset={topInset} leftInset={leftInset} /> : <div className="scene-fallback" style={{ paddingRight: rightInset, paddingTop: topInset, paddingLeft: leftInset }}><ModelDiagram graph={result.graph} /></div> : <div className="viewer-error" role="alert">{result.error}</div>}</div>
+        {compact && viewerControls}
         {wide && <div className="dimension-panel" ref={dimensionPanel} role="region" aria-label="Размеры конструкции"><strong>Размеры конструкции</strong>{dimensions}
           <CompactOptions input={input} onSection={v => update("sectionType", v)} onFoundation={v => update("foundation", v)} onSide={toggleSide} />
         </div>}
@@ -226,7 +232,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
       {compact && services}
       {wide && <StructurePicker value={input.structuralSystem} spatialSupports={input.spatialSupports} onChange={chooseStructure} />}
       <p className="viewer-help">Вращение: перетащите схему. Масштаб: колесо мыши или жест двумя пальцами. Без WebGL доступна 2D-схема.</p>
-      <div className="viewer-controls"><div className="view-buttons">{([["perspective", "3D"], ["top", "Сверху"], ["front", "Спереди"], ["side", "Сбоку"]] as const).map(([key, label]) => <button key={key} className={view === key ? "selected" : ""} aria-pressed={view === key} onClick={() => setView(key)}>{label}</button>)}</div><label className="check-field"><input type="checkbox" checked={onlyFrame} onChange={e => setOnlyFrame(e.target.checked)} />Только каркас</label></div>
+      {!compact && viewerControls}
       {input.shapeId === "C8" && <div className="viewer-layers"><span>Видимость (состав заказа не меняется):</span>{input.contours.map((c, i) => c.enabled && <label key={i} className="check-field"><input type="checkbox" checked={!hiddenGroups.includes(`contour${i + 1}`)} onChange={e => setHiddenGroups(old => e.target.checked ? old.filter(g => g !== `contour${i + 1}`) : [...old, `contour${i + 1}`])} />Контур {i + 1}</label>)}</div>}
       {result.graph && <div className="dimension-strip"><span>L {format(result.graph.bounds.length)} м</span><span>W {format(result.graph.bounds.width)} м</span><span>H {format(result.graph.bounds.height)} м</span><span>Профили показаны условно</span></div>}
       {input.shapeId === "C7" && input.roof && <p className="field-hint viewer-caption">Форма покрытия: секторное шатровое покрытие. Площадь рассчитана по граням схемы.</p>}

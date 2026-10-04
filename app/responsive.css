@@ -1,0 +1,174 @@
+/* The adaptive version keeps one set of controls and configuration at every width. */
+.calculator-compact{--scene-height:clamp(440px,56vh,620px)}
+.calculator-compact .viewer{height:var(--scene-height)}
+.calculator-compact .dimension-panel,.calculator-compact .parameter-panel{max-height:calc(var(--scene-height) - 24px)}
+.calculator-compact .shape-picker{padding:16px 24px;gap:8px}
+.calculator-compact .shape-choice{padding:8px 8px 10px}
+.calculator-compact .shape-choice-image{height:64px}
+.calculator-compact .shape-choice-name{font-size:12px}
+.calculator-compact .material-picker{padding:10px 24px}
+.calculator-compact .material-picker-heading strong,.service-picker legend{font-size:12px}
+.calculator-compact .material-choice{flex-basis:90px;min-height:72px}
+.calculator-compact .structure-picker .material-choice{flex-basis:110px}
+.calculator-compact .material-choice-name{font-size:11px;line-height:1.3;overflow-wrap:normal}
+.calculator-compact .service-picker{padding:8px 24px 10px}
+.calculator-compact .service-picker .check-field{min-height:32px;font-size:12px}
+.calculator-compact .viewer-controls .view-buttons button{min-height:44px;min-width:44px;font-size:12px}
+.calculator-compact .viewer-controls .check-field{min-height:44px;align-items:center;font-size:12px}
+.calculator-compact .viewer-layers .check-field{min-height:44px;align-items:center;font-size:12px}
+.calculator-compact .parameter-panel .field select{min-height:44px}
+.calculator-compact .parameter-panel .check-field{min-height:32px;align-items:center;font-size:12px}
+.calculator-compact .parameter-panel .field-hint{font-size:11px}
+.calculator-compact .parameter-panel-heading{font-size:12px}
+.calculator-compact .dimension-panel{left:24px}
+.calculator-compact .parameter-panel{right:24px}
+
+/* Medium windows and short desktop windows: a clear scene, two settings columns. */
+@media (max-width:1279px), (max-height:650px){
+  .calculator-compact .viewer-stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;padding:0 24px 20px;background:#f2f5fa;align-items:start}
+  .calculator-compact .viewer{grid-column:1/-1;grid-row:1;height:clamp(340px,50vh,460px);width:calc(100% + 48px);margin-inline:-24px}
+  .calculator-compact .viewer-stage>.viewer-controls{grid-column:1/-1;grid-row:2;margin:-16px -24px 0;background:white}
+  .calculator-compact .dimension-panel,.calculator-compact .parameter-panel{position:static;width:100%;max-width:none;max-height:none;margin:0;box-shadow:none;backdrop-filter:none;overflow:visible}
+  .calculator-compact .dimension-panel{grid-column:1;padding:16px}
+  .calculator-compact .parameter-panel{grid-column:2;grid-row:3}
+  .calculator-compact .parameter-panel .calculator-inputs{overflow:visible;padding:16px}
+  .calculator-compact .dimension-panel>strong{font-size:13px;margin-bottom:14px}
+  .calculator-compact .dimension-sliders{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 16px}
+  .calculator-compact .dimension-slider{position:static;padding:0;display:block}
+  .calculator-compact .dimension-slider-head{display:flex;gap:8px}
+  .calculator-compact .dimension-slider-head>label:first-child{font-size:12px;white-space:normal;overflow:visible;text-overflow:clip;display:block}
+  .calculator-compact .dimension-exact{position:static;flex:0 0 52px;width:52px}
+  .calculator-compact .dimension-exact input,.calculator-compact .dimension-value{height:36px;font-size:16px;padding:6px;display:block}
+  .calculator-compact .dimension-slider>input[type=range]{height:36px;display:block}
+  .calculator-compact .compact-options{margin-top:10px;padding-top:12px;gap:12px}
+  .calculator-compact .compact-option-group>span{font-size:11px;line-height:1.4;margin-bottom:6px}
+  .calculator-compact .compact-option{width:44px;height:44px;flex-basis:44px}
+  .calculator-compact .contour-sliders{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 16px}
+  .calculator-compact .contour-sliders .dimension-slider-head{display:flex}
+  .calculator-compact .contour-sliders .dimension-exact{position:static;width:52px}
+  .calculator-compact .contour-sliders .dimension-slider>input[type=range]{grid-column:auto;grid-row:auto}
+  .calculator-compact .contour-inputs fieldset{padding:14px 12px 8px}
+  .calculator-compact .parameter-panel .field>span{font-size:12px}
+  .calculator-compact .parameter-panel .field select,.calculator-compact .parameter-panel .field input{font-size:16px;min-height:44px}
+  .calculator-compact .parameter-panel .check-field{min-height:44px}
+  .calculator-compact .material-choice-strip{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;overflow:visible}
+  .calculator-compact .material-choice{min-width:0;padding:5px 4px 7px}
+  .calculator-compact .structure-picker .material-choice-strip{grid-template-columns:repeat(6,minmax(0,1fr))}
+}
+
+/* Phones: full-width model, controls in the document, every material visible. */
+@media (max-width:767px){
+  .calculator-compact .viewer-stage{grid-template-columns:minmax(0,1fr);gap:12px;padding:0 16px 16px}
+  .calculator-compact .viewer{height:clamp(300px,48svh,400px);width:calc(100% + 32px);margin-inline:-16px}
+  .calculator-compact .viewer-stage>.viewer-controls{margin:-12px -16px 0}
+  .calculator-compact .parameter-panel{grid-column:1;grid-row:4}
+  .calculator-compact .dimension-panel{padding:14px}
+  .calculator-compact .parameter-panel .calculator-inputs{padding:14px}
+  .calculator-compact .parameter-panel-heading{padding:12px 14px;font-size:13px}
+  .calculator-compact .shape-picker{grid-template-columns:repeat(8,120px);padding:12px 16px;gap:8px}
+  .calculator-compact .shape-choice{min-height:110px}
+  .calculator-compact .shape-choice-image{height:58px}
+  .calculator-compact .shape-choice-name{font-size:11px}
+  .calculator-compact .dimension-sliders{gap:6px 12px}
+  .calculator-compact .dimension-exact input,.calculator-compact .dimension-value{height:44px}
+  .calculator-compact .dimension-slider>input[type=range]{height:44px}
+  .calculator-compact .compact-options-pair{gap:12px}
+  .calculator-compact .compact-option-buttons{gap:6px}
+  .calculator-compact .material-picker{padding:10px 16px 12px}
+  .calculator-compact .material-picker-heading{margin-bottom:8px}
+  .calculator-compact .material-choice-strip{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .calculator-compact .material-choice{min-height:76px;padding:5px 3px 7px;justify-content:center}
+  .calculator-compact .structure-picker .material-choice-strip{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .calculator-compact .service-picker{padding:8px 16px 12px}
+  .calculator-compact .service-picker .check-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-width:none;gap:4px 12px}
+  .calculator-compact .service-picker .check-field{min-height:44px}
+  .calculator-compact .check-field input{width:18px;height:18px;margin:0}
+  .calculator-compact .viewer-controls{gap:4px;padding-block:8px}
+  .calculator-compact .export-actions{gap:6px 16px}
+  .calculator-compact .export-actions button{min-height:44px;font-size:12px}
+  .calculator-compact .dimension-strip{font-size:11px}
+  .calculator-compact .viewer-help{font-size:11px;line-height:1.6}
+  .calculator-compact .node-details summary,.calculator-compact .estimate-result details>summary{min-height:44px;display:flex;align-items:center;font-size:12px}
+}
+@media (max-width:359px){
+  .calculator-compact .dimension-sliders{grid-template-columns:minmax(0,1fr)}
+  .calculator-compact .material-choice-strip{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-height:500px) and (min-width:600px){
+  .calculator-compact .viewer{height:300px}
+}
+
+/* Landing page spacing and text remain readable independently of the calculator. */
+@media (min-width:1600px){
+  .container{width:min(1440px,calc(100% - 96px))}
+  .hero{gap:72px;padding-block:90px}
+  .hero h1{font-size:62px}
+  .hero-visual svg{height:380px}
+  .section{padding-block:90px}
+  .calculator-compact .shape-picker,.calculator-compact .material-picker,.calculator-compact .service-picker{padding-inline:max(24px,calc((100% - 1600px)/2))}
+}
+@media (min-width:801px) and (max-width:1023px){
+  .site-header nav{gap:12px;font-size:11px}
+  .header-inner{gap:16px}
+  .brand{font-size:19px}
+  .brand small{font-size:9px}
+  .brand-mark{width:32px;height:34px}
+  .header-phone{font-size:12px}
+  .hero-actions{flex-wrap:wrap}
+}
+@media (max-width:767px){
+  html{scroll-padding-top:88px}
+  .container{width:calc(100% - 32px)}
+  .header-inner{min-height:68px}
+  .hero h1{font-size:clamp(29px,7.4vw,46px)}
+  .hero-description{font-size:16px}
+  .hero-actions{flex-wrap:wrap}
+  .section-heading>p{font-size:15px}
+  .solution-card p,.material-card p{font-size:13px}
+  .solution-card h3,.material-card h3{font-size:15px}
+  .solution-card button{min-height:44px;font-size:12px}
+  .material-card small{font-size:11px}
+  .service-grid p,.process-grid p{font-size:13px}
+  .lead-form .field input,.lead-form .field textarea{font-size:16px}
+  .lead-form .field>span{font-size:12px}
+  .consent-field{font-size:12px;line-height:1.6}
+  .consent-field input{width:20px;height:20px}
+  .contact-email,.contact-departments a{overflow-wrap:anywhere}
+  .contact-departments{gap:20px}
+  .contact-departments>div{min-width:0}
+  .layout-comparison{flex-wrap:wrap;justify-content:flex-start;gap:6px 16px;font-size:12px}
+  .layout-comparison a{display:flex;align-items:center;min-height:44px}
+  .footer-bottom p,.footer-bottom a,.footer-note{font-size:11px;line-height:1.6}
+}
+@media (max-width:500px){
+  html{scroll-padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
+  .mobile-actions{height:calc(64px + env(safe-area-inset-bottom));padding:8px 16px calc(8px + env(safe-area-inset-bottom))}
+  .mobile-actions a{min-height:44px;font-size:12px}
+  body:has(input[type=text]:focus,input:not([type]):focus,textarea:focus,select:focus) .mobile-actions{display:none}
+  .hero-features{font-size:11px;gap:12px}
+  .hero .eyebrow{line-height:1.7}
+  .solution-grid,.material-grid{grid-template-columns:minmax(0,1fr)}
+  .solution-card{display:grid;grid-template-columns:104px minmax(0,1fr);gap:0 14px;padding:14px}
+  .solution-image{grid-column:1;grid-row:1/4;aspect-ratio:1;margin:0}
+  .solution-card h3{grid-column:2;margin-bottom:6px}
+  .solution-card p{grid-column:2;margin-bottom:6px}
+  .solution-card button{grid-column:2}
+  .material-card{padding:16px}
+  .material-swatch{height:64px}
+  .header-inner{gap:8px}
+  .brand{font-size:18px;gap:7px}
+  .header-phone{font-size:11px}
+  .drawing-head{flex-wrap:wrap;font-size:10px}
+}
+@media (max-width:359px){
+  .header-phone small{display:none}
+  .brand small{font-size:7px;letter-spacing:0}
+  .brand-mark{width:26px;height:30px;font-size:21px}
+  .brand{font-size:16px}
+  .solution-card{grid-template-columns:80px minmax(0,1fr);gap:0 10px}
+  .contact-departments{flex-direction:column;gap:20px}
+}
+@media print{
+  .calculator-compact .viewer-stage{display:none!important}
+}

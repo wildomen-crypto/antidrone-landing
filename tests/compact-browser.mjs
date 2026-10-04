@@ -14,18 +14,20 @@ const wallRow=page=>page.locator('[data-target="walls"]');const roofRow=page=>pa
 async function check(name,fn){await fn();report.checks.push(name);console.log('PASS '+name);}
 async function scene(page){await page.locator('.shape-picker').evaluate(el=>el.scrollIntoView({block:'start'}));await page.locator('.viewer canvas').waitFor();await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));}
 try{
-  await check('Seven widths: smaller material rows, unchanged scene height, works below roof, no overflow',async()=>{
+  await check('Seven widths: responsive scene and panels, compact desktop rows, works below roof, no overflow',async()=>{
     const page=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});monitor(page);
     for(const width of [360,390,510,768,900,1280,1440]){
       await page.setViewportSize({width,height:1000});await page.goto(base+'/wide#calculator',{waitUntil:'networkidle'});
       const wideHeight=(await page.locator('.viewer').boundingBox()).height;
       const before=await page.locator('.material-picker[data-target]').evaluateAll(rows=>rows.map(el=>el.getBoundingClientRect().height));
       await page.goto(base+'/compact#calculator',{waitUntil:'networkidle'});await scene(page);
-      const viewer=await page.locator('.viewer').boundingBox();assert.equal(viewer.height,wideHeight);assert.equal(viewer.width,width);
-      const panel=await page.locator('.parameter-panel').boundingBox();assert.ok(panel.y>=viewer.y&&panel.y+panel.height<=viewer.y+viewer.height);
+      const viewer=await page.locator('.viewer').boundingBox();assert.ok(viewer.height>=wideHeight);assert.equal(viewer.width,width);
+      const panel=await page.locator('.parameter-panel').boundingBox();
+      if(width>=1280)assert.ok(panel.y>=viewer.y&&panel.y+panel.height<=viewer.y+viewer.height);
+      else assert.ok(panel.y>=viewer.y+viewer.height);
       assert.equal(await page.locator('.calculator-compact').count(),1);
       const after=await page.locator('.material-picker[data-target]').evaluateAll(rows=>rows.map(el=>el.getBoundingClientRect().height));
-      for(let i=0;i<2;i++)assert.ok(after[i]<before[i]*.75,'Row reduced by at least 25% at '+width);
+      if(width>=768)for(let i=0;i<2;i++)assert.ok(after[i]<before[i]*.75,'Row reduced by at least 25% at '+width);
       report.sizes.push({width,wide:before,compact:after});
       for(const row of [wallRow(page),roofRow(page)]){
         assert.equal(await row.locator('.material-choice').count(),8);
@@ -98,7 +100,11 @@ try{
     await fallback.goto(base+'/compact#calculator',{waitUntil:'networkidle'});await fallback.locator('.shape-choice').nth(6).click();await fallback.locator('.viewer svg').waitFor();
     await fallback.waitForFunction(()=>getComputedStyle(document.querySelector('.scene-fallback')).paddingRight==='0px');assert.equal(await fallback.locator('.parameter-panel').count(),0);
     await roofRow(fallback).locator('.material-choice').nth(7).click();await fallback.locator('.parameter-panel').waitFor();
+    await fallback.waitForFunction(()=>getComputedStyle(document.querySelector('.scene-fallback')).paddingRight==='0px');
+    await fallback.setViewportSize({width:1440,height:1000});
     await fallback.waitForFunction(()=>parseFloat(getComputedStyle(document.querySelector('.scene-fallback')).paddingRight)>0);
+    await fallback.setViewportSize({width:390,height:1000});
+    await fallback.waitForFunction(()=>getComputedStyle(document.querySelector('.scene-fallback')).paddingRight==='0px');
     await roofRow(fallback).locator('.material-choice').nth(7).click();await fallback.waitForFunction(()=>getComputedStyle(document.querySelector('.scene-fallback')).paddingRight==='0px');
     await fallback.locator('.viewer svg').waitFor();assert.equal(await fallback.locator('.input-error').count(),0);await fallback.close();
   });

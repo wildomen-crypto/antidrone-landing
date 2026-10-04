@@ -4,6 +4,7 @@ import { company } from "@/config/company";
 import "./globals.css";
 import "./details.css";
 import "./wide-calculator.css";
+import "./responsive.css";
 import Analytics from "@/components/landing/Analytics";
 
 export const metadata: Metadata = {

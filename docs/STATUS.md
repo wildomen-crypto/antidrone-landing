@@ -1,6 +1,13 @@
 # Состояние разработки
 
-Текущая работа: UI-COMPACT-MATERIALS — VERIFIED; база eca536b.
+Текущая работа: UI-RESPONSIVE-LAYOUT — VERIFIED; база eff473a.
+Ветка ui/responsive-layout; карточка docs/checkpoints/UI-RESPONSIVE-LAYOUT.md.
+Три компоновки /compact; 12 размеров 320–2560 px, включая низкое окно.
+Typecheck/build/worker PASS; 19 wide + 5 compact + 5 responsive групп PASS.
+Все формы, ввод/resize, JSON/печать/SVG, touch-эмуляция, без ошибок JS.
+Следующий шаг: обратная связь заказчика по адаптивному варианту.
+
+Предыдущая работа: UI-COMPACT-MATERIALS — VERIFIED; база eca536b.
 Ветка ui/compact-material-layout; карточка docs/checkpoints/UI-COMPACT-MATERIALS.md.
 Новый /compact: маленькие карточки, работы ниже кровли, пустая панель скрыта.
 Typecheck/build PASS; 19 групп test:wide и 5 test:compact PASS.
@@ -79,7 +86,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 39 VERIFIED (включая двенадцать правок UI и решение не включать upload),
+Реестр: 40 VERIFIED (включая тринадцать правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
@@ -104,8 +111,8 @@ main обновлён fast-forward.
 
 http://127.0.0.1:3100 — production build, только этот компьютер.
 Новый вариант: http://127.0.0.1:3100/wide#calculator.
-Маленькие карточки: http://127.0.0.1:3100/compact#calculator.
-PID 20800, exec-сессия 30824. Проверять фактический порт и CommandLine
+Адаптивная версия: http://127.0.0.1:3100/compact#calculator.
+PID 20924, exec-сессия 38370. Проверять фактический порт и CommandLine
 перед остановкой; не останавливать чужие процессы. После перезапуска
 компьютера: npm.cmd run start из корня проекта.
 
