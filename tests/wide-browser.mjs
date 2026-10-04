@@ -7,7 +7,7 @@ import { randomUUID } from 'node:crypto';
 const { chromium } = await import(process.env.PLAYWRIGHT_MODULE ?? 'file:///C:/Users/Student/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs');
 const base = process.env.QA_URL ?? 'http://127.0.0.1:3100';
 assert.ok(['127.0.0.1', 'localhost'].includes(new URL(base).hostname));
-const output = path.resolve('.local/qa/round-roof');
+const output = path.resolve('.local/qa/contour-sliders');
 await mkdir(output, { recursive: true });
 const report = { checks: [], errors: [], date: new Date().toISOString() };
 const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL ?? 'msedge', headless: true });
@@ -382,8 +382,9 @@ try {
     const offsetSlider=opening.getByRole('slider',{name:'Отступ от левого края, м',exact:true});
     assert.equal(await widthSlider.getAttribute('max'),'6.5');
     await widthInput.fill('4');await waitTotal(page,176);assert.equal(await widthSlider.inputValue(),'4');
-    await widthSlider.focus();await page.keyboard.press('ArrowRight');await waitTotal(page,175.7);
-    assert.equal(await widthInput.inputValue(),'4,1');await page.keyboard.press('ArrowLeft');await waitTotal(page,176);
+    await widthSlider.press('ArrowRight');await waitTotal(page,175.7);
+    await page.waitForFunction(()=>document.querySelector('.opening-sliders input[type=text]')?.value==='4,1');
+    assert.equal(await widthInput.inputValue(),'4,1');await widthSlider.press('ArrowLeft');await waitTotal(page,176);
     await heightInput.fill('2');await waitTotal(page,180);
     await offsetInput.fill('1,5');assert.equal(await offsetSlider.inputValue(),'1.5');
     await offsetSlider.press('Home');
@@ -458,6 +459,61 @@ try {
     await page.screenshot({ path: path.join(output, 'mobile-settings.png') });
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   });
+  await check('C8 contour sliders are compact at seven widths; input, keyboard, mouse and JSON update graph', async () => {
+    const contourPage=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});monitor(contourPage);
+    for(const width of [360,390,510,768,900,1280,1440]){
+      await contourPage.setViewportSize({width,height:1000});
+      await contourPage.goto(base+'/#calculator',{waitUntil:'networkidle'});
+      await contourPage.getByRole('combobox',{name:'Тип конструкции',exact:true}).selectOption('C8');
+      const originalHeight=(await contourPage.locator('.contour-inputs .field-grid').first().boundingBox()).height;
+      await contourPage.goto(base+'/wide#calculator',{waitUntil:'networkidle'});
+      await contourPage.locator('.shape-choice').nth(7).click();
+      assert.equal(await contourPage.locator('.contour-sliders input[type=range]').count(),6);
+      const blocks=contourPage.locator('.contour-inputs fieldset');
+      for(const block of await blocks.all()){
+        const sliders=block.locator('.contour-sliders');const bounds=await sliders.boundingBox();
+        assert.ok(bounds.height<originalHeight,'Compact contour size block at '+width+': '+bounds.height+' < '+originalHeight);
+        assert.ok(await sliders.evaluate(el=>el.scrollWidth<=el.clientWidth+1),'No contour control overflow at '+width);
+        assert.equal(await block.getByRole('slider',{name:'Отступ, м',exact:true}).count(),1);
+        assert.equal(await block.getByRole('slider',{name:'Высота, м',exact:true}).count(),1);
+      }
+      assert.equal(await contourPage.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+    }
+    const first=contourPage.locator('.contour-inputs fieldset').first();
+    const offset=first.getByRole('slider',{name:'Отступ, м',exact:true});
+    const height=first.getByRole('slider',{name:'Высота, м',exact:true});
+    const initialTotal=Number((await contourPage.locator('.quantity-grid strong').first().textContent()).replace(/[^\d,.]/g,'').replace(',','.'));
+    await offset.press('ArrowRight');
+    await contourPage.waitForFunction(()=>document.querySelector('.contour-sliders .dimension-exact input').value==='0,9');
+    await contourPage.waitForFunction(previous=>Number(document.querySelector('.quantity-grid strong').textContent.replace(/[^\d,.]/g,'').replace(',','.'))!==previous,initialTotal);
+    await first.getByRole('textbox',{name:'Высота, м',exact:true}).fill('5,2');
+    await contourPage.waitForFunction(()=>document.querySelectorAll('.contour-sliders input[type=range]')[1].value==='5.2');
+    const offsetRect=await offset.boundingBox();await contourPage.mouse.click(offsetRect.x+offsetRect.width*.045,offsetRect.y+offsetRect.height/2);
+    const moved=Number(await offset.inputValue());assert.ok(moved>=.1&&moved<2);
+    await contourPage.waitForFunction(value=>Number(document.querySelector('.contour-sliders .dimension-exact input').value.replace(',','.'))===value,moved);
+    await first.getByRole('textbox',{name:'Отступ, м',exact:true}).fill('1,2');
+    await contourPage.waitForFunction(()=>document.querySelector('.contour-sliders input[type=range]').value==='1.2');
+    assert.equal(await contourPage.locator('.input-error').count(),0);
+    const pending=contourPage.waitForEvent('download');await contourPage.getByRole('button',{name:'Сохранить JSON'}).click();
+    const savedPath=path.join(output,'contours.json');await(await pending).saveAs(savedPath);
+    const saved=JSON.parse(await readFile(savedPath,'utf8'));assert.equal(saved.contours[0].offset,1.2);assert.equal(saved.contours[0].height,5.2);
+    assert.equal(saved.contours[1].offset,2);assert.equal(saved.contours[1].height,5.5);
+    await first.getByRole('textbox',{name:'Высота, м',exact:true}).fill('3');await contourPage.locator('.input-error').waitFor();
+    assert.equal(await contourPage.getByRole('button',{name:'Сохранить JSON'}).isEnabled(),false);
+    await contourPage.locator('input[type=file]').setInputFiles(savedPath);
+    await contourPage.waitForFunction(()=>document.querySelectorAll('.contour-sliders input[type=range]')[1].value==='5.2');
+    assert.equal(await contourPage.locator('.input-error').count(),0);
+    await contourPage.locator('.parameter-panel .calculator-inputs').evaluate(el=>el.scrollTop=0);await showScene(contourPage);
+    await contourPage.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    await contourPage.screenshot({path:path.join(output,'contours-desktop.png')});
+    await contourPage.setViewportSize({width:390,height:1000});await showScene(contourPage);
+    await contourPage.locator('.parameter-panel .calculator-inputs').evaluate(el=>el.scrollTop=0);
+    await contourPage.screenshot({path:path.join(output,'contours-mobile.png')});
+    await first.getByRole('checkbox',{name:'Контур 1',exact:true}).uncheck();
+    assert.equal(await contourPage.locator('.contour-sliders input[type=range]').count(),6);
+    await first.getByRole('checkbox',{name:'Контур 1',exact:true}).check();
+    assert.equal(await contourPage.locator('.input-error').count(),0);await contourPage.close();
+  });
   await page.close();
 
   await check('Wide 2D fallback retains projections and dimensions', async () => {
@@ -483,6 +539,11 @@ try {
     await roof.locator('.material-choice').nth(4).click();
     await fallback.getByRole('slider',{name:'Подъём покрытия, м',exact:true}).waitFor();
     await fallback.locator('.viewer svg').waitFor();
+    await fallback.locator('.shape-choice').nth(7).click();
+    const first=fallback.locator('.contour-inputs fieldset').first();
+    await first.getByRole('textbox',{name:'Высота, м',exact:true}).fill('5,2');
+    await fallback.waitForFunction(()=>document.querySelectorAll('.contour-sliders input[type=range]')[1].value==='5.2');
+    await fallback.locator('.viewer svg').waitFor();assert.equal(await fallback.locator('.input-error').count(),0);
     await fallback.close();
   });
   await check('API rejects removed piles and a canopy without its mandatory roof before saving a lead', async () => {

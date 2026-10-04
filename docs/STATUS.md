@@ -1,6 +1,11 @@
 # Состояние разработки
 
-Текущая работа: UI-ROUND-ROOF — VERIFIED; база 306fc17.
+Текущая работа: UI-CONTOUR-SLIDERS — VERIFIED; база bb89049.
+Ветка ui/contour-dimension-sliders; карточка docs/checkpoints/UI-CONTOUR-SLIDERS.md.
+Отступы и высоты контуров C8 на /wide — компактные ползунки с точным вводом.
+Typecheck, build, 18 групп browser PASS; семь ширин, пересчёт/JSON/SVG.
+
+Предыдущая работа: UI-ROUND-ROOF — VERIFIED; база 306fc17.
 Ветка ui/round-roof-control; карточка docs/checkpoints/UI-ROUND-ROOF.md.
 Дублирующий переключатель C7 удалён; форма управляется материалом кровли.
 Typecheck, 31 unit, build, 17 групп browser PASS; семь ширин, JSON и SVG.
@@ -56,7 +61,7 @@ Typecheck, 30 unit, build и 16 групп browser PASS; семь ширин.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 35 VERIFIED (включая восемь правок UI и решение не включать upload),
+Реестр: 36 VERIFIED (включая девять правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
@@ -81,7 +86,7 @@ Typecheck, 30 unit, build и 16 групп browser PASS; семь ширин.
 
 http://127.0.0.1:3100 — production build, только этот компьютер.
 Новый вариант: http://127.0.0.1:3100/wide#calculator.
-PID 20696, exec-сессия 36491. Проверять фактический порт и CommandLine
+PID 20540, exec-сессия 75805. Проверять фактический порт и CommandLine
 перед остановкой; не останавливать чужие процессы. После перезапуска
 компьютера: npm.cmd run start из корня проекта.
 

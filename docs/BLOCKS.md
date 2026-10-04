@@ -9,6 +9,7 @@ B10.2 необязателен: решение об объёме записыв�
 
 | ID | Статус | Результат | Проверка | Карточка |
 | --- | --- | --- | --- | --- |
+| UI-CONTOUR-SLIDERS | VERIFIED | /wide: отступы и высоты трёх контуров C8 компактными ползунками с точным вводом | Typecheck/build; 18 групп browser, семь ширин, компактность/пересчёт/JSON/SVG | docs/checkpoints/UI-CONTOUR-SLIDERS.md |
 | UI-ROUND-ROOF | VERIFIED | C7: купол/открытый контур через материал кровли, отдельный вариант удалён; совместимость JSON | Typecheck, 31 unit, build; 17 групп browser, семь ширин, старый/новый JSON, основной / и SVG | docs/checkpoints/UI-ROUND-ROOF.md |
 | UI-ROOF-OPENING | VERIFIED | Кровля через карточки материала, обязательный навес без checkbox, проём ползунками на /wide | Typecheck, 30 unit, build; 16 групп browser, семь ширин, пересчёт/JSON/API/печать/2D | docs/checkpoints/UI-ROOF-OPENING.md |
 | UI-CONSTRUCTION-ICONS | VERIFIED | /wide: сечение, два основания и стороны иконками 20×20; совместный выбор опоры и фермы; pile исключён | Типизация, 28 unit, сборка; 15 групп browser, семь ширин, JSON/API/печать/2D | docs/checkpoints/UI-CONSTRUCTION-ICONS.md |

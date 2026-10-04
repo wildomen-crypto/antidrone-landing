@@ -171,7 +171,23 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
           </div> : <div className="field-grid">{(["width", "height", "offset"] as const).map((key, i) => <label className="field" key={key}><span>{["Ширина", "Высота", "Отступ от левого края"][i]}, м</span><NumberInput value={input.opening[key]} min={key === "offset" ? 0 : 0.1} onValue={v => update("opening", { ...input.opening, [key]: v })} /></label>)}</div>)}
         </> : null}
       </div>}
-      {input.shapeId === "C8" && <div className="contour-inputs"><p className="field-hint">Отступ каждого контура измеряется от габарита объекта, а не от соседнего контура.</p>{input.contours.map((contour, i) => <fieldset key={i}><legend><label className="check-field"><input type="checkbox" checked={contour.enabled} onChange={e => update("contours", input.contours.map((v, j) => j === i ? { ...v, enabled: e.target.checked } : v))} />Контур {i + 1}</label></legend><div className="field-grid">{(["offset", "height"] as const).map(key => <label className="field" key={key}><span>{key === "offset" ? "Отступ" : "Высота"}, м</span><NumberInput value={contour[key]} min={key === "height" ? 0.5 : 0.1} max={key === "height" ? 80 : 20} onValue={amount => update("contours", input.contours.map((v, j) => j === i ? { ...v, [key]: amount } : v))} /></label>)}</div><ContourFields value={contour} onValue={next => update("contours", input.contours.map((v, j) => j === i ? next : v))} /></fieldset>)}<label className="field"><span>Внутренний стеновой модуль</span><select value={input.wallModule} onChange={e => update("wallModule", e.target.value as LayoutInput["wallModule"])}><option value="none">Без стенового модуля</option>{wallModules.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}</select></label></div>}
+      {input.shapeId === "C8" && <div className="contour-inputs">
+        <p className="field-hint">Отступ каждого контура измеряется от габарита объекта, а не от соседнего контура.</p>
+        {input.contours.map((contour, i) => <fieldset key={i}>
+          <legend><label className="check-field"><input type="checkbox" checked={contour.enabled} onChange={e => update("contours", input.contours.map((v, j) => j === i ? { ...v, enabled: e.target.checked } : v))} />Контур {i + 1}</label></legend>
+          <div className={wide ? "contour-sliders" : "field-grid"}>
+            {(["offset", "height"] as const).map(key => {
+              const label = key === "offset" ? "Отступ" : "Высота";
+              const min = key === "height" ? 0.5 : 0.1, max = key === "height" ? 80 : 20;
+              const onValue = (amount: number) => update("contours", input.contours.map((v, j) => j === i ? { ...v, [key]: amount } : v));
+              return wide ? <DimensionSlider key={key} label={label} value={contour[key]} min={min} max={max} onValue={onValue} />
+                : <label className="field" key={key}><span>{label}, м</span><NumberInput value={contour[key]} min={min} max={max} onValue={onValue} /></label>;
+            })}
+          </div>
+          <ContourFields value={contour} onValue={next => update("contours", input.contours.map((v, j) => j === i ? next : v))} />
+        </fieldset>)}
+        <label className="field"><span>Внутренний стеновой модуль</span><select value={input.wallModule} onChange={e => update("wallModule", e.target.value as LayoutInput["wallModule"])}><option value="none">Без стенового модуля</option>{wallModules.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}</select></label>
+      </div>}
       <fieldset><legend>Нужные работы</legend><div className="check-grid">{([["design", "Проектирование"], ["manufacturing", "Изготовление"], ["delivery", "Доставка"], ["installation", "Монтаж"]] as const).map(([id, label]) => <label key={id} className="check-field"><input type="checkbox" checked={input.services.includes(id)} onChange={e => update("services", e.target.checked ? [...input.services, id] : input.services.filter(s => s !== id))} />{label}</label>)}</div></fieldset>
       <p className="field-hint">Размеры и шаг задают предварительную компоновку. Сечения, основания и допустимые пролёты проверяет проектировщик.</p>
     </div>
