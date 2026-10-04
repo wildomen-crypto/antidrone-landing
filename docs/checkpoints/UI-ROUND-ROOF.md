@@ -27,4 +27,11 @@ npm.cmd run test:wide PASS: 17 групп, семь ширин
 старый perimeter с roof=true, новый JSON обоих состояний и повторный импорт,
 обычный /, мобильный /wide, SVG без WebGL, общий JSON/печать/API.
 Просмотрены desktop/mobile-скриншоты; отчёт .local/qa/round-roof/report.json.
-Следующий шаг: сохранить проверенный код и резервную копию, показать сайт.
+Проверенный код: 5025b7be839de8ad6f6026091c7dbaff6da924b3; main обновлён
+fast-forward, рабочая ветка сохранена. Просмотр: localhost:3100,
+PID 20696, exec-сессия 36491; проверять процесс перед остановкой.
+Резервные копии: C:\taran\artifacts\antidrone-landing-backups\
+round-roof-20261004-5025b7b-source.zip и одноимённый .bundle.
+Bundle verify PASS, ZIP проверен: 135 записей, только tracked-файлы;
+нет данных/секретов, разрешён пустой шаблон .env.example.
+Блок завершён; следующий шаг — обратная связь заказчика.

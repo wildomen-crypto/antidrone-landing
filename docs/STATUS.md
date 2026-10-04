@@ -41,8 +41,8 @@ Typecheck, 30 unit, build и 16 групп browser PASS; семь ширин.
 Корень: C:\taran\antidrone-landing.
 Локальный выпуск: VERIFIED. Публичное размещение: WAITING_EXTERNAL.
 Основная ветка продолжения: main; сохранена delivery/local-site.
-Последний проверенный функциональный код: 74b680887c353e8c60530b2a94b1715ff7653b35.
-Рабочая ветка ui/roof-toggle-opening-sliders сохранена; main обновлён fast-forward.
+Последний проверенный функциональный код: 5025b7be839de8ad6f6026091c7dbaff6da924b3.
+Рабочая ветка ui/round-roof-control сохранена; main обновлён fast-forward.
 Базовый проверенный функциональный код: f67f7c9836d1e7a46f4e5926261cfa2d5b9f1914.
 Исходный main a3fda4b и промежуточный 487a69e остаются в истории.
 Карточка выпуска: docs/checkpoints/LOCAL-DELIVERY.md.
@@ -92,6 +92,9 @@ Git: локальная настройка Dmitrii Taran,
 ## Резервные копии
 
 Каталог C:\taran\artifacts\antidrone-landing-backups.
+Круглый контур/купол: round-roof-20261004-5025b7b-source.zip
+и одноимённый .bundle; bundle verify PASS. ZIP — только tracked-файлы;
+данные/секреты исключены, пустой шаблон .env.example допустим.
 Кровля и проём: roof-opening-20261004-74b6808-source.zip
 и одноимённый .bundle; bundle verify PASS. ZIP — только tracked-файлы.
 Иконки конструкции: construction-icons-20261004-697909a-source.zip
