@@ -51,8 +51,8 @@ Typecheck, 30 unit, build и 16 групп browser PASS; семь ширин.
 Корень: C:\taran\antidrone-landing.
 Локальный выпуск: VERIFIED. Публичное размещение: WAITING_EXTERNAL.
 Основная ветка продолжения: main; сохранена delivery/local-site.
-Последний проверенный функциональный код: 4b512b31119f12c6780b0d776c72c7cc9e5bb266.
-Рабочая ветка ui/contour-dimension-sliders сохранена; main обновлён fast-forward.
+Последний проверенный функциональный код: 268edc9e4aa1b4108b429763a56a3c7d5343b348.
+Рабочая ветка ui/narrow-dimension-panel сохранена; main обновлён fast-forward.
 Базовый проверенный функциональный код: f67f7c9836d1e7a46f4e5926261cfa2d5b9f1914.
 Исходный main a3fda4b и промежуточный 487a69e остаются в истории.
 Карточка выпуска: docs/checkpoints/LOCAL-DELIVERY.md.
@@ -102,6 +102,9 @@ Git: локальная настройка Dmitrii Taran,
 ## Резервные копии
 
 Каталог C:\taran\artifacts\antidrone-landing-backups.
+Узкая панель: narrow-dimensions-20261004-268edc9-source.zip
+и одноимённый .bundle; bundle verify PASS. ZIP — только tracked-файлы,
+137 записей; нет данных/секретов, допустим пустой .env.example.
 Размеры контуров: contour-sliders-20261004-4b512b3-source.zip
 и одноимённый .bundle; bundle verify PASS. ZIP — только tracked-файлы,
 136 записей; нет данных/секретов, допустим пустой .env.example.
