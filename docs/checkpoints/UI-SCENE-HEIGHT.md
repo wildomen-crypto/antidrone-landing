@@ -23,4 +23,8 @@ C1–C8/resize/JSON/печать/touch/Canvas/SVG, без ошибок JS/overfl
 unit/wide отдельно не повторялись, физические телефоны не проверены.
 Отчёты .local/qa/responsive/report.json и
 .local/qa/compact-materials/report.json. HTTP /compact 200; PID 3604.
-Следующий шаг: main/резервные копии, затем обратная связь.
+Код 298bcfd57ac3174803d999829f5741b153cfb3d6 в main (fast-forward).
+Ветка сохранена; ZIP/bundle scene-height-20261005-298bcfd проверены,
+ZIP 153 записи без данных/секретов/runtime, bundle verify PASS.
+Каталог C:\taran\artifacts\antidrone-landing-backups.
+Следующий шаг: обратная связь заказчика.

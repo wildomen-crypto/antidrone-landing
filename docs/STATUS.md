@@ -6,7 +6,10 @@
 Build с типизацией/worker; 8 responsive + 5 compact групп PASS.
 12 окон: измеренная высота 70% прежней; 390: 400→280 px,
 1024: 384→268,8 px, 1920: 604,8→423,4 px. C1–C8/resize/ракурсы/JSON/SVG
-работают; 390/1024/1920 просмотрены. Следующий шаг: main/резервные копии.
+работают; 390/1024/1920 просмотрены.
+Код 298bcfd57ac3174803d999829f5741b153cfb3d6 в main (fast-forward).
+ZIP/bundle scene-height-20261005-298bcfd проверены.
+Следующий шаг: обратная связь заказчика.
 
 Предыдущая работа: UI-REMOVE-SIZING-HINT — VERIFIED; база b858928.
 Ветка ui/remove-sizing-hint; docs/checkpoints/UI-REMOVE-SIZING-HINT.md.
@@ -182,6 +185,9 @@ Git: локальная настройка Dmitrii Taran,
 ## Резервные копии
 
 Каталог C:\taran\artifacts\antidrone-landing-backups.
+Высота сцены: scene-height-20261005-298bcfd-source.zip и .bundle;
+bundle verify PASS, ZIP 153 записи без данных/секретов/runtime.
+Шаблон .env.example содержит пустые значения/false.
 Удаление пояснения: remove-sizing-hint-20261005-a44b6cb-source.zip и
 .bundle; bundle verify PASS, ZIP 152 записи без данных/секретов/runtime.
 Шаблон .env.example содержит пустые значения/false.
