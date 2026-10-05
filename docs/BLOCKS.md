@@ -9,6 +9,7 @@ B10.2 необязателен: решение об объёме записыв�
 
 | ID | Статус | Результат | Проверка | Карточка |
 | --- | --- | --- | --- | --- |
+| UI-PRIMARY-OVERLAY | VERIFIED | Основная / с overlay; проём без внутренней рамки/заливки | Build/worker; 5 overlay групп на /; стили/пересчёт 390/1024/1920, варианты HTTP 200 | docs/checkpoints/UI-PRIMARY-OVERLAY.md |
 | UI-MEDIUM-OVERLAY | VERIFIED | /overlay: отдельная версия с панелями на 3D от 768 px | Build/worker; 5 overlay + 8 responsive групп; телефон идентичен /compact, Canvas/SVG/JSON/resize | docs/checkpoints/UI-MEDIUM-OVERLAY.md |
 | UI-GALLERY-RADIOS | VERIFIED | /compact: варианты галереи радиокнопками | Build/worker; 8 responsive групп, 12 окон; C6 варианты/ведомость/клавиатура/JSON | docs/checkpoints/UI-GALLERY-RADIOS.md |
 | UI-NARROW-PARAMETERS | VERIFIED | /compact: равная ширина накладных панелей 190 px | Build/worker; 8 responsive групп, 12 окон; C4/C8 ползунки/контуры и ширина 1280–2560 | docs/checkpoints/UI-NARROW-PARAMETERS.md |

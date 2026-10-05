@@ -1,6 +1,15 @@
 # Состояние разработки
 
-Текущая работа: UI-MEDIUM-OVERLAY — VERIFIED; база a107d34.
+Текущая работа: UI-PRIMARY-OVERLAY — VERIFIED; база 6132b99.
+Ветка ui/primary-overlay-clean-opening; docs/checkpoints/UI-PRIMARY-OVERLAY.md.
+Основная / с принятой overlay-компоновкой, проём без внутренней рамки/заливки.
+Build/worker и 5 overlay групп на главной PASS; 390/1024/1920:
+граница 0, прозрачный фон, padding 0, ползунки/ведомость работают.
+Предыдущие варианты доступны, /classic сохраняет боковой интерфейс.
+Ошибок JS нет; панель 1920 просмотрена.
+Следующий шаг: сохранить проверенный код и резервные копии.
+
+Предыдущая работа: UI-MEDIUM-OVERLAY — VERIFIED; база a107d34.
 Ветка ui/medium-overlay-preview; docs/checkpoints/UI-MEDIUM-OVERLAY.md.
 Отдельный /overlay: панели поверх сцены от 768 px, телефон как /compact.
 Build/worker PASS; 5 overlay и 8 responsive групп PASS.
@@ -209,7 +218,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 52 VERIFIED (включая двадцать пять правок UI и решение не включать upload),
+Реестр: 53 VERIFIED (включая двадцать шесть правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки

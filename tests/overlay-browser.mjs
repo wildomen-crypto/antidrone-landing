@@ -12,14 +12,14 @@ const overlap=(a,b)=>a.x<b.x+b.width&&a.x+a.width>b.x&&a.y<b.y+b.height&&a.y+a.h
 async function check(name,fn){await fn();report.checks.push(name);console.log('PASS '+name);}
 async function metrics(page){return page.locator('.calculator').evaluate(root=>{
   const selectors=['.viewer','.dimension-panel','.parameter-panel','.shape-picker','.material-picker','.service-picker','.dimension-slider','.compact-options','.gallery-variants'];
-  return selectors.flatMap(selector=>[...root.querySelectorAll(selector)].map(el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return {selector,x:r.x,y:r.y,w:r.width,h:r.height,position:s.position,grid:s.gridTemplateColumns};}));
+  return selectors.flatMap(selector=>[...root.querySelectorAll(selector)].map(el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return {selector,x:r.x,y:r.y,w:r.width,h:r.height,position:s.position,grid:s.gridTemplateColumns,opening:!!el.closest('.opening-sliders')};}));
 });}
 async function scene(page){await page.locator('.viewer').evaluate(el=>el.scrollIntoView({block:'center'}));await page.locator('.viewer canvas').waitFor();await frame(page);}
 try{
  const page=await browser.newPage({reducedMotion:'reduce'});page.on('pageerror',e=>report.errors.push(e.message));
  await check('Overlay from 768 px; bounded panels, usable view toolbar, no horizontal clipping',async()=>{
   for(const [width,height] of [[768,1024],[800,900],[1024,768],[1279,900],[1280,800],[1920,1080],[2560,1440],[844,390]]){
-   await page.setViewportSize({width,height});await page.goto(base+'/overlay#calculator',{waitUntil:'networkidle'});await scene(page);
+   await page.setViewportSize({width,height});await page.goto(base+'/#calculator',{waitUntil:'networkidle'});await scene(page);
    const viewer=await page.locator('.viewer').boundingBox(),toolbar=await page.locator('.scene-view-controls').boundingBox();
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
    for(const selector of ['.dimension-panel','.parameter-panel']){
@@ -49,19 +49,22 @@ try{
    }
   }
  });
- await check('Phone layout exactly matches compact; existing medium compact stays below the scene',async()=>{
+ await check('Phone keeps compact columns and dimensions with plain opening controls; medium compact remains unchanged',async()=>{
   for(const [width,height] of [[320,640],[390,844],[600,900],[767,900]]){
    await page.setViewportSize({width,height});
    for(const index of [2,3,5,7]){
     await page.goto(base+'/compact#calculator',{waitUntil:'networkidle'});await page.locator('.shape-choice').nth(index).click();await frame(page);const original=await metrics(page);
-    await page.goto(base+'/overlay#calculator',{waitUntil:'networkidle'});await page.locator('.shape-choice').nth(index).click();await frame(page);assert.deepEqual(await metrics(page),original);
+    await page.goto(base+'/#calculator',{waitUntil:'networkidle'});await page.locator('.shape-choice').nth(index).click();await frame(page);const current=await metrics(page);
+    const layout=items=>items.filter(m=>!m.opening).map(({selector,x,w,position,grid})=>({selector,x,w,position,grid}));
+    assert.deepEqual(layout(current),layout(original));
+    for(const selector of ['.viewer','.dimension-panel'])assert.equal(current.find(m=>m.selector===selector).h,original.find(m=>m.selector===selector).h);
    }
   }
   await page.setViewportSize({width:1024,height:768});await page.goto(base+'/compact#calculator',{waitUntil:'networkidle'});
   const viewer=await page.locator('.viewer').boundingBox();assert.equal(overlap(viewer,await page.locator('.dimension-panel').boundingBox()),false);
  });
  await check('Resize, JSON, keyboard and Canvas camera views preserve real configuration',async()=>{
-  await page.goto(base+'/overlay#calculator',{waitUntil:'networkidle'});await scene(page);
+  await page.goto(base+'/#calculator',{waitUntil:'networkidle'});await scene(page);
   await page.getByRole('textbox',{name:'Длина, м',exact:true}).fill('12');
   const total=await page.locator('.quantity-grid').textContent();
   await page.setViewportSize({width:390,height:844});await frame(page);assert.equal(await page.getByRole('textbox',{name:'Длина, м',exact:true}).inputValue(),'12');
@@ -75,7 +78,7 @@ try{
  await check('SVG fallback reserves actual medium panels and clears insets on phone',async()=>{
   const fallback=await browser.newPage({viewport:{width:1024,height:768},reducedMotion:'reduce'});fallback.on('pageerror',e=>report.errors.push(e.message));
   await fallback.addInitScript(()=>{const original=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(kind,...args){return /^webgl/.test(kind)?null:original.call(this,kind,...args);};});
-  await fallback.goto(base+'/overlay#calculator',{waitUntil:'networkidle'});await fallback.locator('.scene-fallback>svg').waitFor();await frame(fallback);
+  await fallback.goto(base+'/#calculator',{waitUntil:'networkidle'});await fallback.locator('.scene-fallback>svg').waitFor();await frame(fallback);
   const insets=()=>fallback.locator('.scene-fallback').evaluate(el=>{const s=getComputedStyle(el);return [s.paddingLeft,s.paddingRight,s.paddingTop].map(parseFloat);});
   const reserved=await insets();assert.ok(reserved[0]>190&&reserved[1]>190);
   await fallback.setViewportSize({width:390,height:844});await frame(fallback);assert.deepEqual(await insets(),[0,0,0]);await fallback.close();

@@ -20,7 +20,7 @@ try {
   await check('Seven widths: full screen, same scene height, overlays stay inside, no overflow', async () => {
     for (const width of [360, 390, 510, 768, 900, 1280, 1440]) {
       const page = await browser.newPage({ viewport: { width, height: 1000 }, reducedMotion: 'reduce' }); monitor(page);
-      await page.goto(base + '/#calculator', { waitUntil: 'networkidle' });
+      await page.goto(base + '/classic#calculator', { waitUntil: 'networkidle' });
       const original = await page.locator('.viewer').boundingBox();
       assert.equal(await page.getByRole('combobox', { name: 'Тип конструкции', exact: true }).inputValue(), 'C4');
       await page.goto(base + '/wide#calculator', { waitUntil: 'networkidle' });

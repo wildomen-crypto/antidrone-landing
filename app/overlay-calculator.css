@@ -35,3 +35,5 @@
   .calculator-overlay[data-shape="C8"] .contour-options>summary{line-height:1.4;padding-block:2px}
   .calculator-overlay[data-shape="C8"] .contour-inputs>.field{grid-template-columns:minmax(0,1fr);gap:4px}
 }
+/* Keep the opening controls on the panel's own surface. */
+.calculator-overlay .opening-sliders{border:0;background:transparent;border-radius:0;padding:0}

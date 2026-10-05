@@ -11,6 +11,7 @@ const require=createRequire(import.meta.url);
 const {defaultInput}=require('../.local/test-build/lib/configuration/input.js');
 const {legal}=require('../.local/test-build/config/legal.js');
 const base=process.env.QA_URL??'http://127.0.0.1:3100';
+const classic=base+'/classic';
 assert.ok(['127.0.0.1','localhost'].includes(new URL(base).hostname),'Submission QA is restricted to localhost');
 const output=path.resolve('.local/qa');await mkdir(output,{recursive:true});
 const startedAt=Date.now();
@@ -37,7 +38,7 @@ try{
   await check('A01 responsive layout and SSR at 360/390/768/1280/1440',async()=>{
     for(const width of [360,390,768,1280,1440]){
       const page=await browser.newPage({viewport:{width,height:900},reducedMotion:'reduce'});monitor(page);
-      const response=await page.goto(base,{waitUntil:'networkidle'});assert.equal(response.status(),200);
+      const response=await page.goto(classic,{waitUntil:'networkidle'});assert.equal(response.status(),200);
       assert.equal(await page.locator('h1').count(),1);assert.equal(await page.locator('html').getAttribute('lang'),'ru');
       assert.match(await page.title(),/Топинженер/);assert.match(await page.locator('meta[name=robots]').getAttribute('content'),/noindex/);
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'overflow at '+width);
@@ -49,7 +50,7 @@ try{
       await page.close();
     }
   });
-  const page=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});monitor(page);await page.goto(base,{waitUntil:'networkidle'});
+  const page=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});monitor(page);await page.goto(classic,{waitUntil:'networkidle'});
   const shape=page.getByRole('combobox',{name:'Тип конструкции',exact:true});
   await check('A02 catalog card selects configuration',async()=>{
     await page.locator('.solution-card').nth(3).getByRole('button').click();
@@ -199,14 +200,14 @@ try{
     assert.ok(emails.every(e=>['mailto:info@topengineer.ru','mailto:kmd@topengineer.ru','mailto:mk@topengineer.ru'].includes(e)));
     for(const url of ['/privacy','/consent'])assert.equal((await fetch(base+url)).status,200);
     assert.equal(report.requests.length,0);assert.equal(report.errors.length,0);
-    await page.goto(base,{waitUntil:'networkidle'});await page.keyboard.press('Tab');assert.equal(await page.evaluate(()=>document.activeElement.className),'skip-link');
+    await page.goto(classic,{waitUntil:'networkidle'});await page.keyboard.press('Tab');assert.equal(await page.evaluate(()=>document.activeElement.className),'skip-link');
   });
   await page.close();
   await check('A14 no-WebGL fallback retains projections, quantities and quote action',async()=>{
     const fallbackBrowser=await chromium.launch({channel:process.env.PLAYWRIGHT_CHANNEL??'msedge',headless:true,args:['--disable-webgl']});
     try{
       const fallback=await fallbackBrowser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});monitor(fallback);
-      await fallback.goto(base,{waitUntil:'networkidle'});await fallback.locator('.viewer').scrollIntoViewIfNeeded();
+      await fallback.goto(classic,{waitUntil:'networkidle'});await fallback.locator('.viewer').scrollIntoViewIfNeeded();
       await fallback.locator('.viewer svg').waitFor();assert.equal(await total(fallback),188);
       await fallback.getByRole('button',{name:'Сверху',exact:true}).click();
       await fallback.locator('.viewer svg[aria-label*="сверху"]').waitFor();
