@@ -27,4 +27,8 @@ Build с типизацией/worker, 8 responsive групп PASS на 12 ок�
 Отчёты .local/qa/empty-dimensions-before.json, -final.json и
 .local/qa/responsive/report.json. Геометрия неизменна, unit не повторялись;
 физические телефоны не проверены. HTTP /compact 200; PID 29296.
-Следующий шаг: main/резервные копии, затем обратная связь.
+Код fd9f5b880f7e9ebfad7472d0f2a99b93605aa673 в main (fast-forward).
+ZIP/bundle empty-dimensions-20261005-fd9f5b8 проверены, ZIP 156 записей
+без данных/секретов/runtime, bundle verify PASS; включает C8 709f5ff.
+Каталог C:\taran\artifacts\antidrone-landing-backups.
+Следующий шаг: обратная связь заказчика.

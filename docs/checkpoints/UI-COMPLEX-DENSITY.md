@@ -18,4 +18,6 @@ Build с типизацией/worker PASS, профильный browser на ч�
 JSON экспорт/импорт работают. Нет ошибок JS/overflow. Скриншот 1920
 просмотрен. Отчёты .local/qa/complex-density-before.json и -after.json.
 Логика не менялась; полные unit/browser не повторялись для CSS.
-Следующий шаг: сохранить проверенный блок, затем UI-EMPTY-DIMENSIONS.
+Код 709f5ff в main; включён в общий ZIP/bundle
+empty-dimensions-20261005-fd9f5b8, проверка архива/bundle PASS.
+UI-EMPTY-DIMENSIONS завершён отдельно; следующий шаг — обратная связь.

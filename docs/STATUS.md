@@ -7,13 +7,15 @@ Build с типизацией/worker; 8 responsive групп PASS на 12 ок�
 C3/C7 занимают всю среднюю ширину; высота 232→128 px на 768,
 232→85 px на 1024; 316→228 px на телефоне 390. Стены навеса скрыты,
 кровля доступна; комбинация возвращает параметры без сброса размеров.
-Скриншоты 768/1024 просмотрены. Следующий шаг: main/резервные копии.
+Скриншоты 768/1024 просмотрены. Код fd9f5b880f7e9ebfad7472d0f2a99b93605aa673
+в main (fast-forward); ZIP/bundle empty-dimensions-20261005-fd9f5b8 проверены.
+Следующий шаг: обратная связь заказчика.
 
 Предыдущая работа: UI-COMPLEX-DENSITY — VERIFIED; база 1adfd86.
 Ветка ui/dense-complex-parameters; docs/checkpoints/UI-COMPLEX-DENSITY.md.
 Параметры C8 ниже на 29–40%: полная высота 361–364 px вместо 507–606.
 Build/worker PASS; browser 320/390/1024/1920, контуры/основания/JSON PASS.
-Следующий шаг: UI-EMPTY-DIMENSIONS — размеры занимают свободную ширину.
+Код 709f5ff в main, включён в общий ZIP/bundle empty-dimensions-20261005-fd9f5b8.
 
 Предыдущая работа: UI-PARAMETER-HEADING — VERIFIED; база f1cdb01.
 Ветка ui/plain-parameter-heading; docs/checkpoints/UI-PARAMETER-HEADING.md.
@@ -210,6 +212,9 @@ Git: локальная настройка Dmitrii Taran,
 ## Резервные копии
 
 Каталог C:\taran\artifacts\antidrone-landing-backups.
+Свободная ширина размеров/плотные контуры: empty-dimensions-20261005-fd9f5b8
+-source.zip и .bundle; bundle verify PASS, ZIP 156 записей без данных/
+секретов/runtime, .env.example — пустые значения/false. Содержит C8 709f5ff.
 Заголовок параметров: parameter-heading-20261005-d0441ae-source.zip и
 .bundle; bundle verify PASS, ZIP 154 записи без данных/секретов/runtime.
 Шаблон .env.example содержит пустые значения/false.
