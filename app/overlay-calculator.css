@@ -1,0 +1,37 @@
+/* Comparison version: keep medium-window controls on the scene.
+   Phone rules are inherited unchanged from the compact layout. */
+@media (min-width:768px) and (max-width:1279px), (min-width:768px) and (max-height:650px){
+  .calculator-overlay .viewer-stage{display:block;padding:0}
+  .calculator-overlay .viewer{height:var(--scene-height);width:100%;margin:0}
+  .calculator-overlay .dimension-panel,.calculator-overlay .parameter-panel{position:absolute;top:12px;bottom:auto;width:190px;max-width:calc(100% - 32px);max-height:calc(var(--scene-height) - 24px);overflow:hidden;margin:0;backdrop-filter:blur(12px);box-shadow:0 5px 24px #172b4012}
+  .calculator-overlay .dimension-panel{left:16px;padding:10px 14px 4px;display:block;overflow-y:auto}
+  .calculator-overlay .parameter-panel{right:16px;display:flex}
+  .calculator-overlay .parameter-panel .calculator-inputs{padding:0 14px 10px;overflow-y:auto}
+  .calculator-overlay .parameter-panel-heading{padding:10px 14px 6px}
+  .calculator-overlay .dimension-sliders{display:block}
+  .calculator-overlay .dimension-slider-head{gap:10px}
+  .calculator-overlay .dimension-exact{flex-basis:32px;width:32px}
+  .calculator-overlay .dimension-exact input,.calculator-overlay .dimension-value{font-size:12px;min-height:26px;padding:4px 3px}
+  .calculator-overlay .compact-options{display:grid;gap:6px}
+  .calculator-overlay .compact-options-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+  .calculator-overlay .compact-option-buttons{flex-wrap:wrap}
+  .calculator-overlay .compact-option-group>span{margin-bottom:3px}
+  .calculator-overlay .viewer-stage[data-settings="false"] .dimension-panel{display:block}
+  .calculator-overlay .viewer-stage[data-settings="false"] .dimension-sliders{display:block}
+  .calculator-overlay .viewer-stage[data-settings="false"] .compact-options{max-width:none;align-self:auto;margin-top:4px;padding-top:6px;border-top:1px solid var(--line);gap:6px}
+  .calculator-overlay .parameter-panel .check-field{min-height:32px;line-height:1.4;gap:6px}
+  .calculator-overlay .opening-sliders{padding:6px 6px 4px;margin:6px 0}
+  .calculator-overlay .opening-sliders .dimension-slider-head{gap:6px}
+  .calculator-overlay .opening-sliders .dimension-exact{flex-basis:32px;width:32px}
+  .calculator-overlay .parameter-panel .field-grid{grid-template-columns:minmax(0,1fr)}
+  .calculator-overlay .parameter-panel .field select{font-size:12px}
+  .calculator-overlay .gallery-variant-choice{width:100%}
+  .calculator-overlay[data-shape="C8"] .contour-sliders{grid-template-columns:minmax(0,1fr);gap:2px}
+  .calculator-overlay[data-shape="C8"] .contour-sliders .dimension-slider{display:grid;grid-template-columns:40px minmax(0,1fr) 36px;align-items:center;gap:4px;min-height:26px}
+  .calculator-overlay[data-shape="C8"] .contour-sliders .dimension-slider-head{display:contents}
+  .calculator-overlay[data-shape="C8"] .contour-sliders .dimension-slider-head>label:first-child{grid-column:1;grid-row:1;font-size:9px}
+  .calculator-overlay[data-shape="C8"] .contour-sliders .dimension-exact{grid-column:3;grid-row:1;width:36px}
+  .calculator-overlay[data-shape="C8"] .contour-sliders .dimension-slider>input[type=range]{grid-column:2;grid-row:1}
+  .calculator-overlay[data-shape="C8"] .contour-options>summary{line-height:1.4;padding-block:2px}
+  .calculator-overlay[data-shape="C8"] .contour-inputs>.field{grid-template-columns:minmax(0,1fr);gap:4px}
+}

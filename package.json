@@ -15,6 +15,7 @@
     "test:wide": "node tests/wide-browser.mjs",
     "test:compact": "node tests/compact-browser.mjs",
     "test:responsive": "node tests/responsive-browser.mjs",
+    "test:overlay": "node tests/overlay-browser.mjs",
     "build:worker": "tsc -p tsconfig.tests.json --outDir .local/runtime",
     "leads": "npm run build:worker && node scripts/leads.cjs",
     "start": "next start --hostname 127.0.0.1 --port 3100"

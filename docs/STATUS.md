@@ -1,6 +1,15 @@
 # Состояние разработки
 
-Текущая работа: UI-GALLERY-RADIOS — VERIFIED; база b8f92c4.
+Текущая работа: UI-MEDIUM-OVERLAY — VERIFIED; база a107d34.
+Ветка ui/medium-overlay-preview; docs/checkpoints/UI-MEDIUM-OVERLAY.md.
+Отдельный /overlay: панели поверх сцены от 768 px, телефон как /compact.
+Build/worker PASS; 5 overlay и 8 responsive групп PASS.
+Панели 190 px на 768–2560 и 844×390; все C1–C8/камера/JSON работают.
+Телефон C3/C4/C6/C8 совпадает с /compact на 320/390/600/767 px.
+Нет overflow/ошибок JS; 800/1024 просмотрены, /compact сохранён.
+Следующий шаг: сохранить проверенный код и резервные копии.
+
+Предыдущая работа: UI-GALLERY-RADIOS — VERIFIED; база b8f92c4.
 Ветка ui/gallery-variant-radios; docs/checkpoints/UI-GALLERY-RADIOS.md.
 Варианты галереи радиокнопками, все три подписи сразу видны.
 Build/worker и 8 responsive групп PASS на 12 окнах; профильные 5 окон:
@@ -197,7 +206,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 51 VERIFIED (включая двадцать четыре правки UI и решение не включать upload),
+Реестр: 52 VERIFIED (включая двадцать пять правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки

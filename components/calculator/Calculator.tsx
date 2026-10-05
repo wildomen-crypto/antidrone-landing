@@ -35,8 +35,8 @@ function inputForShape(current: LayoutInput, shapeId: LayoutInput["shapeId"], de
   return { ...current, shapeId, variant: variantFor(shapeId), roof: shapeId === "C3" || current.roof,
     opening: { ...opening, enabled } };
 }
-export default function Calculator({ variant = "standard" }: { variant?: "standard" | "wide" | "compact" }) {
-  const wide = variant !== "standard", compact = variant === "compact";
+export default function Calculator({ variant = "standard" }: { variant?: "standard" | "wide" | "compact" | "overlay" }) {
+  const wide = variant !== "standard", overlay = variant === "overlay", compact = variant === "compact" || overlay;
   const galleryVariantName = useId();
   const [rightInset, setRightInset] = useState(0);
   const [topInset, setTopInset] = useState(0);
@@ -227,7 +227,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   );
   const viewerControls = <div className="viewer-controls"><div className="view-buttons">{([["perspective", "3D"], ["top", "Сверху"], ["front", "Спереди"], ["side", "Сбоку"]] as const).map(([key, label]) => <button key={key} className={view === key ? "selected" : ""} aria-pressed={view === key} onClick={() => setView(key)}>{label}</button>)}</div><label className="check-field"><input type="checkbox" checked={onlyFrame} onChange={e => setOnlyFrame(e.target.checked)} />Только каркас</label></div>;
   const structurePicker = <StructurePicker value={input.structuralSystem} spatialSupports={input.spatialSupports} onChange={chooseStructure} />;
-  return <div className={wide ? `calculator calculator-wide${compact ? " calculator-compact" : ""}` : "calculator"} data-shape={input.shapeId}>
+  return <div className={wide ? `calculator calculator-wide${compact ? " calculator-compact" : ""}${overlay ? " calculator-overlay" : ""}` : "calculator"} data-shape={input.shapeId}>
     {wide && <ShapePicker value={input.shapeId} onChange={choose} />}
     {!wide && settings}
     <div className="calculator-output">
