@@ -6,7 +6,10 @@
 несущие выше стен. Build с типизацией/worker PASS; 8 responsive + 5 compact
 групп PASS, 12 окон. C4 размеры 232 px средний / 316 px телефон 390.
 Default проём 179 м², отключённый 188 м²; JSON сохраняет выбор.
-Скриншоты 390/1100/1920 просмотрены. Следующий шаг: main/резервные копии.
+Скриншоты 390/1100/1920 просмотрены.
+Код acd79341c1f3273da059c7363d1f590bbe646706 в main (fast-forward).
+ZIP/bundle dense-options-20261005-acd7934 проверены.
+Следующий шаг: обратная связь заказчика.
 
 Предыдущая работа: UI-ADAPTIVE-SHAPES — VERIFIED; база e37fc1b.
 Ветка ui/adaptive-shape-cards; docs/checkpoints/UI-ADAPTIVE-SHAPES.md.
@@ -163,6 +166,9 @@ Git: локальная настройка Dmitrii Taran,
 ## Резервные копии
 
 Каталог C:\taran\artifacts\antidrone-landing-backups.
+Плотные настройки/проём: dense-options-20261005-acd7934-source.zip и
+.bundle; bundle verify PASS, ZIP 151 запись без данных/секретов/runtime.
+Шаблон .env.example содержит пустые значения/false.
 Адаптивные типы: adaptive-shapes-20261005-ea2871d-source.zip и .bundle;
 bundle verify PASS, ZIP 150 записей, без данных/секретов/runtime.
 Шаблон .env.example содержит пустые значения/false.

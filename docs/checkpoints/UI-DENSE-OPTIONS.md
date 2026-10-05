@@ -33,4 +33,9 @@ Resize/touch/C1–C8/JSON/печать/Canvas/SVG, без ошибок JS/overfl
 Отчёты .local/qa/responsive/report.json и
 .local/qa/compact-materials/report.json. Unit/wide отдельно не повторялись;
 геометрический алгоритм неизменен, физические телефоны не проверены.
-Следующий шаг: main/архив/bundle, затем обратная связь.
+Код acd79341c1f3273da059c7363d1f590bbe646706 в main (fast-forward).
+Ветка сохранена; ZIP/bundle dense-options-20261005-acd7934 проверены.
+ZIP 151 запись без данных/секретов/runtime; bundle verify PASS.
+Каталог C:\taran\artifacts\antidrone-landing-backups.
+HTTP /compact 200, PID 1256, скрытый production-процесс на порту 3100.
+Следующий шаг: обратная связь заказчика.
