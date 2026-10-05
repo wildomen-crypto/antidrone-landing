@@ -6,6 +6,8 @@
 Check 48 unit/build/worker; PHP lint/17 cases + dispatcher 3.10.12;
 ZIP 94 файла/82 HTTP 200; Chrome C1–C8/цена/стили/auto-height/390 PASS.
 ZIP в Downloads; установка/SMTP живого хостинга не проверены. Preview PID 212176.
+Источник 0891ca2 в origin/main; gh-pages 50d8017 HTTPS built, 29 ресурсов 200.
+https://wildomen-crypto.github.io/antidrone-landing/joomla/ — demo/цена PASS.
 Следующий шаг: передать архив и отдельную ссылку просмотра.
 
 Текущая локальная работа: PUBLIC-PAGES-20261005 — VERIFIED.
