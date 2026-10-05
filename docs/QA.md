@@ -1,5 +1,19 @@
 # Проверка локальной версии
 
+## Высота сцены −30% — 5 октября 2026
+
+UI-SCENE-HEIGHT VERIFIED. Production build с типизацией/worker PASS,
+8 responsive + 5 compact групп PASS. На всех 12 окнах 320–2560 px
+измерена высота 70% прежней с допуском 1 px на округление.
+390×844: 400→280 px, 1024×768: 384→268,8 px,
+1920×1080: 604,8→423,4 px; короткое окно 844×390: 300→210 px.
+Настройки остаются доступны, ракурсы внутри сцены; C1–C8, resize,
+JSON/печать/touch/Canvas/SVG, без ошибок JS/overflow.
+Скриншоты calculator-390/1024/1920 просмотрены. Отчёты:
+.local/qa/responsive/report.json (previousSceneHeight/sceneHeight),
+.local/qa/compact-materials/report.json. Геометрия не менялась,
+unit/wide отдельно не повторялись; физические телефоны не проверены.
+
 ## Удаление пояснения из настроек — 5 октября 2026
 
 UI-REMOVE-SIZING-HINT VERIFIED. Удалён общий абзац о предварительной

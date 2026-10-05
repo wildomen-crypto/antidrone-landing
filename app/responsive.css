@@ -1,5 +1,5 @@
 /* The adaptive version keeps one set of controls and configuration at every width. */
-.calculator-compact{--scene-height:clamp(440px,56vh,620px);border-inline:1px solid var(--line);border-radius:10px}
+.calculator-compact{--scene-height:clamp(308px,39.2vh,434px);border-inline:1px solid var(--line);border-radius:10px}
 .calculator-compact .viewer{height:var(--scene-height)}
 .calculator-compact .dimension-panel,.calculator-compact .parameter-panel{max-height:calc(var(--scene-height) - 24px)}
 .calculator-compact .shape-picker{padding:8px 24px;gap:8px}
@@ -47,7 +47,7 @@
 }
 @media (max-width:1279px), (max-height:650px){
   .calculator-compact .viewer-stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;padding:0 24px 20px;background:#f2f5fa;align-items:start}
-  .calculator-compact .viewer{grid-column:1/-1;grid-row:1;height:clamp(340px,50vh,460px);width:calc(100% + 48px);margin-inline:-24px}
+  .calculator-compact .viewer{grid-column:1/-1;grid-row:1;height:clamp(238px,35vh,322px);width:calc(100% + 48px);margin-inline:-24px}
   .calculator-compact .dimension-panel,.calculator-compact .parameter-panel{position:static;width:100%;max-width:none;max-height:none;margin:0;box-shadow:none;backdrop-filter:none;overflow:visible}
   .calculator-compact .dimension-panel{grid-column:1;padding:10px 12px 6px}
   .calculator-compact .parameter-panel{grid-column:2;grid-row:2}
@@ -89,7 +89,7 @@
 /* Phones: full-width model, controls in the document, every material visible. */
 @media (max-width:767px){
   .calculator-compact .viewer-stage{grid-template-columns:minmax(0,1fr);gap:12px;padding:0 16px 16px}
-  .calculator-compact .viewer{height:clamp(300px,48svh,400px);width:calc(100% + 32px);margin-inline:-16px}
+  .calculator-compact .viewer{height:clamp(210px,33.6svh,280px);width:calc(100% + 32px);margin-inline:-16px}
   .calculator-compact .parameter-panel{grid-column:1;grid-row:3}
   .calculator-compact .dimension-panel{padding:10px 12px 6px}
   .calculator-compact .parameter-panel .calculator-inputs{padding:10px 12px}
@@ -117,7 +117,7 @@
   .calculator-compact .shape-picker,.calculator-compact .material-choice-strip{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media (max-height:500px) and (min-width:600px){
-  .calculator-compact .viewer{height:300px}
+  .calculator-compact .viewer{height:210px}
 }
 
 /* Landing page spacing and text remain readable independently of the calculator. */

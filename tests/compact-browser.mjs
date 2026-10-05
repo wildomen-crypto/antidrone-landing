@@ -18,10 +18,9 @@ try{
     const page=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});monitor(page);
     for(const width of [360,390,510,768,900,1280,1440]){
       await page.setViewportSize({width,height:1000});await page.goto(base+'/wide#calculator',{waitUntil:'networkidle'});
-      const wideHeight=(await page.locator('.viewer').boundingBox()).height;
       const before=await page.locator('.material-picker[data-target]').evaluateAll(rows=>rows.map(el=>el.getBoundingClientRect().height));
       await page.goto(base+'/compact#calculator',{waitUntil:'networkidle'});await scene(page);
-      const viewer=await page.locator('.viewer').boundingBox();assert.ok(viewer.height>=wideHeight);
+      const viewer=await page.locator('.viewer').boundingBox();assert.ok(viewer.height>=210&&viewer.height<=434);
       const container=await page.locator('#calculator>.container').first().boundingBox();assert.ok(Math.abs(viewer.width-container.width)<=2);
       const panel=await page.locator('.parameter-panel').boundingBox();
       if(width>=1280)assert.ok(panel.y>=viewer.y&&panel.y+panel.height<=viewer.y+viewer.height);

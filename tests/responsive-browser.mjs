@@ -38,8 +38,11 @@ try{
       await show(page);
       const scene=await page.locator('.viewer').boundingBox();
       const container=await page.locator('#calculator>.container').first().boundingBox();
-      assert.ok(Math.abs(scene.width-container.width)<=2);assert.ok(Math.abs(scene.x-container.x)<=1);assert.ok(scene.height>=300);
+      assert.ok(Math.abs(scene.width-container.width)<=2);assert.ok(Math.abs(scene.x-container.x)<=1);assert.ok(scene.height>=210);
       const overlay=width>=1280&&height>650;
+      const clamp=(min,value,max)=>Math.min(max,Math.max(min,value));
+      const previousHeight=height<=500&&width>=600?300:overlay?clamp(440,height*.56,620):width<768?clamp(300,height*.48,400):clamp(340,height*.5,460);
+      assert.ok(Math.abs(scene.height-previousHeight*.7)<=1,'3D scene is exactly 30% shorter');
       if(!overlay)await clearScene(page);
       else{
         for(const selector of ['.dimension-panel','.parameter-panel']){
@@ -80,7 +83,7 @@ try{
           assert.equal(new Set(icons.groups.map(group=>Math.round(group.y))).size,1,'Option groups fit on one line and must not waste another row');
       }
       await noOverflow(page);
-      report.viewports.push({width,height,mode:overlay?'large':width>=768?'medium':'phone',sceneHeight:scene.height,sceneWidth:scene.width,containerWidth:container.width,shapeRows,shapePickerHeight:shapes.height});
+      report.viewports.push({width,height,mode:overlay?'large':width>=768?'medium':'phone',previousSceneHeight:previousHeight,sceneHeight:scene.height,sceneWidth:scene.width,containerWidth:container.width,shapeRows,shapePickerHeight:shapes.height});
       if([390,1024,1920].includes(width)){
         await page.locator('.shape-picker').evaluate(el=>el.scrollIntoView({block:'start'}));await frame(page);
         await page.screenshot({path:path.join(output,'calculator-'+width+'.png')});

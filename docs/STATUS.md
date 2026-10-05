@@ -1,6 +1,14 @@
 # Состояние разработки
 
-Текущая работа: UI-REMOVE-SIZING-HINT — VERIFIED; база b858928.
+Текущая работа: UI-SCENE-HEIGHT — VERIFIED; база e8c04da.
+Ветка ui/scene-height-70pct; docs/checkpoints/UI-SCENE-HEIGHT.md.
+Высота 3D /compact 70% прежней во всех компоновках.
+Build с типизацией/worker; 8 responsive + 5 compact групп PASS.
+12 окон: измеренная высота 70% прежней; 390: 400→280 px,
+1024: 384→268,8 px, 1920: 604,8→423,4 px. C1–C8/resize/ракурсы/JSON/SVG
+работают; 390/1024/1920 просмотрены. Следующий шаг: main/резервные копии.
+
+Предыдущая работа: UI-REMOVE-SIZING-HINT — VERIFIED; база b858928.
 Ветка ui/remove-sizing-hint; docs/checkpoints/UI-REMOVE-SIZING-HINT.md.
 Поясняющий абзац удалён из настроек без пустого блока.
 Build с типизацией/worker PASS; HTTP 200 и отсутствие текста на /compact,
@@ -136,7 +144,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 45 VERIFIED (включая восемнадцать правок UI и решение не включать upload),
+Реестр: 46 VERIFIED (включая девятнадцать правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
@@ -162,7 +170,7 @@ main обновлён fast-forward.
 http://127.0.0.1:3100 — production build, только этот компьютер.
 Новый вариант: http://127.0.0.1:3100/wide#calculator.
 Адаптивная версия: http://127.0.0.1:3100/compact#calculator.
-PID 18388, скрытый фоновый процесс; логи .local/preview.stdout.log и
+PID 3604, скрытый фоновый процесс; логи .local/preview.stdout.log и
 .local/preview.stderr.log. Проверять фактический порт и CommandLine
 перед остановкой; не останавливать чужие процессы. После перезапуска
 компьютера: npm.cmd run start из корня проекта.
