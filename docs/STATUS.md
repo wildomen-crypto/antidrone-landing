@@ -6,7 +6,10 @@
 Build/worker и 8 responsive групп PASS на 12 окнах; профильные 5 окон:
 выбор/клавиатура, пересчёт ведомости, подъём, resize и JSON работают.
 Нет переполнения/ошибок JS, 1920 и мобильная панель просмотрены.
-Следующий шаг: сохранить проверенный код и резервные копии.
+Код 4729b5a4f5a399e14d0c37fb1e1d0e87d8304d3f в main (fast-forward).
+ZIP/bundle gallery-radios-20261005-4729b5a проверены: 158 записей,
+без данных/секретов/runtime, bundle verify PASS. Сервер PID 29620, HTTP 200.
+Следующий шаг: обратная связь заказчика.
 
 Предыдущая работа: UI-NARROW-PARAMETERS — VERIFIED; база 8167569.
 Ветка ui/narrow-parameter-panel; docs/checkpoints/UI-NARROW-PARAMETERS.md.

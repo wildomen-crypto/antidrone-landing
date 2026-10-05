@@ -22,4 +22,8 @@ cable 154,68 м²/220,6 м. /wide сохранил выпадающий спис
 Отчёты .local/qa/gallery-radios.json и responsive/report.json.
 Геометрия неизменна; unit не повторялись, физический телефон не проверен.
 Локальный сервер PID 29620.
-Следующий шаг: сохранить проверенный код и резервные копии.
+Код 4729b5a4f5a399e14d0c37fb1e1d0e87d8304d3f в main (fast-forward).
+ZIP/bundle gallery-radios-20261005-4729b5a проверены: 158 записей,
+без данных/секретов/runtime, bundle verify PASS. Каталог
+C:\taran\artifacts\antidrone-landing-backups. HTTP /compact 200.
+Следующий шаг: обратная связь заказчика.
