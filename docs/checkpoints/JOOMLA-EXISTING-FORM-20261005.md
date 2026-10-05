@@ -31,5 +31,9 @@ ZIP: C:\Users\student\Downloads\mod_antidrone_design-joomla-3.10.12-20261005-173
 94 файла, версия 1.1.0, 82 статических ресурса HTTP 200, закрытых данных 0.
 SHA256 d430c4b9afd89201dd8d0fd9968116a3def2ddee4ec24ff9ddb728f7acaa6843.
 Screenshot: .local/joomla-reference/existing-form-mobile.jpg — локальный стенд.
-Обычный preview 3100 перезапущен, PID 292928; стенд 3152 PID 258456.
-Следующий шаг: сохранить source/main и обновить демонстрацию GitHub Pages.
+Обычный preview 3100 перезапущен, PID 292928; стенд 3152 остановлен после проверок.
+Источник 8a75832 сохранён в origin/main; gh-pages 8aad7dd, API built/HTTPS,
+review-build.json подтверждает source 8a75832. Public /joomla HTTP 200,
+обе формы/демо-текст проверены; GitHub Pages не отправляет заявки.
+Следующий шаг: передать обновлённый ZIP; администратор устанавливает его на Joomla
+и проверяет реальную доставку в компанию.

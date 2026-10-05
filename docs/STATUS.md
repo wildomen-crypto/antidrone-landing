@@ -6,8 +6,9 @@
 Check 54 unit/build/worker, PHP lint/17 cases, ZIP 94/82 HTTP 200 PASS.
 Chrome: верхняя схема/цена, нижняя отказ/повтор, mobile 390 PASS; реальных писем нет.
 ZIP 1.1.0 в Downloads; установка на topengineer.ru остаётся администратору.
-Preview 3100 PID 292928; стенд 3152 PID 258456.
-Следующий шаг: source/main и обновление демонстрации GitHub Pages.
+Preview 3100 PID 292928; локальный стенд 3152 остановлен.
+Source 8a75832 в origin/main; gh-pages 8aad7dd built/HTTPS, public demo HTTP 200.
+Следующий шаг: передать ZIP 1.1.0 для установки и проверки доставки на Joomla.
 
 Текущая локальная работа: JOOMLA-MONDAY-20261005 — VERIFIED.
 Карточка docs/checkpoints/JOOMLA-MONDAY-20261005.md; codex/joomla-monday.
