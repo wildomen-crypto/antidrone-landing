@@ -9,6 +9,7 @@ B10.2 необязателен: решение об объёме записыв�
 
 | ID | Статус | Результат | Проверка | Карточка |
 | --- | --- | --- | --- | --- |
+| UI-COMPLEX-DENSITY | VERIFIED | /compact: параметры C8 ниже на 29–40%, ползунки сохранены | Build/worker; browser 320/390/1024/1920, контуры/основания/JSON | docs/checkpoints/UI-COMPLEX-DENSITY.md |
 | UI-PARAMETER-HEADING | VERIFIED | /compact: компактный заголовок параметров без разделителя | Build/worker; browser 390/1024/1920, C4/C8; высота C4 226/252 px | docs/checkpoints/UI-PARAMETER-HEADING.md |
 | UI-SCENE-HEIGHT | VERIFIED | /compact: зона 3D ниже на 30% | Build/worker; 8 responsive + 5 compact групп, 12 окон с измерением 70%, C1–C8/resize/ракурсы/JSON/SVG | docs/checkpoints/UI-SCENE-HEIGHT.md |
 | UI-REMOVE-SIZING-HINT | VERIFIED | Поясняющий абзац удалён из настроек | Build/worker; HTTP 200 и отсутствие текста на трёх вариантах | docs/checkpoints/UI-REMOVE-SIZING-HINT.md |

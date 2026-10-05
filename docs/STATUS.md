@@ -1,6 +1,12 @@
 # Состояние разработки
 
-Текущая работа: UI-PARAMETER-HEADING — VERIFIED; база f1cdb01.
+Текущая работа: UI-COMPLEX-DENSITY — VERIFIED; база 1adfd86.
+Ветка ui/dense-complex-parameters; docs/checkpoints/UI-COMPLEX-DENSITY.md.
+Параметры C8 ниже на 29–40%: полная высота 361–364 px вместо 507–606.
+Build/worker PASS; browser 320/390/1024/1920, контуры/основания/JSON PASS.
+Следующий шаг: UI-EMPTY-DIMENSIONS — размеры занимают свободную ширину.
+
+Предыдущая работа: UI-PARAMETER-HEADING — VERIFIED; база f1cdb01.
 Ветка ui/plain-parameter-heading; docs/checkpoints/UI-PARAMETER-HEADING.md.
 Заголовок параметров без разделителя, компактно как у размеров.
 Build с типизацией/worker PASS; браузерные 390/1024/1920 PASS.
@@ -157,7 +163,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 47 VERIFIED (включая двадцать правок UI и решение не включать upload),
+Реестр: 48 VERIFIED (включая двадцать одну правку UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
@@ -183,7 +189,7 @@ main обновлён fast-forward.
 http://127.0.0.1:3100 — production build, только этот компьютер.
 Новый вариант: http://127.0.0.1:3100/wide#calculator.
 Адаптивная версия: http://127.0.0.1:3100/compact#calculator.
-PID 17256, скрытый фоновый процесс; логи .local/preview.stdout.log и
+PID 24768, скрытый фоновый процесс; логи .local/preview.stdout.log и
 .local/preview.stderr.log. Проверять фактический порт и CommandLine
 перед остановкой; не останавливать чужие процессы. После перезапуска
 компьютера: npm.cmd run start из корня проекта.

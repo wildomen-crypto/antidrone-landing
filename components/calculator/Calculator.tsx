@@ -197,7 +197,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
         </> : null}
       </div>}
       {input.shapeId === "C8" && <div className="contour-inputs">
-        <p className="field-hint">Отступ каждого контура измеряется от габарита объекта, а не от соседнего контура.</p>
+        <p className="field-hint" title={compact ? "Отступ каждого контура измеряется от габарита объекта, а не от соседнего контура." : undefined}>{compact ? "Отступы — от габарита объекта." : "Отступ каждого контура измеряется от габарита объекта, а не от соседнего контура."}</p>
         {input.contours.map((contour, i) => <fieldset key={i}>
           <legend><label className="check-field"><input type="checkbox" checked={contour.enabled} onChange={e => update("contours", input.contours.map((v, j) => j === i ? { ...v, enabled: e.target.checked } : v))} />Контур {i + 1}</label></legend>
           <div className={wide ? "contour-sliders" : "field-grid"}>
