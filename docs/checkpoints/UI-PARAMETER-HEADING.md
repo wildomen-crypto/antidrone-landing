@@ -18,4 +18,8 @@ Build с типизацией/worker PASS. Браузерные 390/1024/1920: b
 скриншот .local/qa/parameter-heading-1024.png просмотрен.
 Полные browser/unit повторно не запускались для CSS заголовка.
 HTTP /compact 200; PID 17256, скрытый production-процесс на порту 3100.
-Следующий шаг: main/резервные копии, затем обратная связь.
+Код d0441aef40d2893dd13771e17eeae07a678a61c7 в main (fast-forward).
+Ветка сохранена; ZIP/bundle parameter-heading-20261005-d0441ae проверены;
+ZIP 154 записи без данных/секретов/runtime, bundle verify PASS.
+Каталог C:\taran\artifacts\antidrone-landing-backups.
+Следующий шаг: обратная связь заказчика.

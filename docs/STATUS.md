@@ -6,7 +6,9 @@
 Build с типизацией/worker PASS; браузерные 390/1024/1920 PASS.
 Высота C4 242→226,3 px на узком, 281→252,3 px на большом.
 Разделитель отсутствует, шрифт как у размеров, C4/C8 работают, ошибок JS нет.
-Скриншот 1024 просмотрен. Следующий шаг: main/резервные копии.
+Скриншот 1024 просмотрен. Код d0441aef40d2893dd13771e17eeae07a678a61c7
+в main (fast-forward), ZIP/bundle parameter-heading-20261005-d0441ae проверены.
+Следующий шаг: обратная связь заказчика.
 
 Предыдущая работа: UI-SCENE-HEIGHT — VERIFIED; база e8c04da.
 Ветка ui/scene-height-70pct; docs/checkpoints/UI-SCENE-HEIGHT.md.
@@ -193,6 +195,9 @@ Git: локальная настройка Dmitrii Taran,
 ## Резервные копии
 
 Каталог C:\taran\artifacts\antidrone-landing-backups.
+Заголовок параметров: parameter-heading-20261005-d0441ae-source.zip и
+.bundle; bundle verify PASS, ZIP 154 записи без данных/секретов/runtime.
+Шаблон .env.example содержит пустые значения/false.
 Высота сцены: scene-height-20261005-298bcfd-source.zip и .bundle;
 bundle verify PASS, ZIP 153 записи без данных/секретов/runtime.
 Шаблон .env.example содержит пустые значения/false.
