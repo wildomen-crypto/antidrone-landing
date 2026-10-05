@@ -1,0 +1,22 @@
+.portfolio-note{max-width:940px;margin:0 0 30px;padding-left:16px;border-left:3px solid var(--accent);font-size:13px;line-height:1.7}
+.portfolio-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 24px}
+.portfolio-card{min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:12px;background:white;display:flex;flex-direction:column}
+.portfolio-image{position:relative;display:block;aspect-ratio:16/9;overflow:hidden;background:var(--tint)}
+.portfolio-image img{object-fit:cover;transition:transform .25s ease}
+.portfolio-image:hover img{transform:scale(1.025)}
+.portfolio-badge{position:absolute;left:16px;top:16px;padding:6px 10px;border-radius:4px;background:#ffffffed;color:var(--ink);font-size:10px;font-weight:650;letter-spacing:.02em}
+.portfolio-expand{position:absolute;right:16px;bottom:16px;width:36px;height:36px;display:grid;place-items:center;border-radius:50%;background:#ffffffed;color:var(--ink);font-size:19px}
+.portfolio-copy{padding:18px;display:flex;flex-direction:column;flex:1}
+.portfolio-copy h3{font-size:22px;letter-spacing:-.025em;margin:0 0 8px}
+.portfolio-copy>p{font-size:14px;line-height:1.6;margin:0}
+.portfolio-image:focus-visible{outline-offset:-4px}
+@media(max-width:767px){
+  .portfolio-grid{grid-template-columns:minmax(0,1fr);gap:20px}
+  .portfolio-note{font-size:12px;margin-bottom:24px}
+  .portfolio-copy{padding:14px}
+  .portfolio-copy h3{font-size:20px}
+  .portfolio-copy>p{font-size:13px}
+  .portfolio-badge{left:12px;top:12px;font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){.portfolio-image img{transition:none}.portfolio-image:hover img{transform:none}}
+@media print{#portfolio{display:none!important}}

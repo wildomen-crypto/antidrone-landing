@@ -1,12 +1,15 @@
 import { parseInput } from "./input";
 import type { LayoutInput } from "./input";
+import { hasLegacyServices } from "./services";
 
 const key = "topengineer:quote-configuration:v1";
 
-export function readQuoteDraft(): LayoutInput | null {
+export function readQuoteDraft(): { configuration: LayoutInput; servicesUpdated: boolean } | null {
   try {
     const text = window.localStorage.getItem(key);
-    return text ? parseInput(JSON.parse(text)) : null;
+    if (!text) return null;
+    const raw = JSON.parse(text);
+    return { configuration: parseInput(raw), servicesUpdated: hasLegacyServices(raw.services) };
   } catch { return null; }
 }
 

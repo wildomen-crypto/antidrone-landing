@@ -1,0 +1,8 @@
+.material-photo-section .material-card{display:flex;flex-direction:column;min-width:0}
+.material-photo{margin:0 0 12px}
+.material-photo-frame{display:grid;aspect-ratio:16/10;overflow:hidden;border:1px solid var(--line);border-radius:6px;background:#e6edf4}
+.material-photo-frame>a{display:block;position:relative;min-width:0;overflow:hidden}
+.material-photo-frame img{object-fit:cover}
+.material-photo-frame>a:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.material-photo-section .material-card>h3{margin:0 0 8px}
+.material-photo-section .material-card>p{margin:0;line-height:1.55}

@@ -6,11 +6,17 @@ import "./details.css";
 import "./wide-calculator.css";
 import "./responsive.css";
 import "./overlay-calculator.css";
+import "./portfolio.css";
+import "./material-photos.css";
+import "./compact-order.css";
+import "./section-spacing.css";
+import "./quote-form.css";
+import "./bottom-contact.css";
 import Analytics from "@/components/landing/Analytics";
 
 export const metadata: Metadata = {
-  title: `${company.shortName} — металлоконструкции для антидроновой защиты`,
-  description: "Проектирование, изготовление и монтаж металлоконструкций. Экраны, навесы и укрытия с предварительной 3D-компоновкой под размеры объекта.",
+  title: `${company.shortName} — проектирование металлоконструкций для антидроновой защиты`,
+  description: "Проектирование каркасов, экранов и укрытий для антидроновой защиты. Разработка КМ, КМД и КЖ с предварительной 3D-компоновкой под размеры объекта.",
   robots: { index: false, follow: false },
 };
 

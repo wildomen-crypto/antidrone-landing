@@ -37,8 +37,8 @@ try{
       const roof=await roofRow(page).boundingBox(),works=await page.locator('.service-picker').boundingBox(),structure=await page.locator('.structure-picker').boundingBox();
       const walls=await wallRow(page).boundingBox();
       assert.ok(works.y>=roof.y+roof.height-1);assert.ok(structure.y+structure.height<=walls.y+1);
-      assert.equal(await page.locator('.service-picker input[type=checkbox]').count(),4);
-      assert.equal(await page.locator('.parameter-panel').getByRole('checkbox',{name:'Проектирование',exact:true}).count(),0);
+      assert.equal(await page.locator('.service-picker input[type=checkbox]').count(),3);
+      assert.equal(await page.locator('.parameter-panel').getByRole('checkbox',{name:'Разработка КМ',exact:true}).count(),0);
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
       await waitTotal(page,179);
       if([390,768,1440].includes(width))await page.screenshot({path:path.join(output,'compact-'+width+'.png')});
@@ -51,7 +51,7 @@ try{
     for(let i=0;i<8;i++){
       await page.locator('.shape-choice').nth(i).click();
       assert.equal(await page.locator('.parameter-panel').count(),[2,6].includes(i)?0:1,'shape C'+(i+1));
-      assert.equal(await page.locator('.service-picker input[type=checkbox]').count(),4);
+      assert.equal(await page.locator('.service-picker input[type=checkbox]').count(),3);
       assert.equal(await page.locator('.input-error').count(),0);
     }
     await page.locator('.shape-choice').nth(6).click();await scene(page);
@@ -74,15 +74,15 @@ try{
     await wallRow(page).locator('.material-choice').nth(5).click();await waitTotal(page,188);assert.equal(await page.locator('.parameter-panel').count(),1);
     await page.getByRole('textbox',{name:'Длина, м',exact:true}).fill('20');await waitTotal(page,328);
     await page.getByLabel('Проём в передней стороне',{exact:true}).check();await waitTotal(page,319);
-    const works=page.locator('.service-picker');await works.getByLabel('Доставка',{exact:true}).check();await works.getByLabel('Монтаж',{exact:true}).check();await works.getByLabel('Проектирование',{exact:true}).uncheck();
+    const works=page.locator('.service-picker');await works.getByLabel('Разработка КЖ',{exact:true}).check();await works.getByLabel('Разработка КМ',{exact:true}).uncheck();
     const pending=page.waitForEvent('download');await page.getByRole('button',{name:'Сохранить JSON'}).click();
     const savedPath=path.join(output,'compact.json');await(await pending).saveAs(savedPath);const saved=JSON.parse(await readFile(savedPath,'utf8'));
     assert.equal(saved.materialId,'M6');assert.equal(saved.roofMaterialId,'M7');assert.equal(saved.walls,true);assert.equal(saved.length,20);assert.equal(saved.opening.enabled,true);
-    assert.deepEqual(saved.services,['manufacturing','delivery','installation']);
-    await works.getByLabel('Доставка',{exact:true}).uncheck();await page.getByRole('textbox',{name:'Длина, м',exact:true}).fill('10');
-    await page.locator('input[type=file]').setInputFiles(savedPath);await waitTotal(page,319);assert.equal(await works.getByLabel('Доставка',{exact:true}).isChecked(),true);
+    assert.deepEqual(saved.services,['kmd','kzh']);
+    await works.getByLabel('Разработка КЖ',{exact:true}).uncheck();await page.getByRole('textbox',{name:'Длина, м',exact:true}).fill('10');
+    await page.locator('input[type=file]').setInputFiles(savedPath);await waitTotal(page,319);assert.equal(await works.getByLabel('Разработка КЖ',{exact:true}).isChecked(),true);
     await page.emulateMedia({media:'print'});assert.equal(await page.locator('.service-picker').isVisible(),false);assert.equal(await page.locator('.print-card').isVisible(),true);
-    assert.match(await page.locator('.print-card').textContent(),/Изготовление, Доставка, Монтаж/);await page.pdf({path:path.join(output,'compact-print.pdf'),format:'A4'});await page.emulateMedia({media:'screen'});
+    assert.match(await page.locator('.print-card').textContent(),/Разработка КМД, Разработка КЖ/);await page.pdf({path:path.join(output,'compact-print.pdf'),format:'A4'});await page.emulateMedia({media:'screen'});
   });
   await check('Mobile complex enclosure preserves sliders and separate work selection',async()=>{
     await page.setViewportSize({width:390,height:1000});await page.locator('.shape-choice').nth(7).click();

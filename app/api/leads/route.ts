@@ -4,6 +4,7 @@ import { generateModel } from "@/lib/geometry/generate";
 import { estimate } from "@/lib/pricing/estimate";
 import { allowedRate, saveLead, deliverNotifications, pruneExpired } from "@/lib/leads/store";
 import { legal } from "@/config/legal";
+import { parseLeadContacts } from "@/lib/leads/contact";
 
 export const runtime = "nodejs";
 export async function POST(request: Request) {
@@ -34,17 +35,18 @@ export async function POST(request: Request) {
     if (typeof body.website !== "string" || body.website !== "") throw new InputError("Не удалось принять заявку.");
     if (body.consent !== true || body.consentVersion !== legal.consentVersion) throw new InputError("Нужно отдельное согласие на обработку данных.");
     const clean = (value: unknown, max: number) => typeof value === "string" && value.trim().length <= max ? value.trim() : null;
-    const name = clean(body.name, 100), contact = clean(body.contact, 120), region = clean(body.region, 100), comment = clean(body.comment, 2000);
-    if (name === null || !contact || region === null || comment === null) throw new InputError("Проверьте контакт и поля заявки.");
-    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact), isPhone = /^\+?[\d\s()\-]+$/.test(contact) && contact.replace(/\D/g, "").length >= 10 && contact.replace(/\D/g, "").length <= 15;
-    if (!isEmail && !isPhone) throw new InputError("Введите корректный телефон или email.");
+    const name = clean(body.name, 100), region = body.region === undefined ? "" : clean(body.region, 100), comment = clean(body.comment, 2000);
+    if (name === null || region === null || comment === null) throw new InputError("Проверьте поля заявки.");
+    let contacts;
+    try { contacts = parseLeadContacts(body); }
+    catch (error) { throw new InputError(error instanceof Error ? error.message : "Проверьте телефон и email."); }
     const key = request.headers.get("idempotency-key");
     if (!key || !/^[\da-f-]{36}$/i.test(key)) throw new InputError("Не удалось идентифицировать заявку. Обновите страницу.");
     const configuration = body.configuration === null ? null : parseInput(body.configuration);
-    const summary = configuration ? estimate(generateModel(configuration)) : null;
+    const summary = configuration ? estimate(generateModel(configuration), configuration) : null;
     const ip = process.env.TRUST_PROXY === "true" ? request.headers.get("x-forwarded-for")?.split(",")[0] ?? "local" : "direct";
     if (!allowedRate(ip)) return NextResponse.json({ error: "Слишком много запросов. Повторите через 10 минут." }, { status: 429 });
-    const result = saveLead(key, { name, contact, region, comment, consentVersion: legal.consentVersion, configuration, summary });
+    const result = saveLead(key, { name, ...contacts, region, comment, consentVersion: legal.consentVersion, configuration, summary });
     after(async () => { try { pruneExpired(); await deliverNotifications(); } catch { /* Lead is already durable. */ } });
     return NextResponse.json({ id: result.id, saved: true, duplicate: result.duplicate }, { status: result.duplicate ? 200 : 201 });
   } catch (error) {

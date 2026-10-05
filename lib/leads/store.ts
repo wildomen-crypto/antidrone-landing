@@ -4,7 +4,7 @@ import path from "node:path";
 import { randomUUID, createHash } from "node:crypto";
 import { legal } from "../../config/legal";
 
-export type LeadPayload = { name: string; contact: string; region: string; comment: string; consentVersion: string; configuration: unknown; summary: unknown };
+export type LeadPayload = { name: string; contact: string; phone?: string; email?: string; region: string; comment: string; consentVersion: string; configuration: unknown; summary: unknown };
 let database: DatabaseSync | undefined;
 function db() {
   if (database) return database;

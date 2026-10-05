@@ -1,6 +1,6 @@
 import type { ModelGraph, Point } from "@/lib/geometry/generate";
 export type CameraView = "perspective" | "top" | "front" | "side";
-export function ModelDiagram({ graph, view = "perspective", onlyFrame = false, hiddenGroups = [], className = "" }: { graph: ModelGraph; view?: CameraView; onlyFrame?: boolean; hiddenGroups?: string[]; className?: string }) {
+export function ModelDiagram({ graph, view = "perspective", onlyFrame = false, hiddenGroups = [], className = "", paddingRatio = .16 }: { graph: ModelGraph; view?: CameraView; onlyFrame?: boolean; hiddenGroups?: string[]; className?: string; paddingRatio?: number }) {
   const project = (p: Point): [number, number] => view === "top" ? [p[0], p[2]] : view === "front" ? [p[0], -p[1]] : view === "side" ? [p[2], -p[1]] : [(p[0] - p[2]) * 0.8, (p[0] + p[2]) * 0.3 - p[1]];
   const boxes = graph.solids.filter(s => !hiddenGroups.includes(s.group)).map(s => ({ center: s.center, size: s.size, role: s.role }));
   if (graph.object) boxes.push({ center: [0, graph.object.height / 2, 0], size: [graph.object.length, graph.object.height, graph.object.width], role: "wall" });
@@ -17,7 +17,7 @@ export function ModelDiagram({ graph, view = "perspective", onlyFrame = false, h
   if (!points.length) return <div className="empty-diagram">Все контуры скрыты. Включите видимость, чтобы показать схему.</div>;
   const xs = points.map(p => p[0]), ys = points.map(p => p[1]);
   const minX = Math.min(...xs), minY = Math.min(...ys), w = Math.max(...xs) - minX || 1, h = Math.max(...ys) - minY || 1;
-  const padding = Math.max(w,h) * .16, stroke = Math.max(w,h) / 350;
+  const padding = Math.max(w,h) * paddingRatio, stroke = Math.max(w,h) / 350;
   const color = (group: string) => group === "contour1" ? "#42747f" : group === "contour2" ? "#6e91b7" : group === "contour3" ? "#2355d6" : "#314b64";
   const prefix = ("diagram-" + graph.members.length + "-" + graph.bounds.length + "-" + graph.bounds.height + "-" + view).replaceAll(".", "_");
   const ids = [...new Set(graph.panels.map(p => p.materialId))], cell = Math.max(w,h) / 45;

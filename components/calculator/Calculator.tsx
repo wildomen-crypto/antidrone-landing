@@ -3,6 +3,8 @@ import dynamic from "next/dynamic";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { defaultInput, parseInput } from "@/lib/configuration/input";
 import type { LayoutInput } from "@/lib/configuration/input";
+import { SERVICE_IDS } from "@/lib/configuration/schema";
+import { formatServices, hasLegacyServices, serviceLabels, servicesUpdatedNotice } from "@/lib/configuration/services";
 import { generateModel } from "@/lib/geometry/generate";
 import { estimate } from "@/lib/pricing/estimate";
 import { materials, shapes, structuralSystems, wallModules } from "@/config/catalog";
@@ -23,6 +25,8 @@ import { roofRequired, selectRoof } from "@/lib/configuration/roof";
 import { hasWallOptions, wallFillingEnabled, selectWalls } from "@/lib/configuration/walls";
 import { track } from "@/lib/analytics";
 import { readQuoteDraft, saveQuoteDraft } from "@/lib/configuration/quote-draft";
+import LeadForm from "@/components/landing/LeadForm";
+import ProjectPrice from "./ProjectPrice";
 
 const Scene = dynamic(() => import("@/components/viewer/Scene"), { ssr: false, loading: () => <div className="viewer-loading">Подготавливаем 3D-схему…</div> });
 const format = (v: number) => v.toLocaleString("ru-RU", { maximumFractionDigits: 2 });
@@ -53,7 +57,10 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   useEffect(() => {
     if (!overlay) return;
     const saved = readQuoteDraft();
-    if (saved) setInput(saved);
+    if (saved) {
+      setInput(saved.configuration);
+      if (saved.servicesUpdated) setMessage(servicesUpdatedNotice);
+    }
   }, [overlay]);
   useEffect(() => { setCalculatedAt(new Date().toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })); }, [input]);
   const file = useRef<HTMLInputElement>(null), viewer = useRef<HTMLDivElement>(null);
@@ -105,7 +112,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     window.addEventListener("choose-shape", choose); return () => window.removeEventListener("choose-shape", choose);
   }, [compact]);
   const result = useMemo(() => {
-    try { const graph = generateModel(input); return { graph, estimate: estimate(graph), error: "" }; }
+    try { const graph = generateModel(input); return { graph, estimate: estimate(graph, input), error: "" }; }
     catch (error) { return { graph: null, estimate: null, error: error instanceof Error ? error.message : "Проверьте параметры." }; }
   }, [input]);
   const update = <K extends keyof LayoutInput>(key: K, value: LayoutInput[K]) => { setInput(c => ({ ...c, [key]: value })); setMessage(""); };
@@ -138,24 +145,27 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   }
   async function importFile(selected?: File) {
     if (!selected) return;
-    try { if (selected.size > 150000) throw new Error("Файл конфигурации должен быть меньше 150 КБ."); setInput(parseInput(JSON.parse(await selected.text()))); setHiddenGroups([]); setMessage("Конфигурация восстановлена."); }
+    try {
+      if (selected.size > 150000) throw new Error("Файл конфигурации должен быть меньше 150 КБ.");
+      const raw = JSON.parse(await selected.text());
+      setInput(parseInput(raw)); setHiddenGroups([]);
+      setMessage(hasLegacyServices(raw.services) ? servicesUpdatedNotice : "Конфигурация восстановлена.");
+    }
     catch (e) { setMessage(e instanceof Error ? e.message : "Не удалось прочитать файл."); }
     if (file.current) file.current.value = "";
     track("import_configuration");
   }
   function request() {
-    if (!result.graph) return;
-    try {
-      const snapshot = parseInput(input);
-      if (overlay) {
-        const saved = saveQuoteDraft(snapshot);
-        downloadConfiguration(snapshot);
-        setMessage(saved ? "Схема сохранена и прикреплена к заявке. Укажите контакт для получения расчёта." : "Схема прикреплена к заявке, JSON подготовлен для скачивания. Укажите контакт для получения расчёта.");
-      }
-      track("request_quote", snapshot.shapeId);
-      window.dispatchEvent(new CustomEvent("attach-configuration", { detail: snapshot }));
-      document.getElementById("contacts")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Не удалось сохранить схему. Проверьте размеры."); }
+    if (!result.graph) throw new Error("Проверьте размеры конструкции.");
+    const snapshot = parseInput(input);
+    if (overlay) saveQuoteDraft(snapshot);
+    track("request_quote", snapshot.shapeId);
+    return snapshot;
+  }
+  function quoteSaved(snapshot: LayoutInput) {
+    if (!overlay) return;
+    try { downloadConfiguration(snapshot); }
+    catch { setMessage("Заявка сохранена. Не удалось скачать копию схемы."); }
   }
   const q = result.estimate?.quantities;
   const dimensions = (
@@ -172,7 +182,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
         </>}
       </div>
   );
-  const services = <fieldset className={compact ? "service-picker" : undefined}><legend>Нужные работы</legend><div className="check-grid">{([["design", "Проектирование"], ["manufacturing", "Изготовление"], ["delivery", "Доставка"], ["installation", "Монтаж"]] as const).map(([id, label]) => <label key={id} className="check-field"><input type="checkbox" checked={input.services.includes(id)} onChange={e => update("services", e.target.checked ? [...input.services, id] : input.services.filter(s => s !== id))} />{label}</label>)}</div></fieldset>;
+  const services = <fieldset className={compact ? "service-picker" : undefined}><legend>Нужные работы</legend><div className="check-grid">{SERVICE_IDS.map(id => <label key={id} className="check-field"><input type="checkbox" checked={input.services.includes(id)} onChange={e => update("services", e.target.checked ? [...input.services, id] : input.services.filter(s => s !== id))} />{serviceLabels[id]}</label>)}</div></fieldset>;
   const settings = (
     <div className="calculator-inputs">
       <div className="step-title"><span>01</span> Конструкция и размеры</div>
@@ -275,21 +285,17 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
       {!overlay && result.graph && <div className="dimension-strip"><span>L {format(result.graph.bounds.length)} м</span><span>W {format(result.graph.bounds.width)} м</span><span>H {format(result.graph.bounds.height)} м</span><span>Профили показаны условно</span></div>}
       {!overlay && input.shapeId === "C7" && input.roof && <p className="field-hint viewer-caption">Форма покрытия: секторное шатровое покрытие. Площадь рассчитана по граням схемы.</p>}
       {!overlay && <DetailViews foundation={input.foundation} sectionType={input.sectionType} />}
-      {q && !overlay && <div className="estimate-result" aria-live="polite"><div className="step-title"><span>03</span> Объёмы и следующий шаг</div><div className="quantity-grid"><div><strong>{format(q.total)}<small> м²</small></strong><span>Заполнение, с учётом слоёв</span></div><div><strong>{q.supports}</strong><span>Опор в предварительной схеме</span></div><div><strong>{format(q.memberLength)}<small> м</small></strong><span>Элементов каркаса</span></div></div><details><summary>Посмотреть ведомость</summary><div className="table-scroll"><table><tbody><tr><td>Покрытие, без повторения слоёв</td><td>{format(q.roof)} м²</td></tr><tr><td>Стены, без повторения слоёв</td><td>{format(q.walls)} м²</td></tr>{Object.entries(q.byMaterial).map(([id, area]) => <tr key={id}><td>{materials.find(m => m.id === id)?.name}</td><td>{format(area!)} м²</td></tr>)}<tr><td>Трубы заполнения</td><td>{format(q.infillLength)} м</td></tr><tr><td>Стеновых модулей (условно)</td><td>{q.wallModules} шт.</td></tr><tr><td>Объём стеновых модулей (условно)</td><td>{format(q.wallVolume)} м³</td></tr><tr><td>Канаты схемы</td><td>{format(q.cableLength)} м</td></tr></tbody></table></div><p className="field-hint">Масса, крепления, фундамент и расход на раскрой определяются после подбора профилей и технологии. Трубчатый рисунок и провис условны.</p></details><div className="quote-row"><div><strong>Стоимость — по запросу</strong><p>Инженер проверит схему и подготовит предложение.</p></div><button className="button button-primary" onClick={request}>Получить расчёт <span aria-hidden="true">↗</span></button></div></div>}
+      {q && !overlay && <div className="estimate-result" aria-live="polite"><div className="step-title"><span>03</span> Объёмы и следующий шаг</div><div className="quantity-grid"><div><strong>{format(q.total)}<small> м²</small></strong><span>Заполнение, с учётом слоёв</span></div><div><strong>{q.supports}</strong><span>Опор в предварительной схеме</span></div><div><strong>{format(q.memberLength)}<small> м</small></strong><span>Элементов каркаса</span></div></div><details><summary>Посмотреть ведомость</summary><div className="table-scroll"><table><tbody><tr><td>Покрытие, без повторения слоёв</td><td>{format(q.roof)} м²</td></tr><tr><td>Стены, без повторения слоёв</td><td>{format(q.walls)} м²</td></tr>{Object.entries(q.byMaterial).map(([id, area]) => <tr key={id}><td>{materials.find(m => m.id === id)?.name}</td><td>{format(area!)} м²</td></tr>)}<tr><td>Трубы заполнения</td><td>{format(q.infillLength)} м</td></tr><tr><td>Стеновых модулей (условно)</td><td>{q.wallModules} шт.</td></tr><tr><td>Объём стеновых модулей (условно)</td><td>{format(q.wallVolume)} м³</td></tr><tr><td>Канаты схемы</td><td>{format(q.cableLength)} м</td></tr></tbody></table></div><p className="field-hint">Масса, крепления, фундамент и расход на раскрой определяются после подбора профилей и технологии. Трубчатый рисунок и провис условны.</p></details><div className="quote-row"><div><strong>Проектирование</strong><p>Инженер проверит схему и состав проекта.</p></div><ProjectPrice estimate={result.estimate?.projectPrice ?? null} /></div></div>}
       {q && overlay && <div className="estimate-result quote-result"><div className="quote-row">
-        <div><strong>Стоимость — по запросу</strong><p>Инженер проверит схему и подготовит предложение.</p></div>
-        {services}<button className="button button-primary" onClick={request}>Получить расчёт <span aria-hidden="true">↗</span></button>
+        <div className="quote-summary"><strong>Проектирование</strong><p>Инженер проверит схему и состав проекта.</p></div>
+        {services}
+        <ProjectPrice estimate={result.estimate?.projectPrice ?? null} />
       </div></div>}
+      <LeadForm configurationValid={Boolean(result.graph)} prepareConfiguration={request} onSaved={quoteSaved} persistConfiguration={overlay} />
       {!overlay && <div className="export-actions"><button onClick={download} disabled={!result.graph}>Сохранить JSON</button><button onClick={() => file.current?.click()}>Открыть JSON</button><button onClick={() => window.print()} disabled={!result.graph}>Печатная карточка</button><input className="visually-hidden" type="file" ref={file} accept=".json,application/json" onChange={e => void importFile(e.target.files?.[0])} /></div>}
       {overlay && <input className="visually-hidden" type="file" ref={file} accept=".json,application/json" onChange={e => void importFile(e.target.files?.[0])} />}
       {message && <p className="form-message" role="status">{message}</p>}
-      {q && !overlay && <div className="print-card"><h2>Предварительная компоновка — {shape.name}</h2><p>{company.name} · {company.contacts.general.phone.display} · {company.contacts.general.email.address}</p><p>{company.officeAddress}</p><p>Схема обновлена: {calculatedAt} (московское время).</p><p>Источник контактов: {company.sourceUrl}</p><p>Нужные работы: {input.services.map(id => ({ design: "Проектирование", manufacturing: "Изготовление", supply: "Комплектация", delivery: "Доставка", installation: "Монтаж" })[id]).join(", ") || "Уточняются"}.</p><p>Версия конфигурации 1. Тарифы не заданы. Стоимость определяется инженером; карточка не является КМ/КМД.</p><p>Длина {format(result.graph!.bounds.length)} м · Ширина {format(result.graph!.bounds.width)} м · Высота {format(result.graph!.bounds.height)} м</p><ModelDiagram graph={result.graph!} /><table><tbody>{Object.entries(q.byMaterial).map(([id, area]) => <tr key={id}><td>{materials.find(m => m.id === id)?.name}</td><td>{format(area!)} м²</td></tr>)}<tr><td>Опор</td><td>{q.supports}</td></tr><tr><td>Элементов каркаса</td><td>{format(q.memberLength)} м</td></tr></tbody></table></div>}
+      {q && !overlay && <div className="print-card"><h2>Предварительная компоновка — {shape.name}</h2><p>{company.name} · {company.contacts.general.phone.display} · {company.contacts.general.email.address}</p><p>{company.officeAddress}</p><p>Схема обновлена: {calculatedAt} (московское время).</p><p>Источник контактов: {company.sourceUrl}</p><p>Нужные работы: {formatServices(input.services)}.</p><p>Версия конфигурации 1. Черновая стоимость по оценке трудоёмкости. Окончательная стоимость согласуется с инженером; карточка не является документацией КМ, КМД или КЖ.</p><p>Длина {format(result.graph!.bounds.length)} м · Ширина {format(result.graph!.bounds.width)} м · Высота {format(result.graph!.bounds.height)} м</p><ProjectPrice estimate={result.estimate?.projectPrice ?? null} /><ModelDiagram graph={result.graph!} /><table><tbody>{Object.entries(q.byMaterial).map(([id, area]) => <tr key={id}><td>{materials.find(m => m.id === id)?.name}</td><td>{format(area!)} м²</td></tr>)}<tr><td>Опор</td><td>{q.supports}</td></tr><tr><td>Элементов каркаса</td><td>{format(q.memberLength)} м</td></tr></tbody></table></div>}
     </div>
   </div>;
 }
-
-
-
-
-
-

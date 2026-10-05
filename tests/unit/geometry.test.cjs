@@ -171,8 +171,35 @@ test('invalid external JSON never reaches scene',()=>{
   }
 });
 test('JSON roundtrip is exact, including services and foundations',()=>{
-  const c=input({shapeId:'C8',foundation:'pile-cap',services:['installation'],wallModule:'W3'});
+  const c=input({shapeId:'C8',foundation:'pile-cap',services:['km','kmd','kzh'],wallModule:'W3'});
   assert.deepEqual(parseInput(JSON.parse(JSON.stringify(c))),c);
+});
+
+test('design sections stay independent; old services preserve geometry without choosing new sections',()=>{
+  for(const services of [[],['km'],['kmd'],['kzh'],['km','kzh']]){
+    assert.deepEqual(parseInput(input({services})).services,services);
+  }
+  const legacy=input({length:23,width:12,services:['design','manufacturing','supply','delivery','installation']});
+  assert.deepEqual(parseInput(legacy),{...legacy,services:[]});
+  assert.deepEqual(parseInput(input({services:['installation','kzh']})).services,['kzh']);
+  for(const services of [['km','km'],['design','design'],['unknown'],[null],'km']){
+    assert.throws(()=>parseInput(input({services})),/Проверьте перечень работ/);
+  }
+});
+
+test('quote drafts restore design sections and flag old scopes of work',()=>{
+  const {readQuoteDraft,saveQuoteDraft,clearQuoteDraft}=require('../../.local/test-build/lib/configuration/quote-draft.js');
+  const storage=new Map();const previousWindow=global.window;
+  global.window={localStorage:{getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value),removeItem:key=>storage.delete(key)}};
+  try{
+    const configuration=input({services:['kzh'],length:27});
+    assert.equal(saveQuoteDraft(configuration),true);
+    assert.deepEqual(readQuoteDraft(),{configuration,servicesUpdated:false});
+    storage.set('topengineer:quote-configuration:v1',JSON.stringify({...configuration,services:['design','manufacturing']}));
+    assert.deepEqual(readQuoteDraft(),{configuration:{...configuration,services:[]},servicesUpdated:true});
+    clearQuoteDraft();assert.equal(readQuoteDraft(),null);
+    storage.set('topengineer:quote-configuration:v1','broken');assert.equal(readQuoteDraft(),null);
+  }finally{if(previousWindow===undefined)delete global.window;else global.window=previousWindow;}
 });
 test('combined layers have independent quantities, footprint is not doubled',()=>{
   const q=quantities(generateModel(input({materialId:'M8',roofMaterialId:'M8'})));

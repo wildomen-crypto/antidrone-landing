@@ -1,0 +1,16 @@
+.solution-card .solution-description{display:block;font-size:12px;line-height:1.65;margin:0;color:var(--muted);text-decoration:underline;text-decoration-color:#b8c9df;text-underline-offset:3px}
+.solution-card .solution-description:hover,.solution-card .solution-description:focus-visible{color:var(--accent);text-decoration-color:var(--accent)}
+#solutions .solution-card{padding:12px}
+#solutions .solution-image{height:clamp(140px,14vw,180px);aspect-ratio:auto;flex:none;margin:0 0 12px}
+#solutions .solution-image svg{position:absolute;inset:0;display:block;width:100%;height:100%;padding:6px}
+#solutions .card-index{top:6px;left:6px;z-index:1}
+#solutions .solution-card h3{margin-bottom:7px}
+@media(max-width:767px) and (min-width:501px){#solutions .solution-image{height:150px}}
+@media(max-width:500px){#solutions .solution-card{padding:12px;align-content:start}#solutions .solution-image{height:90px;align-self:start;margin:0}#solutions .solution-image svg{padding:4px}#solutions .card-index{top:4px;left:4px;font-size:8px}}
+@media(max-width:767px){.solution-card .solution-description{grid-column:2}.solution-card .solution-image{grid-row:1/3}}
+.footer-contacts{font-size:12px;padding:14px 0;color:var(--muted)}
+.footer-contacts summary{cursor:pointer;color:var(--accent);width:fit-content}
+.footer-contacts p,.footer-contacts address{font-size:12px;margin:10px 0;max-width:none}
+.footer-contacts a:hover{text-decoration:underline}
+@media(max-width:767px){.solution-card .solution-description{font-size:12px;line-height:1.55}}
+@media print{.footer-contacts{display:none!important}}

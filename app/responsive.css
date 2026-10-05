@@ -139,7 +139,7 @@
 @media (min-width:1600px){
   .container{width:min(1440px,calc(100% - 96px))}
   .hero{gap:72px;padding-block:90px}
-  .hero h1{font-size:62px}
+  .hero h2{font-size:62px}
   .hero-visual svg{height:380px}
   .section{padding-block:90px}
   .calculator-compact .shape-picker,.calculator-compact .material-picker,.calculator-compact .service-picker{padding-inline:max(24px,calc((100% - 1600px)/2))}
@@ -157,7 +157,7 @@
   html{scroll-padding-top:88px}
   .container{width:calc(100% - 32px)}
   .header-inner{min-height:68px}
-  .hero h1{font-size:clamp(29px,7.4vw,46px)}
+  .hero h2{font-size:clamp(29px,7.4vw,46px)}
   .hero-description{font-size:16px}
   .hero-actions{flex-wrap:wrap}
   .section-heading>p{font-size:15px}

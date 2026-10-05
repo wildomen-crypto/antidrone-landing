@@ -1,0 +1,24 @@
+.quote-form.lead-form{grid-column:1/-1;margin:0;padding:16px 24px;border:0;border-top:1px solid var(--line);border-radius:0;background:white;min-width:0}
+.quote-fields{display:grid;grid-template-columns:1fr 1fr 1fr 1.35fr;gap:12px;align-items:start}
+.quote-form .field{margin:0;min-width:0}
+.quote-form .field input,.quote-form .field textarea{display:block;width:100%;height:48px;min-height:48px;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:white;font-size:13px;line-height:1.45}
+.quote-form .field textarea{resize:vertical}
+.quote-form-footer{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;margin-top:12px}
+.quote-form .consent-field{margin:0;font-size:11px;line-height:1.5;align-items:flex-start;gap:8px;max-width:750px}
+.quote-form .consent-field input{flex-shrink:0;margin-top:2px}
+.quote-form .button{width:auto;min-height:46px;margin:0;padding:12px 20px;white-space:nowrap;font-size:12px}
+.quote-form .form-message{margin:10px 0 0;font-size:12px}
+.calculator-wide:not(.calculator-compact) .quote-form{width:min(1240px,calc(100% - 64px));margin-inline:auto;padding-inline:0}
+.calculator-overlay .quote-result .quote-row{grid-template-columns:minmax(180px,.7fr) minmax(0,1.3fr);gap:12px 24px}
+@media(max-width:1100px){.quote-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.calculator-overlay .quote-result .quote-row>div{grid-column:auto}}
+@media(max-width:767px){.quote-form.lead-form{padding:16px}.quote-form .field input,.quote-form .field textarea{font-size:16px}.quote-form .field textarea{height:64px}.calculator-overlay .quote-result .quote-row{grid-template-columns:minmax(0,1fr);gap:12px}.quote-form-footer{grid-template-columns:minmax(0,1fr);gap:12px}.quote-form .button{width:100%}.quote-form .consent-field{font-size:12px}}
+@media(max-width:500px){.quote-fields{grid-template-columns:minmax(0,1fr)}.calculator-overlay .quote-result .service-picker .check-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:767px){.calculator-wide:not(.calculator-compact) .quote-form{width:calc(100% - 32px)}}
+@media print{.quote-form{display:none!important}}
+.calculator-overlay .quote-result .quote-row{grid-template-columns:minmax(180px,.8fr) minmax(0,1.2fr) auto}
+.project-price{text-align:right;min-width:145px}
+.project-price>span,.project-price>small{display:block;font-size:11px;line-height:1.45;color:var(--muted)}
+.project-price>strong{display:block;font-size:24px;line-height:1.3;margin:3px 0;color:var(--accent);white-space:nowrap;font-variant-numeric:tabular-nums}
+@media(max-width:1100px){.calculator-overlay .quote-result .quote-row{grid-template-columns:minmax(0,1fr) auto}.calculator-overlay .quote-result .quote-summary{grid-column:1/-1}}
+@media(max-width:767px){.project-price{min-width:0}.project-price>strong{font-size:22px}.calculator-overlay .quote-result .quote-row{grid-template-columns:minmax(0,1fr);gap:12px}.calculator-overlay .quote-result .project-price{text-align:left}.calculator-overlay .quote-result .service-picker .check-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:500px){.calculator-overlay .quote-result .service-picker .check-grid{grid-template-columns:minmax(0,1fr)}}

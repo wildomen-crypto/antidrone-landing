@@ -9,6 +9,26 @@ B10.2 необязателен: решение об объёме записыв�
 
 | ID | Статус | Результат | Проверка | Карточка |
 | --- | --- | --- | --- | --- |
+| GITHUB-SAVE-20261005 | IN_PROGRESS | Сохранение текущего сайта/изображений на GitHub | Ожидается | docs/checkpoints/GITHUB-SAVE-20261005.md |
+| UI-REMOVE-CONTACT-LINK | VERIFIED | Ссылка контактов основного сайта удалена | Build/типизация/worker, HTTP/контакты PASS | docs/checkpoints/UI-REMOVE-CONTACT-LINK.md |
+| UI-RUBLE-PRICES | VERIFIED | Цена/ставка/серверная оценка RUB, фиксированная ставка 1250 ₽/ч | Check 43 unit/build/worker, Chrome четырёх ширин/пересчёт PASS | docs/checkpoints/UI-RUBLE-PRICES.md |
+| UI-COMPACT-CONTACT-FIELDS | VERIFIED | Обе формы без видимых подписей/города, отдельные телефон/email | Check 43 unit/build/worker; Chrome пяти ширин, ошибка контакта и две заявки PASS | docs/checkpoints/UI-COMPACT-CONTACT-FIELDS.md |
+| UI-PROJECT-PRICE | VERIFIED | Черновая цена по 15 $/ч, геометрия и выбранные разделы; Получить проект | Check: 41 unit/build/typecheck/worker; Chrome восьми ширин/пересчёт/серверная цена PASS | docs/checkpoints/UI-PROJECT-PRICE.md |
+| UI-RESTORE-BOTTOM-FORM | VERIFIED | Прежние нижние контакты/форма, форма 3D сохранена | Check: 37 unit/build/typecheck/worker; Chrome шести ширин, раздельное согласие, обычная заявка PASS | docs/checkpoints/UI-RESTORE-BOTTOM-FORM.md |
+| UI-INLINE-QUOTE-FORM | VERIFIED | Верхний блок удалён; 4/2/1 поля и одна кнопка отправки с текущей схемой | Check 37 unit/build/typecheck/worker; Chrome десяти ширин/варианты/валидация/синтетическая заявка PASS | docs/checkpoints/UI-INLINE-QUOTE-FORM.md |
+| UI-SECTION-SPACING | VERIFIED | Вертикальные поля 32/24 px, промежутки 64/48 px | Build/TypeScript/worker, HTTP, Chrome шести ширин без overflow PASS | docs/checkpoints/UI-SECTION-SPACING.md |
+| UI-UNIFORM-SOLUTIONS | VERIFIED | Одинаковые рамки C1–C8, меньше полей; блок −148 px на 1280 | Build/TypeScript/worker, HTTP, Chrome пяти ширин, целые схемы/без overflow/выбор C1 PASS | docs/checkpoints/UI-UNIFORM-SOLUTIONS.md |
+| UI-COMPACT-ORDER-SOLUTIONS | VERIFIED | Компактная форма заказа первой; пояснения выбирают формы вместо отдельной строки кнопки | Build/TypeScript/worker, 37 unit, Chrome 390/900/1536, C1–C8, согласие/валидация/две локальные тестовые заявки/вложение PASS | docs/checkpoints/UI-COMPACT-ORDER-SOLUTIONS.md |
+| UI-MOVE-PROCESS | VERIFIED | Процесс перенесён между составом документации и контактами | Build/TypeScript/worker, HTTP 200, Chrome 1536/390: порядок, один блок/четыре шага, overflow нет | docs/checkpoints/UI-MOVE-PROCESS.md |
+| UI-GENERATED-MATERIALS | VERIFIED | Восемь собственных фотореалистичных генераций, блок авторов удалён | Визуальный просмотр, build/TypeScript/worker, HTTP главной/восьми PNG, SHA, Chrome 1536/390 без overflow | docs/checkpoints/UI-GENERATED-MATERIALS.md |
+| UI-COMPACT-PORTFOLIO | VERIFIED | В портфолио под изображениями только названия и описания; убраны типы/номера/кнопки | Build/TypeScript/worker, HTTP 200, Chrome 1536/390: восемь карточек/изображений, текст 227 → 117 px, overflow нет | docs/checkpoints/UI-COMPACT-PORTFOLIO.md |
+| UI-COMPACT-MATERIALS | VERIFIED | Убраны подписи фото/мелкие строки материалов, компактные отступы | Build/TypeScript/worker, HTTP 200, Chrome 1536/390: восемь карточек/девять фото, высота −80 px, overflow нет | docs/checkpoints/UI-COMPACT-MATERIALS.md |
+| UI-REMOVE-SECTIONS | VERIFIED | Удалены услуги, инженерный подход, FAQ и пункт меню «Услуги» | Build/TypeScript/worker, HTTP 200, Chrome 1536/390: блоков нет, якоря корректны, overflow нет | docs/checkpoints/UI-REMOVE-SECTIONS.md |
+| UI-MATERIAL-PHOTOS | VERIFIED | Настоящие фотографии во всех восьми карточках материалов, источники/лицензии | Build/TypeScript/worker, HTTP главной/семи JPEG, Chrome 390/1536: девять изображений, без overflow | docs/checkpoints/UI-MATERIAL-PHOTOS.md |
+| UI-REMOVE-INTRO | VERIFIED | Удалён повторный вводный блок после 3D | Build/TypeScript/worker, HTTP 200, Chrome порядок разделов/390 px PASS | docs/checkpoints/UI-REMOVE-INTRO.md |
+| UI-DESIGN-ONLY | VERIFIED | Сайт только о проектировании; выбор КМ, КМД, КЖ | check: 37 unit, TypeScript, build/worker; Chrome 390/900/1344, JSON/черновик/вложение/карточка PASS | docs/checkpoints/UI-DESIGN-ONLY.md |
+| UI-PORTFOLIO-CONCEPTS | VERIFIED | Восемь концепций возможной реализации C1–C8 на сайте | Восемь PNG; build/TypeScript/worker; Chrome 390/900/1344, выбор C1–C8/изображения PASS | docs/checkpoints/UI-PORTFOLIO-CONCEPTS.md |
+| UI-CALCULATOR-FIRST | VERIFIED | Конфигуратор первым под шапкой, новые заголовок/описание | Build/TypeScript/worker; Chrome 390/1024/1480, порядок/тексты/ввод/canvas PASS | docs/checkpoints/UI-CALCULATOR-FIRST.md |
 | GITHUB-DELIVERY | VERIFIED | Исходники и история в GitHub private | History audit; push/main SHA; API visibility/default branch | docs/checkpoints/GITHUB-DELIVERY.md |
 | UI-PRIMARY-ONLY | VERIFIED | Основная компоновка без ссылок сравнения | Build/worker; browser 390/1024/1920 без ссылок/overflow/pageerror | docs/checkpoints/UI-PRIMARY-ONLY.md |
 | UI-SIMPLE-QUOTE | VERIFIED | Основная версия без деталей; запрос сохраняет конфигурацию | Build/worker; 5 quote + 5 overlay групп; JSON/draft/SQLite/CLI, 320–1920 | docs/checkpoints/UI-SIMPLE-QUOTE.md |

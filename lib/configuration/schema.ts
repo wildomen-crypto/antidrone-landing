@@ -12,7 +12,7 @@ export const WALL_MODULE_IDS = ["W1", "W2", "W3"] as const;
 export const STRUCTURAL_SYSTEM_IDS = [
   "tube-post", "spatial-column", "frame", "spatial-truss", "guyed-mast", "wall-bracket",
 ] as const;
-export const SERVICE_IDS = ["design", "manufacturing", "supply", "delivery", "installation"] as const;
+export const SERVICE_IDS = ["km", "kmd", "kzh"] as const;
 
 export type ShapeId = (typeof SHAPE_IDS)[number];
 export type MaterialId = (typeof MATERIAL_IDS)[number];

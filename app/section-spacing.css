@@ -1,0 +1,16 @@
+@media screen {
+  main > .section {
+    padding-block: 32px;
+  }
+
+  main > #calculator.section {
+    padding-top: 28px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  main > .section,
+  main > #calculator.section {
+    padding-block: 24px;
+  }
+}

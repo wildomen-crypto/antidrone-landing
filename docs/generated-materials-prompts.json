@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-05",
+  "mode": "Built-in ImageGen",
+  "purpose": "Original photorealistic illustrations of materials for #materials; not photos of manufactured products or completed company work.",
+  "assets": [
+    {
+      "id": "M1",
+      "filename": "polymer-net-generated",
+      "prompt": "Use case: product-mockup. Asset type: original photorealistic material catalog image for an engineering website. Create ONE landscape 16:10 image, a close-up industrial product photograph, not a diagram, not a collage. Soft neutral daylight, pale cool-gray studio/workshop background out of focus, restrained silver and blue-gray palette, highly realistic material texture and physical construction, crisp main subject. Fill the frame with the material, keep main details within the central 85% for website cropping. No people, text, letters, numbers, logos, labels, borders, watermark, military equipment, drones or weapons. Subject: a taut navy-blue polymer rope net sample, thick braided synthetic cords with visible textile fibers, regular square mesh openings and consistent clearly visible tied knots at every crossing. Slightly angled close-up, all mesh in one plane; background visible through the holes. Show the woven cord texture and the square knot structure.",
+      "original": "C:\\Users\\student\\.codex\\generated_images\\01a10b6f-d219-7e70-96a9-835e072e194a\\exec-61172500-11d4-4b41-821b-31df1d41c645.png",
+      "image": "/images/materials/polymer-net-generated.png"
+    },
+    {
+      "id": "M2",
+      "filename": "chain-link-generated",
+      "prompt": "Use case: product-mockup. Asset type: original photorealistic material catalog image for an engineering website. Create ONE landscape 16:10 image, a close-up industrial product photograph, not a diagram, not a collage. Soft neutral daylight, pale cool-gray studio/workshop background out of focus, restrained silver and blue-gray palette, highly realistic material texture and physical construction, crisp main subject. Fill the frame with the material, keep main details within the central 85% for website cropping. No people, text, letters, numbers, logos, labels, borders, watermark, military equipment, drones or weapons. Subject: galvanized steel chain-link mesh, classic interwoven zigzag steel wires forming identical diamond-shaped openings. Oblique close-up, realistic zinc surface and visible curved interlocking wire loops. No razor wire, no barbed wire. Only the chain-link sample, clean subdued background.",
+      "original": "C:\\Users\\student\\.codex\\generated_images\\01a10b6f-d219-7e70-96a9-835e072e194a\\exec-19134eb4-53b8-4ba3-ab0d-70585ef5d88b.png",
+      "image": "/images/materials/chain-link-generated.png"
+    },
+    {
+      "id": "M3",
+      "filename": "hexagonal-mesh-generated",
+      "prompt": "Use case: product-mockup. Asset type: original photorealistic material catalog image for an engineering website. Create ONE landscape 16:10 image, a close-up industrial product photograph, not a diagram, not a collage. Soft neutral daylight, pale cool-gray studio/workshop background out of focus, restrained silver and blue-gray palette, highly realistic material texture and physical construction, crisp main subject. Fill the frame with the material, keep main details within the central 85% for website cropping. No people, text, letters, numbers, logos, labels, borders, watermark, military equipment, drones or weapons. Subject: thin galvanized twisted-wire chicken mesh sample, clear regular HEXAGONAL honeycomb openings. Each neighboring hexagon shares a double wire edge with short realistic paired-wire twists. Macro close-up showing actual twisting and silvery galvanized texture. No square mesh or diamond chain-link.",
+      "original": "C:\\Users\\student\\.codex\\generated_images\\01a10b6f-d219-7e70-96a9-835e072e194a\\exec-9c343026-f909-45ca-b17a-f90863a9f232.png",
+      "image": "/images/materials/hexagonal-mesh-generated.png"
+    },
+    {
+      "id": "M4",
+      "filename": "welded-mesh-generated",
+      "prompt": "Use case: product-mockup. Asset type: original photorealistic material catalog image for an engineering website. Create ONE landscape 16:10 image, a close-up industrial product photograph, not a diagram, not a collage. Soft neutral daylight, pale cool-gray studio/workshop background out of focus, restrained silver and blue-gray palette, highly realistic material texture and physical construction, crisp main subject. Fill the frame with the material, keep main details within the central 85% for website cropping. No people, text, letters, numbers, logos, labels, borders, watermark, military equipment, drones or weapons. Subject: square galvanized welded steel wire mesh mounted inside a sturdy rectangular steel tube perimeter frame, viewed at a shallow oblique angle. Show two frame sides and a corner inside the picture, with consistent horizontal and vertical rods and small plausible weld marks where they cross. Mesh and frame are one assembled product; realistic steel finish.",
+      "original": "C:\\Users\\student\\.codex\\generated_images\\01a10b6f-d219-7e70-96a9-835e072e194a\\exec-f37951b0-aa4a-41be-a744-37906fdc78c1.png",
+      "image": "/images/materials/welded-mesh-generated.png"
+    },
+    {
+      "id": "M5",
+      "filename": "cable-net-generated",
+      "prompt": "Use case: product-mockup. Asset type: original photorealistic material catalog image for an engineering website. Create ONE landscape 16:10 image, a close-up industrial product photograph, not a diagram, not a collage. Soft neutral daylight, pale cool-gray studio/workshop background out of focus, restrained silver and blue-gray palette, highly realistic material texture and physical construction, crisp main subject. Fill the frame with the material, keep main details within the central 85% for website cropping. No people, text, letters, numbers, logos, labels, borders, watermark, military equipment, drones or weapons. Subject: assembled stainless steel WIRE ROPE NET sample, a regular square grid of braided steel cables with smooth small metal crimp sleeves at the intersections. Macro close-up of one central crossing and multiple neighboring complete square openings. Individual twisted steel strands of both horizontal and vertical cable are clearly visible, physically credible fastening sleeves. This is a cable network, not ropes on a reel, not solid wire fencing, not chain-link.",
+      "original": "C:\\Users\\student\\.codex\\generated_images\\01a10b6f-d219-7e70-96a9-835e072e194a\\exec-f9d67e86-4ccb-4316-9755-2fbeaef17753.png",
+      "image": "/images/materials/cable-net-generated.png"
+    },
+    {
+      "id": "M6",
+      "filename": "tubular-grating-generated",
+      "prompt": "Use case: product-mockup. Asset type: original photorealistic material catalog image for an engineering website. Create ONE landscape 16:10 image, a close-up industrial product photograph, not a diagram, not a collage. Soft neutral daylight, pale cool-gray studio/workshop background out of focus, restrained silver and blue-gray palette, highly realistic material texture and physical construction, crisp main subject. Fill the frame with the material, keep main details within the central 85% for website cropping. No people, text, letters, numbers, logos, labels, borders, watermark, military equipment, drones or weapons. Subject: assembled steel tubular grating panel, several evenly spaced parallel cylindrical steel tubes fixed between two thicker horizontal steel crossmembers, visible realistic welded joints and a cropped perimeter frame. Oblique close-up with round hollow tube ends visible on the foreground edge; true cylindrical tube contours, metallic gray finish. Show the actual open grating panel, not bundles of stored pipes and not wire mesh.",
+      "original": "C:\\Users\\student\\.codex\\generated_images\\01a10b6f-d219-7e70-96a9-835e072e194a\\exec-09d631d1-1159-49ec-afa3-7952751d36e2.png",
+      "image": "/images/materials/tubular-grating-generated.png"
+    },
+    {
+      "id": "M7",
+      "filename": "perforated-sheet-generated",
+      "prompt": "Use case: product-mockup. Asset type: original photorealistic material catalog image for an engineering website. Create ONE landscape 16:10 image, a close-up industrial product photograph, not a diagram, not a collage. Soft neutral daylight, pale cool-gray studio/workshop background out of focus, restrained silver and blue-gray palette, highly realistic material texture and physical construction, crisp main subject. Fill the frame with the material, keep main details within the central 85% for website cropping. No people, text, letters, numbers, logos, labels, borders, watermark, military equipment, drones or weapons. Subject: close-up of a stainless steel perforated sheet with identical circular holes in a precise staggered repeated pattern. Show the thin metal edge and thickness at one corner, realistic satin brushed metal reflections and dark soft background through every hole. Clear circular openings, no embossed dimples, no paper or fabric, no expanded mesh.",
+      "original": "C:\\Users\\student\\.codex\\generated_images\\01a10b6f-d219-7e70-96a9-835e072e194a\\exec-c3167c20-7521-4fa4-b78d-f97a79df3eb3.png",
+      "image": "/images/materials/perforated-sheet-generated.png"
+    },
+    {
+      "id": "M8",
+      "filename": "combined-panel-generated",
+      "prompt": "Use case: product-mockup. Asset type: original photorealistic material catalog image for an engineering website. Create ONE landscape 16:10 image, a close-up industrial product photograph, not a diagram, not a collage. Soft neutral daylight, pale cool-gray studio/workshop background out of focus, restrained silver and blue-gray palette, highly realistic material texture and physical construction, crisp main subject. Fill the frame with the material, keep main details within the central 85% for website cropping. No people, text, letters, numbers, logos, labels, borders, watermark, military equipment, drones or weapons. Subject: one assembled two-layer protective material sample panel. Foreground layer: galvanized welded wire mesh with orthogonal square grid in a rectangular steel perimeter frame. Behind it, separated by a clearly visible small air gap, a navy blue braided synthetic cord net with larger square openings and tied knots. Angled view of a corner to reveal the two physically distinct layers and short spacer brackets connecting their frames. Two different genuine-looking materials in ONE panel photograph, not a split image or collage. No sheet metal covering the meshes.",
+      "original": "C:\\Users\\student\\.codex\\generated_images\\01a10b6f-d219-7e70-96a9-835e072e194a\\exec-6ccad8eb-30d8-42a7-877f-7bd1a8325364.png",
+      "image": "/images/materials/combined-panel-generated.png"
+    }
+  ]
+}

@@ -8,6 +8,26 @@ process.env.DATA_DIR=path.join(process.cwd(),'.local','unit-leads',randomUUID())
 delete process.env.NOTIFICATION_WEBHOOK_URL;
 const store=require('../../.local/test-build/lib/leads/store.js');
 const payload={name:'QA',contact:'qa@example.com',region:'',comment:'Synthetic local test',consentVersion:'test',configuration:null,summary:null};
+
+test('separate phone and email accept either or both, trim whitespace and preserve both in storage',()=>{
+  const {parseLeadContacts}=require('../../.local/test-build/lib/leads/contact.js');
+  assert.deepEqual(parseLeadContacts({phone:' +7 (900) 123-45-67 ',email:''}),{phone:'+7 (900) 123-45-67',email:'',contact:'+7 (900) 123-45-67'});
+  assert.deepEqual(parseLeadContacts({phone:'',email:' qa@example.invalid '}),{phone:'',email:'qa@example.invalid',contact:'qa@example.invalid'});
+  const contacts=parseLeadContacts({phone:'+7 (900) 123-45-67',email:'qa@example.invalid'});
+  assert.deepEqual(contacts,{phone:'+7 (900) 123-45-67',email:'qa@example.invalid',contact:'+7 (900) 123-45-67 · qa@example.invalid'});
+  const lead=store.saveLead(randomUUID(),{...payload,...contacts});
+  const saved=store.readLead(lead.id).payload;
+  assert.equal(saved.phone,contacts.phone);assert.equal(saved.email,contacts.email);assert.equal(saved.contact,contacts.contact);
+  assert.equal(store.deleteLead(lead.id),1);
+});
+
+test('contacts reject empty or malformed values even alongside a valid alternative; old clients still work',()=>{
+  const {parseLeadContacts}=require('../../.local/test-build/lib/leads/contact.js');
+  for(const fields of [{phone:'',email:''},{phone:'123',email:'qa@example.invalid'},{phone:'+79001234567',email:'invalid'},{phone:null,email:'qa@example.invalid'},{phone:'',email:'x'.repeat(121)},{phone:'1234567890123456',email:''}])assert.throws(()=>parseLeadContacts(fields));
+  assert.deepEqual(parseLeadContacts({contact:'qa@example.invalid'}),{phone:'',email:'qa@example.invalid',contact:'qa@example.invalid'});
+  assert.deepEqual(parseLeadContacts({contact:'+79001234567'}),{phone:'+79001234567',email:'',contact:'+79001234567'});
+  assert.throws(()=>parseLeadContacts({contact:'not a contact'}));
+});
 test('lead and outbox are durable, retry returns same ID, mutation conflicts',()=>{
   const key=randomUUID(),first=store.saveLead(key,payload),second=store.saveLead(key,payload);
   assert.equal(first.duplicate,false);assert.equal(second.duplicate,true);assert.equal(first.id,second.id);
@@ -46,4 +66,12 @@ test('backup is a coherent standalone database and refuses overwrite/public path
   await assert.rejects(store.backupLeads(target),/BACKUP_ALREADY_EXISTS/);
   await assert.rejects(store.backupLeads(path.join(process.cwd(),'public','leads.sqlite')),/PRIVATE_PATH_REQUIRED/);
   assert.equal(store.deleteLead(lead.id),1);assert.equal(store.readLead(lead.id),null);
+});
+
+test('selected KM, KMD and KZh sections survive server parsing and lead storage',()=>{
+  const {defaultInput,parseInput}=require('../../.local/test-build/lib/configuration/input.js');
+  const configuration=parseInput({...structuredClone(defaultInput),services:['km','kmd','kzh']});
+  const lead=store.saveLead(randomUUID(),{...payload,configuration});
+  assert.deepEqual(store.readLead(lead.id).payload.configuration,configuration);
+  assert.equal(store.deleteLead(lead.id),1);
 });

@@ -1,43 +1,52 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { shapes } from "@/config/catalog";
+import { useRef, useState } from "react";
 import { legal } from "@/config/legal";
 import type { LayoutInput } from "@/lib/configuration/input";
 import { track } from "@/lib/analytics";
-import { readQuoteDraft, clearQuoteDraft } from "@/lib/configuration/quote-draft";
+import { clearQuoteDraft } from "@/lib/configuration/quote-draft";
+import { parseLeadContacts } from "@/lib/leads/contact";
 
-export default function LeadForm({ persistConfiguration = false }: { persistConfiguration?: boolean }) {
-  const [configuration, setConfiguration] = useState<LayoutInput | null>(null);
+export default function LeadForm({ variant = "inline", configurationValid = true, prepareConfiguration, onSaved, persistConfiguration = false }: { variant?: "inline" | "contact"; configurationValid?: boolean; prepareConfiguration?: () => LayoutInput; onSaved?: (configuration: LayoutInput) => void; persistConfiguration?: boolean }) {
+  const contactForm = variant === "contact";
   const [consent, setConsent] = useState(false), [busy, setBusy] = useState(false), [message, setMessage] = useState("");
   const key = useRef<string | null>(null);
-  useEffect(() => {
-    if (persistConfiguration) setConfiguration(readQuoteDraft());
-    const attach = (event: Event) => { setConfiguration((event as CustomEvent<LayoutInput>).detail); setMessage(""); key.current = null; };
-    window.addEventListener("attach-configuration", attach); return () => window.removeEventListener("attach-configuration", attach);
-  }, [persistConfiguration]);
-  return <form className="lead-form" onChange={() => { if (!busy) key.current = null; }} onSubmit={async event => {
-    event.preventDefault(); if (busy || !consent) return;
+  const previousPayload = useRef("");
+  const [phone, setPhone] = useState(""), [email, setEmail] = useState("");
+  const nameField = <label className="field"><input name="name" aria-label="ФИО" autoComplete="name" maxLength={100} placeholder="ФИО (необязательно)" disabled={busy} /></label>;
+  const phoneField = <label className="field"><input name="phone" aria-label="Телефон" type="tel" autoComplete="tel" maxLength={120} required={!email.trim()} placeholder="Телефон" value={phone} onChange={event => setPhone(event.target.value)} disabled={busy} /></label>;
+  const emailField = <label className="field"><input name="email" aria-label="Email" type="email" autoComplete="email" maxLength={120} required={!phone.trim()} placeholder="Email" value={email} onChange={event => setEmail(event.target.value)} disabled={busy} /></label>;
+  return <form id={contactForm ? undefined : "quote-request"} className={"lead-form " + (contactForm ? "contact-form" : "quote-form")} aria-label={contactForm ? "Обсудим ваш проект" : "Запрос расчёта проекта"} onSubmit={async event => {
+    event.preventDefault(); if (busy || !consent || !configurationValid) return;
     const form = event.currentTarget, data = new FormData(form);
     setBusy(true); setMessage("");
-    key.current ??= crypto.randomUUID();
     try {
-      const response = await fetch("/api/leads", { method: "POST", headers: { "Content-Type": "application/json", "Idempotency-Key": key.current }, body: JSON.stringify({ name: data.get("name"), contact: data.get("contact"), region: data.get("region"), comment: data.get("comment"), website: data.get("website"), consent, consentVersion: legal.consentVersion, configuration }) });
+      const contacts = parseLeadContacts({ phone: data.get("phone"), email: data.get("email") });
+      const configuration = prepareConfiguration?.() ?? null;
+      const payload = JSON.stringify({ name: data.get("name"), ...contacts, region: "", comment: data.get("comment"), website: data.get("website"), consent, consentVersion: legal.consentVersion, configuration });
+      if (payload !== previousPayload.current) key.current = null;
+      previousPayload.current = payload;
+      key.current ??= crypto.randomUUID();
+      const response = await fetch("/api/leads", { method: "POST", headers: { "Content-Type": "application/json", "Idempotency-Key": key.current }, body: payload });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error ?? "Не удалось сохранить заявку. Попробуйте ещё раз.");
-      setMessage(`Заявка сохранена. Номер: ${result.id}.`); track("lead_saved"); form.reset(); setConsent(false); setConfiguration(null); key.current = null;
+      setMessage(`Заявка сохранена. Номер: ${result.id}.`); track("lead_saved"); form.reset(); setPhone(""); setEmail(""); setConsent(false); key.current = null;
       if (persistConfiguration) clearQuoteDraft();
+      if (configuration) onSaved?.(configuration);
     } catch (error) { setMessage(error instanceof Error ? error.message : "Нет соединения. Попробуйте ещё раз."); }
     finally { setBusy(false); }
   }}>
-    <h3>Обсудим ваш объект</h3><p>Оставьте контакт и краткое описание. Для проекта по чертежам укажите это в комментарии.</p>
-    {configuration && <div className="attached-config">Прикреплена схема: {shapes.find(s => s.id === configuration.shapeId)?.name}<button type="button" aria-label="Убрать схему из заявки" onClick={() => { setConfiguration(null); key.current = null; if (persistConfiguration) clearQuoteDraft(); }}>×</button></div>}
-    <div className="field-grid"><label className="field"><span>Как к вам обращаться</span><input name="name" autoComplete="name" maxLength={100} placeholder="Имя (необязательно)" disabled={busy} /></label><label className="field"><span>Телефон или email</span><input name="contact" autoComplete="email" maxLength={120} required placeholder="+7 … или email" disabled={busy} /></label></div>
-    <label className="field"><span>Регион объекта</span><input name="region" maxLength={100} placeholder="Город / область" disabled={busy} /></label>
-    <label className="field"><span>Задача</span><textarea name="comment" maxLength={2000} rows={3} placeholder="Размеры объекта, нужные работы, наличие проекта" disabled={busy} /></label>
+    {contactForm && <><h3>Обсудим ваш проект</h3><p>Оставьте контакт и краткое описание. Укажите нужные разделы КМ, КМД и КЖ и наличие исходных чертежей.</p></>}
+    <div className={contactForm ? "contact-fields" : "quote-fields"}>
+      {phoneField}{emailField}{nameField}
+      <label className="field field-task"><textarea name="comment" aria-label="Описание задачи" maxLength={2000} rows={contactForm ? 3 : 2} placeholder="Описание задачи: объект, размеры, нужные работы" disabled={busy} /></label>
+    </div>
     <label className="honeypot" aria-hidden="true">Сайт<input name="website" tabIndex={-1} autoComplete="off" /></label>
-    <label className="check-field consent-field"><input type="checkbox" checked={consent} onChange={e => setConsent(e.target.checked)} required disabled={busy} /><span>Даю <a href={legal.consentPath} target="_blank" rel="noopener">согласие на обработку персональных данных</a> для ответа на заявку и ознакомлен с <a href={legal.policyPath} target="_blank" rel="noopener">политикой обработки</a>.</span></label>
-    <button className="button button-primary" type="submit" disabled={busy || !consent}>{busy ? "Сохраняем…" : "Отправить заявку"}<span aria-hidden="true">↗</span></button>
-    <p className="field-hint">Без рекламной рассылки. Не указывайте в форме конфиденциальные сведения об объекте.</p>
+    <div className={contactForm ? "contact-form-footer" : "quote-form-footer"}>
+      <label className="check-field consent-field"><input type="checkbox" checked={consent} onChange={e => setConsent(e.target.checked)} required disabled={busy} /><span>Даю <a href={legal.consentPath} target="_blank" rel="noopener">согласие на обработку данных</a> для ответа на заявку и ознакомлен с <a href={legal.policyPath} target="_blank" rel="noopener">политикой обработки</a>.</span></label>
+      <button className="button button-primary" type="submit" disabled={busy || !consent || !configurationValid}>{busy ? "Сохраняем…" : contactForm ? "Отправить заявку" : "Получить проект"}<span aria-hidden="true">↗</span></button>
+    </div>
+    {contactForm && <p className="field-hint">Без рекламной рассылки. Не указывайте в форме конфиденциальные сведения об объекте.</p>}
+    {!configurationValid && <p className="form-message" role="status">Проверьте размеры конструкции перед отправкой заявки.</p>}
     {message && <p className="form-message" role="status">{message}</p>}
   </form>;
 }

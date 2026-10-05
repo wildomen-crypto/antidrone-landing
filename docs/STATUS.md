@@ -1,5 +1,147 @@
 # Состояние разработки
 
+Текущая локальная работа: GITHUB-SAVE-20261005 — IN_PROGRESS.
+Карточка docs/checkpoints/GITHUB-SAVE-20261005.md.
+Сохранение текущей версии сайта и изображений в существующий private GitHub.
+Следующий шаг: подключение Git и сравнение с актуальной историей.
+
+Текущая локальная работа: UI-REMOVE-CONTACT-LINK — VERIFIED.
+Карточка docs/checkpoints/UI-REMOVE-CONTACT-LINK.md.
+Build/типизация/worker и HTTP 200, отсутствие ссылки/наличие контактов PASS.
+Preview PID 266600. Следующий шаг: обратная связь пользователя.
+
+Текущая локальная работа: UI-RUBLE-PRICES — VERIFIED.
+Карточка docs/checkpoints/UI-RUBLE-PRICES.md.
+Перевод предварительной цены в RUB по фиксированной ставке 1250 ₽/ч.
+Check 43 unit/typecheck/build/worker PASS; Chrome четырёх ширин/пересчёт PASS.
+Preview PID 262852. Следующий шаг: обратная связь пользователя.
+
+Текущая локальная работа: UI-COMPACT-CONTACT-FIELDS — VERIFIED.
+Карточка: docs/checkpoints/UI-COMPACT-CONTACT-FIELDS.md.
+Обе формы: отдельные телефон/email, без города и видимых подписей.
+Check: 43 unit/typecheck/build/worker PASS; Chrome пяти ширин без overflow.
+Email-only и оба контакта сохранены в синтетических заявках; свои записи удалены.
+Preview PID 251664. Следующий шаг: обратная связь и выбор одной из форм.
+
+Текущая локальная работа: UI-PROJECT-PRICE — VERIFIED.
+Карточка: docs/checkpoints/UI-PROJECT-PRICE.md.
+По разрешению пользователя черновая трудоёмкость по 15 $/ч, диапазон 10–20 $/ч.
+Цена ≈ в USD, зависит от геометрии и КМ/КМД/КЖ; кнопка «Получить проект».
+Check: 41 unit/typecheck/build/worker PASS; Chrome восьми ширин/пересчёт PASS.
+Серверная цена синтетической заявки совпала с UI; своя запись удалена.
+Методика docs/project-price.md; preview PID 261904. Следующий шаг: уточнение коэффициентов.
+
+Текущая локальная работа: UI-RESTORE-BOTTOM-FORM — VERIFIED.
+Карточка: docs/checkpoints/UI-RESTORE-BOTTOM-FORM.md.
+Нижние контакты и прежняя форма восстановлены после #process; форма 3D сохранена.
+Check: 37 unit/typecheck/build/worker PASS; Chrome шести ширин без overflow.
+Независимость согласий и обычная заявка без схемы проверены; своя тестовая запись удалена.
+Preview PID 260464. Следующий шаг: обратная связь пользователя.
+
+Текущая локальная работа: UI-INLINE-QUOTE-FORM — VERIFIED.
+Карточка: docs/checkpoints/UI-INLINE-QUOTE-FORM.md.
+Верхний блок удалён; четыре поля и одна кнопка отправки внутри конфигуратора.
+Check: 37 unit/typecheck/build/worker PASS. Chrome десяти ширин: 4/2/1 колонки, overflow нет.
+Согласие/ошибка размеров/контакта/локальная заявка с текущей C3 и km/kzh PASS.
+Только своя синтетическая запись удалена. Preview PID 249356; обратная связь пользователя.
+
+Текущая локальная работа: UI-SECTION-SPACING — VERIFIED.
+Карточка: docs/checkpoints/UI-SECTION-SPACING.md.
+Отступы разделов 32 px desktop / 24 px mobile, между портфолио и материалами 64/48 px.
+Build/TypeScript/worker, HTTP, Chrome шести ширин без overflow PASS.
+Preview PID 221036. Следующий шаг: обратная связь пользователя.
+
+Текущая локальная работа: UI-UNIFORM-SOLUTIONS — VERIFIED.
+Карточка: docs/checkpoints/UI-UNIFORM-SOLUTIONS.md.
+Схемы одинаковой высоты с уменьшенными полями. На 1280 блок 1056 → 909 px.
+Build/TypeScript/worker, HTTP, Chrome 320/390/600/900/1536 PASS; overflow/обрезки нет.
+Пояснение C1 выбирает форму в 3D. Preview PID 258736; обратная связь пользователя.
+
+Текущая локальная работа: UI-COMPACT-ORDER-SOLUTIONS — VERIFIED.
+Карточка: docs/checkpoints/UI-COMPACT-ORDER-SOLUTIONS.md. База UI-MOVE-PROCESS.
+Компактная форма заказа наверху и пояснения-ссылки в каталоге решений.
+Build/TypeScript/worker и 37 unit PASS. Chrome 390/900/1536 без overflow;
+один h1/форма, восемь пояснений-ссылок C1–C8. Высота формы 238 px на 1536.
+Согласие/ошибка контакта/опциональные поля/две тестовые заявки/вложенная C3
+проверены; только свои синтетические заявки удалены. Внешних уведомлений нет.
+Preview PID 256332; http://127.0.0.1:3100.
+Следующий шаг: обратная связь пользователя.
+
+Текущая локальная работа: UI-MOVE-PROCESS — VERIFIED.
+Карточка: docs/checkpoints/UI-MOVE-PROCESS.md. База UI-GENERATED-MATERIALS.
+Перенос процесса между составом документации и контактами.
+Build/TypeScript/worker PASS; HTTP 200; Chrome 1536/390:
+состав документации → процесс → контакты, один блок/четыре шага, overflow нет.
+Preview PID 251392; http://127.0.0.1:3100/#process.
+Следующий шаг: обратная связь пользователя.
+
+Текущая локальная работа: UI-GENERATED-MATERIALS — VERIFIED.
+Карточка: docs/checkpoints/UI-GENERATED-MATERIALS.md. База UI-COMPACT-PORTFOLIO.
+Восемь собственных визуализаций M1–M8 на сайте; блок авторов удалён.
+Build/TypeScript/worker PASS; главная/восемь PNG HTTP 200; SHA копий совпадает.
+Chrome 1536/390: восемь карточек/изображений, загрузка PASS, overflow нет.
+Запросы: docs/generated-materials-prompts.json; файлы: docs/material-images.md.
+Preview PID 122956; http://127.0.0.1:3100/#materials.
+Следующий шаг: обратная связь пользователя.
+
+Текущая локальная работа: UI-COMPACT-PORTFOLIO — VERIFIED.
+Карточка: docs/checkpoints/UI-COMPACT-PORTFOLIO.md. База UI-COMPACT-MATERIALS.
+Под изображениями только названия/описания; отступы компактнее.
+Build/TypeScript/worker PASS; HTTP 200; Chrome 1536/390 без overflow,
+восемь изображений загружены. Текстовая часть 227 → 117 px на 1536.
+Preview PID 249604; http://127.0.0.1:3100/#portfolio.
+Следующий шаг: обратная связь пользователя.
+
+Текущая локальная работа: UI-COMPACT-MATERIALS — VERIFIED.
+Карточка: docs/checkpoints/UI-COMPACT-MATERIALS.md. База UI-REMOVE-SECTIONS.
+Подписи под фото и мелкие строки убраны; отступы компактнее.
+Build/TypeScript/worker PASS; HTTP 200; Chrome 1536/390 без overflow,
+восемь карточек/девять фото; высота карточек уменьшена примерно на 80 px.
+Preview PID 224888; http://127.0.0.1:3100/#materials.
+Следующий шаг: обратная связь пользователя.
+
+Текущая локальная работа: UI-REMOVE-SECTIONS — VERIFIED.
+Карточка: docs/checkpoints/UI-REMOVE-SECTIONS.md. База UI-MATERIAL-PHOTOS.
+Три указанных раздела удалены; ссылка на #services исключена из меню.
+Build/TypeScript/worker PASS; HTTP 200; Chrome 1536/390 px:
+удалённых блоков нет, якоря корректны, горизонтального переполнения нет.
+Preview PID 252912; http://127.0.0.1:3100.
+Следующий шаг: обратная связь пользователя.
+
+Текущая локальная работа: UI-MATERIAL-PHOTOS — VERIFIED.
+Карточка: docs/checkpoints/UI-MATERIAL-PHOTOS.md. База UI-REMOVE-INTRO.
+Восемь карточек #materials с настоящими фотографиями и атрибуцией.
+Для M8 две составляющие; для M5/M6 крупные планы тросов/труб с подписями.
+Build/TypeScript/worker PASS; HTTP 200 главной и семи JPEG;
+Chrome 390/1536: девять изображений загружены, overflow нет, источники доступны.
+Preview PID 202168; http://127.0.0.1:3100/#materials.
+Следующий шаг: обратная связь пользователя.
+
+Текущая локальная работа: UI-REMOVE-INTRO — VERIFIED.
+Карточка: docs/checkpoints/UI-REMOVE-INTRO.md. База UI-DESIGN-ONLY.
+Вводный блок с навесом удалён; #solutions сразу после #calculator.
+Build/TypeScript/worker PASS; HTTP 200; Chrome компьютер/390 px без overflow,
+один h1 и восемь карточек решений. Preview PID 244664.
+Следующий шаг: обратная связь пользователя.
+
+Текущая локальная работа: UI-DESIGN-ONLY — VERIFIED.
+Карточка: docs/checkpoints/UI-DESIGN-ONLY.md. База UI-PORTFOLIO-CONCEPTS.
+Тексты только о проектировании; три независимых работы КМ, КМД, КЖ.
+check PASS: TypeScript, 37 unit, Next/worker. Chrome 390/900/1344 без overflow;
+выбор, JSON, прикрепление и перезагрузка, печатная карточка проверены.
+Preview PID 234376; http://127.0.0.1:3100. Следующий шаг: обратная связь.
+
+Текущая локальная работа: UI-PORTFOLIO-CONCEPTS — VERIFIED.
+Карточка: docs/checkpoints/UI-PORTFOLIO-CONCEPTS.md. Восемь концепций C1–C8, ссылка «Примеры», изображения и выбор типа в 3D.
+Build/TypeScript/worker PASS; HTTP 200 главной/восьми PNG; Chrome 390/900/1344 без переполнения, все типы/изображения работают. Preview PID 248752. Следующий шаг: обратная связь пользователя.
+
+
+Текущая локальная работа: UI-CALCULATOR-FIRST — VERIFIED.
+Карточка: docs/checkpoints/UI-CALCULATOR-FIRST.md. База GitHub f447b0d; здесь ZIP без .git.
+Конфигуратор первым; новый h1/описание. Build/TypeScript/worker PASS; Chrome 390/1024/1480 без переполнения, ввод и canvas работают. Preview PID 243256. Следующий шаг: обратная связь пользователя.
+
+Ниже сохранена история работ исходного компьютера.
+
 Текущая работа: GITHUB-DELIVERY — VERIFIED; база 49d9743.
 Ветка delivery/github; docs/checkpoints/GITHUB-DELIVERY.md.
 GitHub: https://github.com/wildomen-crypto/antidrone-landing — PRIVATE.

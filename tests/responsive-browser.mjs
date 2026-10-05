@@ -196,13 +196,13 @@ try{
       const button=page.locator('.scene-view-controls').getByRole('button',{name:label,exact:true});await button.click();assert.equal(await button.getAttribute('aria-pressed'),'true');
     }
     await page.locator('.structure-choice[data-system=spatial-column]').click();await page.locator('.structure-choice[data-system=spatial-truss]').click();
-    await page.locator('.service-picker').getByLabel('Монтаж',{exact:true}).check();
+    await page.locator('.service-picker').getByLabel('Разработка КЖ',{exact:true}).check();
     await page.setViewportSize({width:1024,height:768});await frame(page);await clearScene(page);
     assert.equal(await page.getByRole('checkbox',{name:'Проём в передней стороне',exact:true}).isChecked(),true);
     const pending=page.waitForEvent('download');await page.getByRole('button',{name:'Сохранить JSON',exact:true}).click();
     const savedPath=path.join(output,'resized.json');await(await pending).saveAs(savedPath);const saved=JSON.parse(await readFile(savedPath,'utf8'));
     assert.equal(saved.length,12.5);assert.equal(saved.step,3.1);assert.equal(saved.layers,2);assert.equal(saved.sectionType,'round');assert.equal(saved.foundation,'pile-cap');
-    assert.equal(saved.opening.width,2.5);assert.equal(saved.structuralSystem,'spatial-truss');assert.equal(saved.spatialSupports,true);assert.ok(saved.services.includes('installation'));
+    assert.equal(saved.opening.width,2.5);assert.equal(saved.structuralSystem,'spatial-truss');assert.equal(saved.spatialSupports,true);assert.ok(saved.services.includes('kzh'));
     await page.getByRole('button',{name:'Получить расчёт',exact:false}).click();await page.locator('.attached-config').waitFor();await noOverflow(page);
     await page.setViewportSize({width:390,height:844});
     await page.getByRole('textbox',{name:'Как к вам обращаться',exact:true}).fill('Проверка адаптивности');
@@ -272,8 +272,8 @@ try{
     await page.waitForFunction(()=>document.querySelectorAll('[data-target=walls] .material-choice')[3].getAttribute('aria-pressed')==='true');
     const layers=page.getByRole('slider',{name:'Слои заполнения',exact:true});await layers.evaluate(el=>el.scrollIntoView({block:'center'}));await layers.tap();
     await page.waitForFunction(()=>document.querySelector('.dimension-panel input[type=range][max="3"]').value==='2');
-    const works=page.locator('.service-picker').getByLabel('Монтаж',{exact:true});await works.evaluate(el=>el.scrollIntoView({block:'center'}));await works.tap();
-    await page.waitForFunction(()=>document.querySelectorAll('.service-picker input')[3].checked);
+    const works=page.locator('.service-picker').getByLabel('Разработка КЖ',{exact:true});await works.evaluate(el=>el.scrollIntoView({block:'center'}));await works.tap();
+    await page.waitForFunction(()=>document.querySelectorAll('.service-picker input')[2].checked);
     const topButton=page.locator('.scene-view-controls').getByRole('button',{name:'Сверху',exact:true});await topButton.tap();
     await page.waitForFunction(()=>document.querySelector('.scene-view-controls button[aria-label="Сверху"]').getAttribute('aria-pressed')==='true');
     await page.locator('.scene-view-controls').getByRole('button',{name:'3D',exact:true}).tap();
@@ -292,4 +292,3 @@ try{
   assert.deepEqual(report.errors,[]);
 }catch(error){report.failure=error.stack;console.error(error.stack);process.exitCode=1;}
 finally{await browser.close();await writeFile(path.join(output,'report.json'),JSON.stringify(report,null,2));}
-

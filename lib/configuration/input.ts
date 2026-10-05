@@ -1,5 +1,6 @@
 import { MATERIAL_IDS, SHAPE_IDS, STRUCTURAL_SYSTEM_IDS, WALL_MODULE_IDS, SERVICE_IDS } from "./schema";
 import type { MaterialId, ShapeId, StructuralSystemId, WallModuleId, ServiceId } from "./schema";
+import { LEGACY_SERVICE_IDS } from "./services";
 
 export type LayoutInput = {
   version: 1; shapeId: ShapeId; length: number; width: number; height: number;
@@ -28,7 +29,7 @@ export const defaultInput: LayoutInput = {
     { enabled: true, offset: 2, height: 5.5 },
     { enabled: true, offset: 3.5, height: 7 },
   ],
-  wallModule: "none", services: ["design", "manufacturing"],
+  wallModule: "none", services: ["km", "kmd"],
 };
 
 export class InputError extends Error {
@@ -98,7 +99,9 @@ export function parseInput(value: unknown): LayoutInput {
   }
   if (shapeId === "C3" && raw.roof !== true) throw new InputError("Для навеса необходимо включить покрытие.");
   if (walls && ["C2", "C4", "C8"].includes(shapeId) && !raw.sides.some(Boolean) && (shapeId === "C2" || !raw.roof)) throw new InputError("Включите хотя бы одну сторону или покрытие.");
-  if (!Array.isArray(raw.services) || raw.services.some(v => !SERVICE_IDS.includes(v as ServiceId)) || new Set(raw.services).size !== raw.services.length) throw new InputError("Проверьте перечень услуг.");
+  const acceptedServices: readonly string[] = [...SERVICE_IDS, ...LEGACY_SERVICE_IDS];
+  if (!Array.isArray(raw.services) || raw.services.some(v => typeof v !== "string" || !acceptedServices.includes(v)) || new Set(raw.services).size !== raw.services.length) throw new InputError("Проверьте перечень работ: КМ, КМД и КЖ.");
+  const services = raw.services.filter((v): v is ServiceId => SERVICE_IDS.includes(v as ServiceId));
   if (!Array.isArray(raw.combinedMaterials) || raw.combinedMaterials.length < 2 || raw.combinedMaterials.length > 3 || raw.combinedMaterials.some(v => v === "M8" || !MATERIAL_IDS.includes(v as MaterialId)) || new Set(raw.combinedMaterials).size !== raw.combinedMaterials.length) throw new InputError("Для комбинированной панели выберите 2–3 разных материала без вложенной комбинации.");
   const roof = boolean("roof");
   // Legacy perimeter ignored the roof flag; preserve its open ring on import.
@@ -113,6 +116,6 @@ export function parseInput(value: unknown): LayoutInput {
     structuralSystem: pick("structuralSystem", STRUCTURAL_SYSTEM_IDS), step, layers,
     sides: [...raw.sides] as boolean[], roof: normalizedRoof, walls,
     opening: { enabled: o.enabled, width: o.width, height: o.height, offset: o.offset },
-    contours, wallModule: pick("wallModule", ["none", ...WALL_MODULE_IDS]), services: [...raw.services] as ServiceId[],
+    contours, wallModule: pick("wallModule", ["none", ...WALL_MODULE_IDS]), services,
   };
 }
