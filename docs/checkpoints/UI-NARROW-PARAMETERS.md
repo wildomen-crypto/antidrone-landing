@@ -22,4 +22,8 @@ C1/C2/C4/C5/C6/C8; C4/C8 клавиатурные ползунки и основ
 Отчёты .local/qa/narrow-parameters.json и responsive/report.json.
 Геометрия неизменна; unit не повторялись, физические телефоны не проверены.
 Локальный сервер PID 28192, HTTP /compact 200.
-Следующий шаг: сохранить проверенный код, архив и ссылку заказчику.
+Код 24995cd340be8d5555f81a5075f2f1f85ee6e95e в main (fast-forward).
+ZIP/bundle narrow-parameters-20261005-24995cd проверены: ZIP 157 записей
+без данных/секретов/runtime, bundle verify PASS. Каталог
+C:\taran\artifacts\antidrone-landing-backups.
+Следующий шаг: обратная связь заказчика.

@@ -7,7 +7,10 @@ Build/worker и 8 responsive групп PASS на 12 окнах.
 Поля/подписи C1/C2/C4/C5/C6/C8 без переполнения; ползунки проёма/контуров
 и дополнительные настройки работают; C4/C8 1920 просмотрены.
 Средние/малые/короткие окна сохраняют прежнюю адаптивную ширину.
-Следующий шаг: сохранить проверенный код, архив и ссылку заказчику.
+Код 24995cd340be8d5555f81a5075f2f1f85ee6e95e в main (fast-forward).
+ZIP/bundle narrow-parameters-20261005-24995cd проверены, ZIP 157 записей
+без данных/секретов/runtime; bundle verify PASS. Сервер PID 28192.
+Следующий шаг: обратная связь заказчика.
 
 Предыдущая работа: UI-EMPTY-DIMENSIONS — VERIFIED; база 709f5ff.
 Ветка ui/full-width-empty-dimensions; docs/checkpoints/UI-EMPTY-DIMENSIONS.md.
