@@ -1,8 +1,11 @@
 # Топинженер — лендинг металлоконструкций
 
 Продолжение с другого ПК: [инструкция](docs/HOME.md).
-Готовый установочный модуль Joomla 1.1.0:
-[скачать из Releases](https://github.com/wildomen-crypto/antidrone-landing/releases/tag/joomla-v1.1.0).
+Живая страница: https://topengineer.ru/proektirovanie/proectirovanie-antidronovoi-zashiti.
+Размещение и откат: [docs/deployment-topengineer.md](docs/deployment-topengineer.md).
+
+Готовый установочный модуль Joomla 1.1.1 (ZIP для Linux-хостинга):
+[скачать из Releases](https://github.com/wildomen-crypto/antidrone-landing/releases/tag/joomla-v1.1.1).
 
 Отдельная версия `/joomla` предназначена для страницы существующего
 topengineer.ru (Joomla 3.10.12, yoo_monday). Использует его шрифты и оформление,

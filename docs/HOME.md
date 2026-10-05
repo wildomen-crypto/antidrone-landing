@@ -3,8 +3,8 @@
 Все исходники, изображения, история изменений и инструкции находятся здесь:
 https://github.com/wildomen-crypto/antidrone-landing
 
-Готовый модуль Joomla 1.1.0 и его контрольная сумма:
-https://github.com/wildomen-crypto/antidrone-landing/releases/tag/joomla-v1.1.0
+Готовый модуль Joomla 1.1.1 и его контрольная сумма:
+https://github.com/wildomen-crypto/antidrone-landing/releases/tag/joomla-v1.1.1
 
 Для просмотра без установки:
 - обычная версия: https://wildomen-crypto.github.io/antidrone-landing/
@@ -42,21 +42,23 @@ http://127.0.0.1:3100/joomla. Отправка через существующи
 
 ## Установить версию Joomla
 
-В Releases скачайте файл mod_antidrone_design-joomla-3.10.12-v1.1.0.zip.
+В Releases скачайте файл mod_antidrone_design-joomla-3.10.12-v1.1.1.zip.
 Это готовый установочный пакет, его не нужно распаковывать перед загрузкой
 в менеджер расширений Joomla. Не путайте с автоматически созданным Source code ZIP.
 Инструкция внутри пакета: README.txt; подробности: docs/joomla.md.
 
 Модуль рассчитан на Joomla 3.10.12 / yoo_monday, CMS в корне домена.
 Существующий jQuery и /upload.php сайта отправляют заявки компании;
-новый SMTP/получатель в модуле не нужны. Установка и фактическая доставка
-на живом хостинге остаются проверкой администратора после установки.
+новый SMTP/получатель в модуле не нужны. Пакет 1.1.1 уже установлен на topengineer.ru (Joomla 3.10.12/PHP 7.0.33).
+Живая страница: https://topengineer.ru/proektirovanie/proectirovanie-antidronovoi-zashiti.
+Размещение и откат: docs/deployment-topengineer.md. Получение заявки в CRM
+подтверждает компания; HTTP-ответ обработчика не является проверкой доставки.
 
 ## Что сообщить Codex дома
 
 «Продолжаем проект antidrone-landing из этого репозитория. Прочитай AGENTS.md,
 README.md, docs/STATUS.md, docs/HOME.md и docs/joomla.md. Проверь текущую ветку
-и изменения. Последняя версия Joomla — 1.1.0, обе формы используют существующий
+и изменения. Последняя версия Joomla — 1.1.1, обе формы используют существующий
 обработчик /upload.php сайта topengineer.ru. GitHub Pages — только демонстрация».
 
 Локальные .env и настоящие заявки/БД не входят в публичный репозиторий.

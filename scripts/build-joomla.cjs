@@ -34,9 +34,8 @@ for (const pkg of ['next','react','react-dom','three','@react-three/fiber']) {
 const downloads = process.env.JOOMLA_OUTPUT_DIR || path.join(process.env.USERPROFILE || process.env.HOME,'Downloads');
 fs.mkdirSync(downloads,{recursive:true});
 const zip = path.join(downloads,'mod_antidrone_design-joomla-3.10.12-'+tag+'.zip');
-const ps = "Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::CreateFromDirectory($env:ANTIDRONE_STAGE,$env:ANTIDRONE_ZIP,[System.IO.Compression.CompressionLevel]::Optimal,$false)";
 if (process.platform !== 'win32') throw Error('This packaging command uses Windows PowerShell.');
-execFileSync('powershell.exe',['-NoProfile','-Command',ps],{env:{...process.env,ANTIDRONE_STAGE:stage,ANTIDRONE_ZIP:zip},windowsHide:true});
+execFileSync('powershell.exe',['-NoProfile','-File',path.join(root,'scripts/package-joomla.ps1')],{env:{...process.env,ANTIDRONE_STAGE:stage,ANTIDRONE_ZIP:zip},windowsHide:true});
 const sha256 = createHash('sha256').update(fs.readFileSync(zip)).digest('hex');
 fs.writeFileSync(zip+'.sha256',sha256+'  '+path.basename(zip)+'\n');
 fs.writeFileSync(path.join(root,'.local/joomla/latest.json'),JSON.stringify({work,project,stage,output,basePath,zip,sha256},null,2));
