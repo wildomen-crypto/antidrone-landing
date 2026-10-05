@@ -9,6 +9,7 @@ B10.2 необязателен: решение об объёме записыв�
 
 | ID | Статус | Результат | Проверка | Карточка |
 | --- | --- | --- | --- | --- |
+| UI-REMOVE-SIZING-HINT | VERIFIED | Поясняющий абзац удалён из настроек | Build/worker; HTTP 200 и отсутствие текста на трёх вариантах | docs/checkpoints/UI-REMOVE-SIZING-HINT.md |
 | UI-DENSE-OPTIONS | VERIFIED | /compact: гибкий ряд иконок, проём по умолчанию, плотные карточки и новый порядок | Build/worker; 8 responsive + 5 compact групп, 12 окон, default 179/188 м², JSON/resize/touch/SVG | docs/checkpoints/UI-DENSE-OPTIONS.md |
 | UI-ADAPTIVE-SHAPES | VERIFIED | /compact: адаптивные карточки типов как у стен | Build/worker; 7 responsive групп, 12 окон, все типы/подписи видны, выбор C1–C8/touch/resize/JSON/SVG | docs/checkpoints/UI-ADAPTIVE-SHAPES.md |
 | UI-CONTAINED-SCENE | VERIFIED | /compact в ширине сайта, ракурсы и каркас иконками на 3D | Typecheck/build; 7 responsive + 5 compact групп, 12 размеров, Canvas/SVG, клавиатура/touch/JSON/печать | docs/checkpoints/UI-CONTAINED-SCENE.md |

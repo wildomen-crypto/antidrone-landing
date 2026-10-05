@@ -1,5 +1,13 @@
 # Проверка локальной версии
 
+## Удаление пояснения из настроек — 5 октября 2026
+
+UI-REMOVE-SIZING-HINT VERIFIED. Удалён общий абзац о предварительной
+компоновке из Calculator.tsx; пустой элемент не оставлен. Production
+build с типизацией/worker PASS. /compact, /wide и / отвечают HTTP 200,
+фраза отсутствует в HTML. Diff check PASS. Логика и CSS не менялись;
+browser/unit повторно не запускались для этой текстовой правки.
+
 ## Плотные настройки, передний проём и порядок — 5 октября 2026
 
 UI-DENSE-OPTIONS VERIFIED. Production build с типизацией/worker PASS;

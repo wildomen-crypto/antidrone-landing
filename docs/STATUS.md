@@ -1,6 +1,12 @@
 # Состояние разработки
 
-Текущая работа: UI-DENSE-OPTIONS — VERIFIED; база e712159.
+Текущая работа: UI-REMOVE-SIZING-HINT — VERIFIED; база b858928.
+Ветка ui/remove-sizing-hint; docs/checkpoints/UI-REMOVE-SIZING-HINT.md.
+Поясняющий абзац удалён из настроек без пустого блока.
+Build с типизацией/worker PASS; HTTP 200 и отсутствие текста на /compact,
+/wide и /. Следующий шаг: main/резервные копии, затем обратная связь.
+
+Предыдущая работа: UI-DENSE-OPTIONS — VERIFIED; база e712159.
 Ветка ui/dense-options-default-opening; docs/checkpoints/UI-DENSE-OPTIONS.md.
 Группы иконок в гибкий ряд, проём по умолчанию, плотные карточки,
 несущие выше стен. Build с типизацией/worker PASS; 8 responsive + 5 compact
@@ -128,7 +134,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 44 VERIFIED (включая семнадцать правок UI и решение не включать upload),
+Реестр: 45 VERIFIED (включая восемнадцать правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
@@ -154,7 +160,7 @@ main обновлён fast-forward.
 http://127.0.0.1:3100 — production build, только этот компьютер.
 Новый вариант: http://127.0.0.1:3100/wide#calculator.
 Адаптивная версия: http://127.0.0.1:3100/compact#calculator.
-PID 1256, скрытый фоновый процесс; логи .local/preview.stdout.log и
+PID 18388, скрытый фоновый процесс; логи .local/preview.stdout.log и
 .local/preview.stderr.log. Проверять фактический порт и CommandLine
 перед остановкой; не останавливать чужие процессы. После перезапуска
 компьютера: npm.cmd run start из корня проекта.

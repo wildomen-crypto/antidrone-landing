@@ -214,7 +214,6 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
         <label className="field"><span>Внутренний стеновой модуль</span><select value={input.wallModule} onChange={e => update("wallModule", e.target.value as LayoutInput["wallModule"])}><option value="none">Без стенового модуля</option>{wallModules.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}</select></label>
       </div>}
       {!compact && services}
-      <p className="field-hint">Размеры и шаг задают предварительную компоновку. Сечения, основания и допустимые пролёты проверяет проектировщик.</p>
     </div>
   );
   const viewerControls = <div className="viewer-controls"><div className="view-buttons">{([["perspective", "3D"], ["top", "Сверху"], ["front", "Спереди"], ["side", "Сбоку"]] as const).map(([key, label]) => <button key={key} className={view === key ? "selected" : ""} aria-pressed={view === key} onClick={() => setView(key)}>{label}</button>)}</div><label className="check-field"><input type="checkbox" checked={onlyFrame} onChange={e => setOnlyFrame(e.target.checked)} />Только каркас</label></div>;
