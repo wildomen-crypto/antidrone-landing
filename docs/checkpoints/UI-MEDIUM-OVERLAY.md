@@ -25,4 +25,8 @@ Build с типизацией/worker PASS; 5 overlay и 8 responsive групп 
 Отчёты .local/qa/overlay/report.json и responsive/report.json.
 Геометрия конструкций неизменна; unit не повторялись, реальные устройства
 не проверялись. Сервер PID 28856.
-Следующий шаг: сохранить проверенный код и резервные копии.
+Код 61fb7dbb13099fe05457019b3cd54ed74711af47 в main (fast-forward).
+ZIP/bundle medium-overlay-20261005-61fb7db проверены: 163 записи,
+без данных/секретов/runtime, bundle verify PASS. Каталог
+C:\taran\artifacts\antidrone-landing-backups. HTTP /overlay 200.
+Следующий шаг: сравнение вариантов заказчиком.

@@ -7,7 +7,10 @@ Build/worker PASS; 5 overlay и 8 responsive групп PASS.
 Панели 190 px на 768–2560 и 844×390; все C1–C8/камера/JSON работают.
 Телефон C3/C4/C6/C8 совпадает с /compact на 320/390/600/767 px.
 Нет overflow/ошибок JS; 800/1024 просмотрены, /compact сохранён.
-Следующий шаг: сохранить проверенный код и резервные копии.
+Код 61fb7dbb13099fe05457019b3cd54ed74711af47 в main (fast-forward).
+ZIP/bundle medium-overlay-20261005-61fb7db проверены: 163 записи,
+без данных/секретов/runtime, bundle verify PASS. Сервер PID 28856, HTTP 200.
+Следующий шаг: сравнение вариантов заказчиком.
 
 Предыдущая работа: UI-GALLERY-RADIOS — VERIFIED; база b8f92c4.
 Ветка ui/gallery-variant-radios; docs/checkpoints/UI-GALLERY-RADIOS.md.
