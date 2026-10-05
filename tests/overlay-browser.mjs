@@ -55,7 +55,7 @@ try{
    for(const index of [2,3,5,7]){
     await page.goto(base+'/compact#calculator',{waitUntil:'networkidle'});await page.locator('.shape-choice').nth(index).click();await frame(page);const original=await metrics(page);
     await page.goto(base+'/#calculator',{waitUntil:'networkidle'});await page.locator('.shape-choice').nth(index).click();await frame(page);const current=await metrics(page);
-    const layout=items=>items.filter(m=>!m.opening).map(({selector,x,w,position,grid})=>({selector,x,w,position,grid}));
+    const layout=items=>items.filter(m=>!m.opening&&m.selector!=='.service-picker').map(({selector,x,w,position,grid})=>({selector,x,w,position,grid}));
     assert.deepEqual(layout(current),layout(original));
     for(const selector of ['.viewer','.dimension-panel'])assert.equal(current.find(m=>m.selector===selector).h,original.find(m=>m.selector===selector).h);
    }

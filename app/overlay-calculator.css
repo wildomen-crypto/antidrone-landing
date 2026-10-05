@@ -37,3 +37,6 @@
 }
 /* Keep the opening controls on the panel's own surface. */
 .calculator-overlay .opening-sliders{border:0;background:transparent;border-radius:0;padding:0}
+.calculator-overlay .estimate-result>.service-picker{margin:16px 0 0;padding:0;border:0;background:transparent}
+.calculator-overlay .estimate-result>.service-picker>legend{padding:0;margin-bottom:4px}
+.calculator-overlay .quote-row{margin-top:12px;padding-top:12px}

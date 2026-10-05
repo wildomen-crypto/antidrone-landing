@@ -1,6 +1,14 @@
 # Состояние разработки
 
-Текущая работа: UI-PRIMARY-OVERLAY — VERIFIED; база 6132b99.
+Текущая работа: UI-SERVICES-QUOTE — VERIFIED; база 2c356fc.
+Ветка ui/services-near-quote; docs/checkpoints/UI-SERVICES-QUOTE.md.
+«Нужные работы» перед строкой получения расчёта основной версии.
+Build/worker и 5 overlay групп PASS; 320/390/1024/1920 без переполнения,
+промежуток 12 px; выбор/JSON/печать/восстановление после ошибки работают.
+Одна группа, /compact прежний; снимки 390/1920 просмотрены.
+Следующий шаг: сохранить проверенный код и резервные копии.
+
+Предыдущая работа: UI-PRIMARY-OVERLAY — VERIFIED; база 6132b99.
 Ветка ui/primary-overlay-clean-opening; docs/checkpoints/UI-PRIMARY-OVERLAY.md.
 Основная / с принятой overlay-компоновкой, проём без внутренней рамки/заливки.
 Build/worker и 5 overlay групп на главной PASS; 390/1024/1920:
@@ -221,7 +229,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 53 VERIFIED (включая двадцать шесть правок UI и решение не включать upload),
+Реестр: 54 VERIFIED (включая двадцать семь правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
