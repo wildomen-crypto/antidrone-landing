@@ -1,6 +1,15 @@
 # Состояние разработки
 
-Текущая работа: UI-EMPTY-DIMENSIONS — VERIFIED; база 709f5ff.
+Текущая работа: UI-NARROW-PARAMETERS — VERIFIED; база 8167569.
+Ветка ui/narrow-parameter-panel; docs/checkpoints/UI-NARROW-PARAMETERS.md.
+Обе панели ровно 190 px на больших окнах 1280–2560 px.
+Build/worker и 8 responsive групп PASS на 12 окнах.
+Поля/подписи C1/C2/C4/C5/C6/C8 без переполнения; ползунки проёма/контуров
+и дополнительные настройки работают; C4/C8 1920 просмотрены.
+Средние/малые/короткие окна сохраняют прежнюю адаптивную ширину.
+Следующий шаг: сохранить проверенный код, архив и ссылку заказчику.
+
+Предыдущая работа: UI-EMPTY-DIMENSIONS — VERIFIED; база 709f5ff.
 Ветка ui/full-width-empty-dimensions; docs/checkpoints/UI-EMPTY-DIMENSIONS.md.
 Размеры на свободную ширину без параметров; у навеса скрыть стеновой ряд.
 Build с типизацией/worker; 8 responsive групп PASS на 12 окнах.
@@ -174,7 +183,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 49 VERIFIED (включая двадцать две правки UI и решение не включать upload),
+Реестр: 50 VERIFIED (включая двадцать три правки UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки

@@ -9,6 +9,7 @@ B10.2 необязателен: решение об объёме записыв�
 
 | ID | Статус | Результат | Проверка | Карточка |
 | --- | --- | --- | --- | --- |
+| UI-NARROW-PARAMETERS | VERIFIED | /compact: равная ширина накладных панелей 190 px | Build/worker; 8 responsive групп, 12 окон; C4/C8 ползунки/контуры и ширина 1280–2560 | docs/checkpoints/UI-NARROW-PARAMETERS.md |
 | UI-EMPTY-DIMENSIONS | VERIFIED | /compact: размеры на свободную ширину, навес без стенового селектора | Build/worker; 8 responsive групп, 12 окон; C3/C7 232→128/85 px, возврат параметров без сброса | docs/checkpoints/UI-EMPTY-DIMENSIONS.md |
 | UI-COMPLEX-DENSITY | VERIFIED | /compact: параметры C8 ниже на 29–40%, ползунки сохранены | Build/worker; browser 320/390/1024/1920, контуры/основания/JSON | docs/checkpoints/UI-COMPLEX-DENSITY.md |
 | UI-PARAMETER-HEADING | VERIFIED | /compact: компактный заголовок параметров без разделителя | Build/worker; browser 390/1024/1920, C4/C8; высота C4 226/252 px | docs/checkpoints/UI-PARAMETER-HEADING.md |
