@@ -9,7 +9,7 @@ B10.2 необязателен: решение об объёме записыв�
 
 | ID | Статус | Результат | Проверка | Карточка |
 | --- | --- | --- | --- | --- |
-| GITHUB-DELIVERY | IN_PROGRESS | Исходники и история в GitHub private | Ожидает push/SHA | docs/checkpoints/GITHUB-DELIVERY.md |
+| GITHUB-DELIVERY | VERIFIED | Исходники и история в GitHub private | History audit; push/main SHA; API visibility/default branch | docs/checkpoints/GITHUB-DELIVERY.md |
 | UI-PRIMARY-ONLY | VERIFIED | Основная компоновка без ссылок сравнения | Build/worker; browser 390/1024/1920 без ссылок/overflow/pageerror | docs/checkpoints/UI-PRIMARY-ONLY.md |
 | UI-SIMPLE-QUOTE | VERIFIED | Основная версия без деталей; запрос сохраняет конфигурацию | Build/worker; 5 quote + 5 overlay групп; JSON/draft/SQLite/CLI, 320–1920 | docs/checkpoints/UI-SIMPLE-QUOTE.md |
 | UI-SERVICES-QUOTE | VERIFIED | Основная версия: работы рядом с получением расчёта | Build/worker; 5 overlay групп; 320/390/1024/1920, выбор/JSON/печать/ошибки | docs/checkpoints/UI-SERVICES-QUOTE.md |

@@ -1,9 +1,10 @@
 # Состояние разработки
 
-Текущая работа: GITHUB-DELIVERY — IN_PROGRESS; база 49d9743.
+Текущая работа: GITHUB-DELIVERY — VERIFIED; база 49d9743.
 Ветка delivery/github; docs/checkpoints/GITHUB-DELIVERY.md.
-Цель: private wildomen-crypto/antidrone-landing. История проверена.
-Следующий шаг: GitHub create/push и сверка SHA.
+GitHub: https://github.com/wildomen-crypto/antidrone-landing — PRIVATE.
+main загружен; origin/main настроен, SHA совпадает; история проверена.
+Следующий шаг: дальнейшая разработка; развёртывание сайта отдельно.
 
 Предыдущая работа: UI-PRIMARY-ONLY — VERIFIED; база 7e6a980.
 Ветка ui/remove-layout-links; docs/checkpoints/UI-PRIMARY-ONLY.md.
@@ -259,7 +260,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 56 VERIFIED (включая двадцать девять правок UI и решение не включать upload),
+Реестр: 57 VERIFIED (включая двадцать девять правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
