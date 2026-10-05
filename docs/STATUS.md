@@ -1,10 +1,14 @@
 # Состояние разработки
 
-Текущая локальная работа: PUBLIC-PAGES-20261005 — IN_PROGRESS.
+Текущая локальная работа: PUBLIC-PAGES-20261005 — VERIFIED.
 Карточка docs/checkpoints/PUBLIC-PAGES-20261005.md.
 Открыть существующий GitHub и дать работающий Pages-адрес для оценки сайта.
 Статическая демонстрация с 3D/ценой; локальные серверные формы сохраняются.
-Следующий шаг: сборка/проверка, public, публикация отдельной gh-pages.
+Public repo/API подтверждён; Pages HTTPS built, source 8c27025/gh-pages d90a426.
+https://wildomen-crypto.github.io/antidrone-landing/ — HTTP/30 ресурсов 200.
+Check 43 unit/typecheck/build/worker PASS; Chrome 2560/1536/390,
+цена/17 SVG/16 картинок/демоформы PASS. Preview 3100 PID 259636.
+Следующий шаг: передать ссылку для коллеги; при обновлении пересобрать gh-pages.
 
 Текущая локальная работа: PORTABLE-WINDOWS-20261005 — VERIFIED.
 Карточка docs/checkpoints/PORTABLE-WINDOWS-20261005.md.

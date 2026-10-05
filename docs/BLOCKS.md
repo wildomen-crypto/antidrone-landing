@@ -9,7 +9,7 @@ B10.2 необязателен: решение об объёме записыв�
 
 | ID | Статус | Результат | Проверка | Карточка |
 | --- | --- | --- | --- | --- |
-| PUBLIC-PAGES-20261005 | IN_PROGRESS | Public GitHub + интерактивная Pages-версия для оценки | Ожидается | docs/checkpoints/PUBLIC-PAGES-20261005.md |
+| PUBLIC-PAGES-20261005 | VERIFIED | Public GitHub + HTTPS Pages для оценки 3D/цены; формы демонстрационные | Check 43 unit/build, 30 HTTP 200, Chrome 2560/1536/390, GitHub built/public PASS | docs/checkpoints/PUBLIC-PAGES-20261005.md |
 | PORTABLE-WINDOWS-20261005 | VERIFIED | Архив Windows x64: сайт, официальный Node, исходники/лицензии, START/LEADS | Standalone/build/worker, SHA 3602 файлов, PATH без Node, Chrome 1665/390, формы/цена/перезапуск PASS | docs/checkpoints/PORTABLE-WINDOWS-20261005.md |
 | GITHUB-SAVE-20261005 | VERIFIED | Весь текущий сайт/изображения сохранены в private main; история восстановлена | Check 43 unit/build/worker, секреты/remote SHA/history PASS | docs/checkpoints/GITHUB-SAVE-20261005.md |
 | UI-REMOVE-CONTACT-LINK | VERIFIED | Ссылка контактов основного сайта удалена | Build/типизация/worker, HTTP/контакты PASS | docs/checkpoints/UI-REMOVE-CONTACT-LINK.md |
