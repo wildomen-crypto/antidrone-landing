@@ -1,2 +1,2 @@
 :HL["/antidrone-landing/_next/static/chunks/41lw8lwsjz1o9.css","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}},"staleTime":300,"buildId":"MWVG5D5If44hPDuWfOR_W"}
+0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}},"staleTime":300,"buildId":"KTnWMnuwecfRrhxWBUOsC"}
