@@ -7,7 +7,10 @@ Build/worker и 5 overlay групп на главной PASS; 390/1024/1920:
 граница 0, прозрачный фон, padding 0, ползунки/ведомость работают.
 Предыдущие варианты доступны, /classic сохраняет боковой интерфейс.
 Ошибок JS нет; панель 1920 просмотрена.
-Следующий шаг: сохранить проверенный код и резервные копии.
+Код 562c23abdce543ffee31aa0cc6d7094d22232c2e в main (fast-forward).
+ZIP/bundle primary-overlay-20261005-562c23a проверены: 166 записей,
+без данных/секретов/runtime, bundle verify PASS. Сервер PID 26512.
+Следующий шаг: обратная связь заказчика.
 
 Предыдущая работа: UI-MEDIUM-OVERLAY — VERIFIED; база a107d34.
 Ветка ui/medium-overlay-preview; docs/checkpoints/UI-MEDIUM-OVERLAY.md.
