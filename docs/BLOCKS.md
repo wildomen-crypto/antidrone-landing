@@ -9,7 +9,7 @@ B10.2 необязателен: решение об объёме записыв�
 
 | ID | Статус | Результат | Проверка | Карточка |
 | --- | --- | --- | --- | --- |
-| GITHUB-SAVE-20261005 | IN_PROGRESS | Сохранение текущего сайта/изображений на GitHub | Ожидается | docs/checkpoints/GITHUB-SAVE-20261005.md |
+| GITHUB-SAVE-20261005 | VERIFIED | Весь текущий сайт/изображения сохранены в private main; история восстановлена | Check 43 unit/build/worker, секреты/remote SHA/history PASS | docs/checkpoints/GITHUB-SAVE-20261005.md |
 | UI-REMOVE-CONTACT-LINK | VERIFIED | Ссылка контактов основного сайта удалена | Build/типизация/worker, HTTP/контакты PASS | docs/checkpoints/UI-REMOVE-CONTACT-LINK.md |
 | UI-RUBLE-PRICES | VERIFIED | Цена/ставка/серверная оценка RUB, фиксированная ставка 1250 ₽/ч | Check 43 unit/build/worker, Chrome четырёх ширин/пересчёт PASS | docs/checkpoints/UI-RUBLE-PRICES.md |
 | UI-COMPACT-CONTACT-FIELDS | VERIFIED | Обе формы без видимых подписей/города, отдельные телефон/email | Check 43 unit/build/worker; Chrome пяти ширин, ошибка контакта и две заявки PASS | docs/checkpoints/UI-COMPACT-CONTACT-FIELDS.md |

@@ -1,9 +1,12 @@
 # Состояние разработки
 
-Текущая локальная работа: GITHUB-SAVE-20261005 — IN_PROGRESS.
+Текущая локальная работа: GITHUB-SAVE-20261005 — VERIFIED.
 Карточка docs/checkpoints/GITHUB-SAVE-20261005.md.
 Сохранение текущей версии сайта и изображений в существующий private GitHub.
-Следующий шаг: подключение Git и сравнение с актуальной историей.
+Коммит сайта 6a0c7ea сохранён в main; GitHub SHA совпадает, история восстановлена.
+Check 43 unit/typecheck/build/worker PASS; 200 файлов, частные данные исключены.
+Репозиторий private; рабочая копия синхронизирована с origin/main.
+Следующий шаг: дальнейшая работа через commit/push.
 
 Текущая локальная работа: UI-REMOVE-CONTACT-LINK — VERIFIED.
 Карточка docs/checkpoints/UI-REMOVE-CONTACT-LINK.md.
