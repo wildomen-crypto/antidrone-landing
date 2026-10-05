@@ -1,6 +1,15 @@
 # Состояние разработки
 
-Текущая работа: UI-SERVICES-QUOTE — VERIFIED; база 2c356fc.
+Текущая работа: UI-SIMPLE-QUOTE — VERIFIED; база aa8fd61.
+Ветка ui/simple-persistent-quote; docs/checkpoints/UI-SIMPLE-QUOTE.md.
+Компактный основной интерфейс и сохраняемая конфигурация при запросе.
+Build/worker, 5 quote + 5 overlay групп PASS. JSON/draft/reload и полная
+конфигурация в реальной тестовой заявке SQLite/CLI совпадают; HTTP 201.
+320/390/768/1024/1920 без overflow; 390/1920 просмотрены.
+Сравниваемые версии сохранены; внешняя доставка не подключена.
+Следующий шаг: сохранить проверенный код и резервные копии.
+
+Предыдущая работа: UI-SERVICES-QUOTE — VERIFIED; база 2c356fc.
 Ветка ui/services-near-quote; docs/checkpoints/UI-SERVICES-QUOTE.md.
 «Нужные работы» перед строкой получения расчёта основной версии.
 Build/worker и 5 overlay групп PASS; 320/390/1024/1920 без переполнения,
@@ -232,7 +241,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 54 VERIFIED (включая двадцать семь правок UI и решение не включать upload),
+Реестр: 55 VERIFIED (включая двадцать восемь правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки

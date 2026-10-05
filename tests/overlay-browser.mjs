@@ -66,11 +66,10 @@ try{
  await check('Resize, JSON, keyboard and Canvas camera views preserve real configuration',async()=>{
   await page.goto(base+'/#calculator',{waitUntil:'networkidle'});await scene(page);
   await page.getByRole('textbox',{name:'Длина, м',exact:true}).fill('12');
-  const total=await page.locator('.quantity-grid').textContent();
   await page.setViewportSize({width:390,height:844});await frame(page);assert.equal(await page.getByRole('textbox',{name:'Длина, м',exact:true}).inputValue(),'12');
   await page.setViewportSize({width:1024,height:768});await scene(page);
-  const pending=page.waitForEvent('download');await page.getByRole('button',{name:'Сохранить JSON',exact:true}).click();const file=path.join(output,'configuration.json');await(await pending).saveAs(file);assert.equal(JSON.parse(await readFile(file,'utf8')).length,12);
-  await page.getByRole('textbox',{name:'Длина, м',exact:true}).fill('10');await page.locator('input[type=file]').setInputFiles(file);await page.waitForFunction(()=>document.querySelector('.form-message')?.textContent==='Конфигурация восстановлена.');assert.equal(await page.locator('.quantity-grid').textContent(),total);
+  const pending=page.waitForEvent('download');await page.getByRole('button',{name:'Получить расчёт',exact:false}).click();const file=path.join(output,'configuration.json');await(await pending).saveAs(file);assert.equal(JSON.parse(await readFile(file,'utf8')).length,12);
+  await page.getByRole('textbox',{name:'Длина, м',exact:true}).fill('10');await page.locator('input[type=file]').setInputFiles(file);await page.waitForFunction(()=>document.querySelector('.form-message')?.textContent==='Конфигурация восстановлена.');assert.equal(await page.getByRole('textbox',{name:'Длина, м',exact:true}).inputValue(),'12');await scene(page);
   let pixels=await page.locator('.viewer canvas').screenshot();
   for(const label of ['Сверху','Спереди','Сбоку','3D']){const button=page.locator('.scene-view-controls').getByRole('button',{name:label,exact:true});await button.focus();await page.keyboard.press('Enter');await frame(page);const next=await page.locator('.viewer canvas').screenshot();assert.notDeepEqual(next,pixels);pixels=next;}
  });

@@ -4,15 +4,17 @@ import { shapes } from "@/config/catalog";
 import { legal } from "@/config/legal";
 import type { LayoutInput } from "@/lib/configuration/input";
 import { track } from "@/lib/analytics";
+import { readQuoteDraft, clearQuoteDraft } from "@/lib/configuration/quote-draft";
 
-export default function LeadForm() {
+export default function LeadForm({ persistConfiguration = false }: { persistConfiguration?: boolean }) {
   const [configuration, setConfiguration] = useState<LayoutInput | null>(null);
   const [consent, setConsent] = useState(false), [busy, setBusy] = useState(false), [message, setMessage] = useState("");
   const key = useRef<string | null>(null);
   useEffect(() => {
+    if (persistConfiguration) setConfiguration(readQuoteDraft());
     const attach = (event: Event) => { setConfiguration((event as CustomEvent<LayoutInput>).detail); setMessage(""); key.current = null; };
     window.addEventListener("attach-configuration", attach); return () => window.removeEventListener("attach-configuration", attach);
-  }, []);
+  }, [persistConfiguration]);
   return <form className="lead-form" onChange={() => { if (!busy) key.current = null; }} onSubmit={async event => {
     event.preventDefault(); if (busy || !consent) return;
     const form = event.currentTarget, data = new FormData(form);
@@ -23,11 +25,12 @@ export default function LeadForm() {
       const result = await response.json();
       if (!response.ok) throw new Error(result.error ?? "Не удалось сохранить заявку. Попробуйте ещё раз.");
       setMessage(`Заявка сохранена. Номер: ${result.id}.`); track("lead_saved"); form.reset(); setConsent(false); setConfiguration(null); key.current = null;
+      if (persistConfiguration) clearQuoteDraft();
     } catch (error) { setMessage(error instanceof Error ? error.message : "Нет соединения. Попробуйте ещё раз."); }
     finally { setBusy(false); }
   }}>
     <h3>Обсудим ваш объект</h3><p>Оставьте контакт и краткое описание. Для проекта по чертежам укажите это в комментарии.</p>
-    {configuration && <div className="attached-config">Прикреплена схема: {shapes.find(s => s.id === configuration.shapeId)?.name}<button type="button" aria-label="Убрать схему из заявки" onClick={() => { setConfiguration(null); key.current = null; }}>×</button></div>}
+    {configuration && <div className="attached-config">Прикреплена схема: {shapes.find(s => s.id === configuration.shapeId)?.name}<button type="button" aria-label="Убрать схему из заявки" onClick={() => { setConfiguration(null); key.current = null; if (persistConfiguration) clearQuoteDraft(); }}>×</button></div>}
     <div className="field-grid"><label className="field"><span>Как к вам обращаться</span><input name="name" autoComplete="name" maxLength={100} placeholder="Имя (необязательно)" disabled={busy} /></label><label className="field"><span>Телефон или email</span><input name="contact" autoComplete="email" maxLength={120} required placeholder="+7 … или email" disabled={busy} /></label></div>
     <label className="field"><span>Регион объекта</span><input name="region" maxLength={100} placeholder="Город / область" disabled={busy} /></label>
     <label className="field"><span>Задача</span><textarea name="comment" maxLength={2000} rows={3} placeholder="Размеры объекта, нужные работы, наличие проекта" disabled={busy} /></label>

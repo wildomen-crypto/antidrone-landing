@@ -40,3 +40,17 @@
 .calculator-overlay .estimate-result>.service-picker{margin:16px 0 0;padding:0;border:0;background:transparent}
 .calculator-overlay .estimate-result>.service-picker>legend{padding:0;margin-bottom:4px}
 .calculator-overlay .quote-row{margin-top:12px;padding-top:12px}
+.calculator-overlay .quote-result{padding-block:16px}
+.calculator-overlay .quote-result .quote-row{display:grid;grid-template-columns:minmax(200px,1fr) minmax(0,600px) auto;gap:16px 24px;margin:0;padding:0;border:0;align-items:center}
+.calculator-overlay .quote-result .service-picker{margin:0;padding:0;border:0;background:transparent}
+.calculator-overlay .quote-result .service-picker>legend{padding:0;margin-bottom:4px}
+.calculator-overlay .quote-result .service-picker .check-grid{display:flex;flex-wrap:wrap;gap:4px 20px;max-width:none}
+@media (max-width:1100px){
+  .calculator-overlay .quote-result .quote-row{grid-template-columns:minmax(0,1fr) auto}
+  .calculator-overlay .quote-result .quote-row>div{grid-column:1/-1}
+}
+@media (max-width:767px){
+  .calculator-overlay .quote-result .quote-row{grid-template-columns:minmax(0,1fr)}
+  .calculator-overlay .quote-result .service-picker .check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px}
+  .calculator-overlay .quote-result .quote-row .button{width:100%}
+}

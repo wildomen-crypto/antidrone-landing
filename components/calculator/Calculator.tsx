@@ -22,6 +22,7 @@ import { toggleStructure } from "@/lib/configuration/structure";
 import { roofRequired, selectRoof } from "@/lib/configuration/roof";
 import { hasWallOptions, wallFillingEnabled, selectWalls } from "@/lib/configuration/walls";
 import { track } from "@/lib/analytics";
+import { readQuoteDraft, saveQuoteDraft } from "@/lib/configuration/quote-draft";
 
 const Scene = dynamic(() => import("@/components/viewer/Scene"), { ssr: false, loading: () => <div className="viewer-loading">Подготавливаем 3D-схему…</div> });
 const format = (v: number) => v.toLocaleString("ru-RU", { maximumFractionDigits: 2 });
@@ -49,6 +50,11 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   const [three, setThree] = useState(false), [showAdvanced, setShowAdvanced] = useState(false);
   const [message, setMessage] = useState("");
   const [calculatedAt, setCalculatedAt] = useState("");
+  useEffect(() => {
+    if (!overlay) return;
+    const saved = readQuoteDraft();
+    if (saved) setInput(saved);
+  }, [overlay]);
   useEffect(() => { setCalculatedAt(new Date().toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })); }, [input]);
   const file = useRef<HTMLInputElement>(null), viewer = useRef<HTMLDivElement>(null);
   const shape = shapes.find(s => s.id === input.shapeId)!;
@@ -120,11 +126,15 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   const choose = (shapeId: LayoutInput["shapeId"]) => { setInput(c => inputForShape(c, shapeId, compact)); setHiddenGroups([]); setMessage(""); };
   function download() {
     try {
-      const value = parseInput(input), blob = new Blob([JSON.stringify(value, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob), a = document.createElement("a"); a.href = url; a.download = `topengineer-${input.shapeId}.json`; a.click(); URL.revokeObjectURL(url);
+      downloadConfiguration(parseInput(input));
       setMessage("Конфигурация сохранена без контактных данных.");
       track("export_configuration", input.shapeId);
     } catch (e) { setMessage(e instanceof Error ? e.message : "Проверьте размеры."); }
+  }
+  function downloadConfiguration(value: LayoutInput) {
+    const blob = new Blob([JSON.stringify(value, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob), a = document.createElement("a");
+    a.href = url; a.download = `topengineer-${value.shapeId}.json`; a.click(); URL.revokeObjectURL(url);
   }
   async function importFile(selected?: File) {
     if (!selected) return;
@@ -135,9 +145,17 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   }
   function request() {
     if (!result.graph) return;
-    track("request_quote", input.shapeId);
-    window.dispatchEvent(new CustomEvent("attach-configuration", { detail: structuredClone(input) }));
-    document.getElementById("contacts")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    try {
+      const snapshot = parseInput(input);
+      if (overlay) {
+        const saved = saveQuoteDraft(snapshot);
+        downloadConfiguration(snapshot);
+        setMessage(saved ? "Схема сохранена и прикреплена к заявке. Укажите контакт для получения расчёта." : "Схема прикреплена к заявке, JSON подготовлен для скачивания. Укажите контакт для получения расчёта.");
+      }
+      track("request_quote", snapshot.shapeId);
+      window.dispatchEvent(new CustomEvent("attach-configuration", { detail: snapshot }));
+      document.getElementById("contacts")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Не удалось сохранить схему. Проверьте размеры."); }
   }
   const q = result.estimate?.quantities;
   const dimensions = (
@@ -251,16 +269,21 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
         note={requiredRoof ? "Покрытие обязательно для этой конструкции" : input.roof ? "Нажмите выбранный материал, чтобы убрать кровлю" : "Без кровли — выберите материал, чтобы включить"} />}
       {compact && (!overlay || !q) && services}
       {wide && !compact && structurePicker}
-      <p className="viewer-help">Вращение: перетащите схему. Масштаб: колесо мыши или жест двумя пальцами. Без WebGL доступна 2D-схема.</p>
+      {!overlay && <p className="viewer-help">Вращение: перетащите схему. Масштаб: колесо мыши или жест двумя пальцами. Без WebGL доступна 2D-схема.</p>}
       {!compact && viewerControls}
-      {input.shapeId === "C8" && <div className="viewer-layers"><span>Видимость (состав заказа не меняется):</span>{input.contours.map((c, i) => c.enabled && <label key={i} className="check-field"><input type="checkbox" checked={!hiddenGroups.includes(`contour${i + 1}`)} onChange={e => setHiddenGroups(old => e.target.checked ? old.filter(g => g !== `contour${i + 1}`) : [...old, `contour${i + 1}`])} />Контур {i + 1}</label>)}</div>}
-      {result.graph && <div className="dimension-strip"><span>L {format(result.graph.bounds.length)} м</span><span>W {format(result.graph.bounds.width)} м</span><span>H {format(result.graph.bounds.height)} м</span><span>Профили показаны условно</span></div>}
-      {input.shapeId === "C7" && input.roof && <p className="field-hint viewer-caption">Форма покрытия: секторное шатровое покрытие. Площадь рассчитана по граням схемы.</p>}
-      <DetailViews foundation={input.foundation} sectionType={input.sectionType} />
-      {q && <div className="estimate-result" aria-live="polite"><div className="step-title"><span>03</span> Объёмы и следующий шаг</div><div className="quantity-grid"><div><strong>{format(q.total)}<small> м²</small></strong><span>Заполнение, с учётом слоёв</span></div><div><strong>{q.supports}</strong><span>Опор в предварительной схеме</span></div><div><strong>{format(q.memberLength)}<small> м</small></strong><span>Элементов каркаса</span></div></div><details><summary>Посмотреть ведомость</summary><div className="table-scroll"><table><tbody><tr><td>Покрытие, без повторения слоёв</td><td>{format(q.roof)} м²</td></tr><tr><td>Стены, без повторения слоёв</td><td>{format(q.walls)} м²</td></tr>{Object.entries(q.byMaterial).map(([id, area]) => <tr key={id}><td>{materials.find(m => m.id === id)?.name}</td><td>{format(area!)} м²</td></tr>)}<tr><td>Трубы заполнения</td><td>{format(q.infillLength)} м</td></tr><tr><td>Стеновых модулей (условно)</td><td>{q.wallModules} шт.</td></tr><tr><td>Объём стеновых модулей (условно)</td><td>{format(q.wallVolume)} м³</td></tr><tr><td>Канаты схемы</td><td>{format(q.cableLength)} м</td></tr></tbody></table></div><p className="field-hint">Масса, крепления, фундамент и расход на раскрой определяются после подбора профилей и технологии. Трубчатый рисунок и провис условны.</p></details>{overlay && services}<div className="quote-row"><div><strong>Стоимость — по запросу</strong><p>Инженер проверит схему и подготовит предложение.</p></div><button className="button button-primary" onClick={request}>Получить расчёт <span aria-hidden="true">↗</span></button></div></div>}
-      <div className="export-actions"><button onClick={download} disabled={!result.graph}>Сохранить JSON</button><button onClick={() => file.current?.click()}>Открыть JSON</button><button onClick={() => window.print()} disabled={!result.graph}>Печатная карточка</button><input className="visually-hidden" type="file" ref={file} accept=".json,application/json" onChange={e => void importFile(e.target.files?.[0])} /></div>
+      {!overlay && input.shapeId === "C8" && <div className="viewer-layers"><span>Видимость (состав заказа не меняется):</span>{input.contours.map((c, i) => c.enabled && <label key={i} className="check-field"><input type="checkbox" checked={!hiddenGroups.includes(`contour${i + 1}`)} onChange={e => setHiddenGroups(old => e.target.checked ? old.filter(g => g !== `contour${i + 1}`) : [...old, `contour${i + 1}`])} />Контур {i + 1}</label>)}</div>}
+      {!overlay && result.graph && <div className="dimension-strip"><span>L {format(result.graph.bounds.length)} м</span><span>W {format(result.graph.bounds.width)} м</span><span>H {format(result.graph.bounds.height)} м</span><span>Профили показаны условно</span></div>}
+      {!overlay && input.shapeId === "C7" && input.roof && <p className="field-hint viewer-caption">Форма покрытия: секторное шатровое покрытие. Площадь рассчитана по граням схемы.</p>}
+      {!overlay && <DetailViews foundation={input.foundation} sectionType={input.sectionType} />}
+      {q && !overlay && <div className="estimate-result" aria-live="polite"><div className="step-title"><span>03</span> Объёмы и следующий шаг</div><div className="quantity-grid"><div><strong>{format(q.total)}<small> м²</small></strong><span>Заполнение, с учётом слоёв</span></div><div><strong>{q.supports}</strong><span>Опор в предварительной схеме</span></div><div><strong>{format(q.memberLength)}<small> м</small></strong><span>Элементов каркаса</span></div></div><details><summary>Посмотреть ведомость</summary><div className="table-scroll"><table><tbody><tr><td>Покрытие, без повторения слоёв</td><td>{format(q.roof)} м²</td></tr><tr><td>Стены, без повторения слоёв</td><td>{format(q.walls)} м²</td></tr>{Object.entries(q.byMaterial).map(([id, area]) => <tr key={id}><td>{materials.find(m => m.id === id)?.name}</td><td>{format(area!)} м²</td></tr>)}<tr><td>Трубы заполнения</td><td>{format(q.infillLength)} м</td></tr><tr><td>Стеновых модулей (условно)</td><td>{q.wallModules} шт.</td></tr><tr><td>Объём стеновых модулей (условно)</td><td>{format(q.wallVolume)} м³</td></tr><tr><td>Канаты схемы</td><td>{format(q.cableLength)} м</td></tr></tbody></table></div><p className="field-hint">Масса, крепления, фундамент и расход на раскрой определяются после подбора профилей и технологии. Трубчатый рисунок и провис условны.</p></details><div className="quote-row"><div><strong>Стоимость — по запросу</strong><p>Инженер проверит схему и подготовит предложение.</p></div><button className="button button-primary" onClick={request}>Получить расчёт <span aria-hidden="true">↗</span></button></div></div>}
+      {q && overlay && <div className="estimate-result quote-result"><div className="quote-row">
+        <div><strong>Стоимость — по запросу</strong><p>Инженер проверит схему и подготовит предложение.</p></div>
+        {services}<button className="button button-primary" onClick={request}>Получить расчёт <span aria-hidden="true">↗</span></button>
+      </div></div>}
+      {!overlay && <div className="export-actions"><button onClick={download} disabled={!result.graph}>Сохранить JSON</button><button onClick={() => file.current?.click()}>Открыть JSON</button><button onClick={() => window.print()} disabled={!result.graph}>Печатная карточка</button><input className="visually-hidden" type="file" ref={file} accept=".json,application/json" onChange={e => void importFile(e.target.files?.[0])} /></div>}
+      {overlay && <input className="visually-hidden" type="file" ref={file} accept=".json,application/json" onChange={e => void importFile(e.target.files?.[0])} />}
       {message && <p className="form-message" role="status">{message}</p>}
-      {q && <div className="print-card"><h2>Предварительная компоновка — {shape.name}</h2><p>{company.name} · {company.contacts.general.phone.display} · {company.contacts.general.email.address}</p><p>{company.officeAddress}</p><p>Схема обновлена: {calculatedAt} (московское время).</p><p>Источник контактов: {company.sourceUrl}</p><p>Нужные работы: {input.services.map(id => ({ design: "Проектирование", manufacturing: "Изготовление", supply: "Комплектация", delivery: "Доставка", installation: "Монтаж" })[id]).join(", ") || "Уточняются"}.</p><p>Версия конфигурации 1. Тарифы не заданы. Стоимость определяется инженером; карточка не является КМ/КМД.</p><p>Длина {format(result.graph!.bounds.length)} м · Ширина {format(result.graph!.bounds.width)} м · Высота {format(result.graph!.bounds.height)} м</p><ModelDiagram graph={result.graph!} /><table><tbody>{Object.entries(q.byMaterial).map(([id, area]) => <tr key={id}><td>{materials.find(m => m.id === id)?.name}</td><td>{format(area!)} м²</td></tr>)}<tr><td>Опор</td><td>{q.supports}</td></tr><tr><td>Элементов каркаса</td><td>{format(q.memberLength)} м</td></tr></tbody></table></div>}
+      {q && !overlay && <div className="print-card"><h2>Предварительная компоновка — {shape.name}</h2><p>{company.name} · {company.contacts.general.phone.display} · {company.contacts.general.email.address}</p><p>{company.officeAddress}</p><p>Схема обновлена: {calculatedAt} (московское время).</p><p>Источник контактов: {company.sourceUrl}</p><p>Нужные работы: {input.services.map(id => ({ design: "Проектирование", manufacturing: "Изготовление", supply: "Комплектация", delivery: "Доставка", installation: "Монтаж" })[id]).join(", ") || "Уточняются"}.</p><p>Версия конфигурации 1. Тарифы не заданы. Стоимость определяется инженером; карточка не является КМ/КМД.</p><p>Длина {format(result.graph!.bounds.length)} м · Ширина {format(result.graph!.bounds.width)} м · Высота {format(result.graph!.bounds.height)} м</p><ModelDiagram graph={result.graph!} /><table><tbody>{Object.entries(q.byMaterial).map(([id, area]) => <tr key={id}><td>{materials.find(m => m.id === id)?.name}</td><td>{format(area!)} м²</td></tr>)}<tr><td>Опор</td><td>{q.supports}</td></tr><tr><td>Элементов каркаса</td><td>{format(q.memberLength)} м</td></tr></tbody></table></div>}
     </div>
   </div>;
 }
