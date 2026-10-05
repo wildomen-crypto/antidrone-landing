@@ -27,6 +27,20 @@
 .calculator-compact .parameter-panel .calculator-inputs{padding:0 14px 10px}
 .calculator-compact .dimension-panel{left:24px}
 .calculator-compact .parameter-panel{right:24px}
+.calculator-compact .gallery-variants{border:0;min-width:0;padding:0;margin:0 0 6px}
+.calculator-compact .gallery-variants>legend{padding:0;margin-bottom:4px;color:var(--muted);font-size:10px}
+.calculator-compact .gallery-variant-options{display:flex;flex-wrap:wrap;gap:4px}
+.calculator-compact .gallery-variant-choice{display:flex;align-items:center;gap:6px;min-height:28px;padding:3px 6px;border:1px solid var(--line);border-radius:5px;font-size:11px;line-height:1.4;cursor:pointer}
+.calculator-compact .gallery-variant-choice:has(input:checked){border-color:var(--accent);background:#edf2ff}
+.calculator-compact .gallery-variant-choice:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.calculator-compact .gallery-variant-choice input{width:14px;height:14px;flex:0 0 14px;margin:0;accent-color:var(--accent)}
+@media (min-width:1280px) and (min-height:651px){
+  .calculator-compact .gallery-variant-choice{width:100%}
+}
+@media (max-width:767px){
+  .calculator-compact .gallery-variant-choice{min-height:44px}
+  .calculator-compact .gallery-variant-choice input{width:18px;height:18px;flex-basis:18px}
+}
 
 @media (min-width:1280px){
   .calculator-compact .shape-choice-image{height:76px}

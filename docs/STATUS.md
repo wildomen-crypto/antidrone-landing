@@ -1,6 +1,14 @@
 # Состояние разработки
 
-Текущая работа: UI-NARROW-PARAMETERS — VERIFIED; база 8167569.
+Текущая работа: UI-GALLERY-RADIOS — VERIFIED; база b8f92c4.
+Ветка ui/gallery-variant-radios; docs/checkpoints/UI-GALLERY-RADIOS.md.
+Варианты галереи радиокнопками, все три подписи сразу видны.
+Build/worker и 8 responsive групп PASS на 12 окнах; профильные 5 окон:
+выбор/клавиатура, пересчёт ведомости, подъём, resize и JSON работают.
+Нет переполнения/ошибок JS, 1920 и мобильная панель просмотрены.
+Следующий шаг: сохранить проверенный код и резервные копии.
+
+Предыдущая работа: UI-NARROW-PARAMETERS — VERIFIED; база 8167569.
 Ветка ui/narrow-parameter-panel; docs/checkpoints/UI-NARROW-PARAMETERS.md.
 Обе панели ровно 190 px на больших окнах 1280–2560 px.
 Build/worker и 8 responsive групп PASS на 12 окнах.
@@ -186,7 +194,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 50 VERIFIED (включая двадцать три правки UI и решение не включать upload),
+Реестр: 51 VERIFIED (включая двадцать четыре правки UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки

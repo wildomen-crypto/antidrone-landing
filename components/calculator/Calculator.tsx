@@ -1,6 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { defaultInput, parseInput } from "@/lib/configuration/input";
 import type { LayoutInput } from "@/lib/configuration/input";
 import { generateModel } from "@/lib/geometry/generate";
@@ -37,6 +37,7 @@ function inputForShape(current: LayoutInput, shapeId: LayoutInput["shapeId"], de
 }
 export default function Calculator({ variant = "standard" }: { variant?: "standard" | "wide" | "compact" }) {
   const wide = variant !== "standard", compact = variant === "compact";
+  const galleryVariantName = useId();
   const [rightInset, setRightInset] = useState(0);
   const [topInset, setTopInset] = useState(0);
   const [leftInset, setLeftInset] = useState(0);
@@ -105,6 +106,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   const chooseStructure = (id: LayoutInput["structuralSystem"]) => { setInput(c => ({ ...c, ...toggleStructure(c, id) })); setMessage(""); };
   const chooseRoof = (id: LayoutInput["roofMaterialId"]) => { setInput(c => ({ ...c, ...selectRoof(c, id) })); setMessage(""); };
   const chooseWalls = (id: LayoutInput["materialId"]) => { setInput(c => ({ ...c, ...selectWalls(c, id) })); setMessage(""); };
+  const chooseVariant = (variant: LayoutInput["variant"]) => { setInput(c => ({ ...c, variant, roof: roofRequired({ ...c, variant }) || c.roof, opening: { ...c.opening, enabled: false } })); setMessage(""); };
   const toggleSide = (index: number) => {
     setInput(c => ({ ...c, walls: true, sides: c.sides.map((enabled, i) => i === index ? !c.walls || !enabled : enabled),
       opening: index === 0 && c.sides[0] ? { ...c.opening, enabled: false } : c.opening }));
@@ -158,7 +160,14 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
       <div className="step-title"><span>01</span> Конструкция и размеры</div>
       {result.error && <p className="input-error" role="alert">{result.error}</p>}
       {!wide && <label className="field"><span>Тип конструкции</span><select value={input.shapeId} onChange={e => choose(e.target.value as LayoutInput["shapeId"])}>{shapes.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}</select></label>}
-      {shape.variants.length > 0 && <label className="field"><span>Вариант</span><select value={input.variant} onChange={e => { const variant = e.target.value as LayoutInput["variant"]; setInput(c => ({ ...c, variant, roof: roofRequired({ ...c, variant }) || c.roof, opening: { ...c.opening, enabled: false } })); setMessage(""); }}>{shape.variants.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}</select></label>}
+      {shape.variants.length > 0 && (compact && input.shapeId === "C6" ?
+        <fieldset className="gallery-variants"><legend>Вариант</legend><div className="gallery-variant-options">
+          {shape.variants.map(v => <label className="gallery-variant-choice" key={v.id}>
+            <input type="radio" name={galleryVariantName} value={v.id} checked={input.variant === v.id}
+              onChange={() => chooseVariant(v.id as LayoutInput["variant"])} />{v.name}
+          </label>)}
+        </div></fieldset>
+        : <label className="field"><span>Вариант</span><select value={input.variant} onChange={e => chooseVariant(e.target.value as LayoutInput["variant"])}>{shape.variants.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}</select></label>)}
       {!wide && dimensions}
       {!wide && <label className="field"><span>Заполнение стен / экрана</span><select value={wallsEnabled ? input.materialId : "none"} disabled={!wallsAvailable}
         onChange={e => { if (e.target.value === "none") { setInput(c => ({ ...c, walls: false, opening: { ...c.opening, enabled: false } })); setMessage(""); } else chooseWalls(e.target.value as LayoutInput["materialId"]); }}>
