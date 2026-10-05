@@ -4,7 +4,9 @@
 Ветка ui/remove-sizing-hint; docs/checkpoints/UI-REMOVE-SIZING-HINT.md.
 Поясняющий абзац удалён из настроек без пустого блока.
 Build с типизацией/worker PASS; HTTP 200 и отсутствие текста на /compact,
-/wide и /. Следующий шаг: main/резервные копии, затем обратная связь.
+/wide и /. Код a44b6cb00138e270f91f39848e1e52a0a5e408e1 в main.
+ZIP/bundle remove-sizing-hint-20261005-a44b6cb проверены.
+Следующий шаг: обратная связь заказчика.
 
 Предыдущая работа: UI-DENSE-OPTIONS — VERIFIED; база e712159.
 Ветка ui/dense-options-default-opening; docs/checkpoints/UI-DENSE-OPTIONS.md.
@@ -172,6 +174,9 @@ Git: локальная настройка Dmitrii Taran,
 ## Резервные копии
 
 Каталог C:\taran\artifacts\antidrone-landing-backups.
+Удаление пояснения: remove-sizing-hint-20261005-a44b6cb-source.zip и
+.bundle; bundle verify PASS, ZIP 152 записи без данных/секретов/runtime.
+Шаблон .env.example содержит пустые значения/false.
 Плотные настройки/проём: dense-options-20261005-acd7934-source.zip и
 .bundle; bundle verify PASS, ZIP 151 запись без данных/секретов/runtime.
 Шаблон .env.example содержит пустые значения/false.
