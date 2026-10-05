@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="3.10" client="site" method="upgrade">
+  <name>Антидроновая защита — 3D и проектирование</name>
+  <author>Топинженер</author><version>1.0.0</version><creationDate>October 2026</creationDate>
+  <description>Страница проектирования для Joomla 3.10.12 и шаблона yoo_monday. Ресурсы локальные; Node на хостинге не требуется.</description>
+  <files><filename module="mod_antidrone_design">mod_antidrone_design.php</filename><filename>helper.php</filename><folder>tmpl</folder><folder>licenses</folder><filename>README.txt</filename></files>
+  <media destination="mod_antidrone_design" folder="media"><folder>app</folder><filename>embed.js</filename><filename>embed.css</filename></media>
+  <config><fields name="params"><fieldset name="basic">
+    <field name="enabled_requests" type="radio" default="0" label="Включить приём заявок" description="Включать после проверки почтовых настроек и условий обработки данных."><option value="0">Нет — только просмотр</option><option value="1">Да — отправлять почтой Joomla</option></field>
+    <field name="recipient" type="email" default="" label="Получатель заявок" description="Обязателен для приёма заявок. Используется почтовая настройка Joomla, а не Node." />
+    <field name="cache" type="list" default="0" label="Кэширование"><option value="0">Не кэшировать</option></field>
+    <field name="moduleclass_sfx" type="text" default="" label="CSS-класс модуля" />
+  </fieldset></fields></config>
+</extension>

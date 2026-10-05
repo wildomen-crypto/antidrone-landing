@@ -9,6 +9,7 @@ B10.2 необязателен: решение об объёме записыв�
 
 | ID | Статус | Результат | Проверка | Карточка |
 | --- | --- | --- | --- | --- |
+| JOOMLA-MONDAY-20261005 | VERIFIED | Отдельный /joomla в стилях yoo_monday; установочный модуль без Node на CMS | Check 48 unit/build, PHP lint/17 cases/dispatcher 3.10.12, ZIP/82 HTTP 200, Chrome C1–C8/цена/auto-height/390 PASS | docs/checkpoints/JOOMLA-MONDAY-20261005.md |
 | PUBLIC-PAGES-20261005 | VERIFIED | Public GitHub + HTTPS Pages для оценки 3D/цены; формы демонстрационные | Check 43 unit/build, 30 HTTP 200, Chrome 2560/1536/390, GitHub built/public PASS | docs/checkpoints/PUBLIC-PAGES-20261005.md |
 | PORTABLE-WINDOWS-20261005 | VERIFIED | Архив Windows x64: сайт, официальный Node, исходники/лицензии, START/LEADS | Standalone/build/worker, SHA 3602 файлов, PATH без Node, Chrome 1665/390, формы/цена/перезапуск PASS | docs/checkpoints/PORTABLE-WINDOWS-20261005.md |
 | GITHUB-SAVE-20261005 | VERIFIED | Весь текущий сайт/изображения сохранены в private main; история восстановлена | Check 43 unit/build/worker, секреты/remote SHA/history PASS | docs/checkpoints/GITHUB-SAVE-20261005.md |

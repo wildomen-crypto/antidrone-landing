@@ -1,16 +1,23 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { legal } from "@/config/legal";
 import type { LayoutInput } from "@/lib/configuration/input";
 import { track } from "@/lib/analytics";
 import { clearQuoteDraft } from "@/lib/configuration/quote-draft";
 import { parseLeadContacts } from "@/lib/leads/contact";
 import { sitePath } from "@/lib/site-path";
+import { submitLead } from "@/lib/leads/submit";
 
 const reviewMode = process.env.NEXT_PUBLIC_REVIEW_MODE === "true";
 
 export default function LeadForm({ variant = "inline", configurationValid = true, prepareConfiguration, onSaved, persistConfiguration = false }: { variant?: "inline" | "contact"; configurationValid?: boolean; prepareConfiguration?: () => LayoutInput; onSaved?: (configuration: LayoutInput) => void; persistConfiguration?: boolean }) {
   const contactForm = variant === "contact";
+  const [hostDisabled, setHostDisabled] = useState(false);
+  useEffect(() => {
+    const refresh = () => setHostDisabled(window.antidroneJoomlaHost?.enabled === false);
+    refresh(); window.addEventListener("antidrone-host-ready", refresh);
+    return () => window.removeEventListener("antidrone-host-ready", refresh);
+  }, []);
   const [consent, setConsent] = useState(false), [busy, setBusy] = useState(false), [message, setMessage] = useState("");
   const key = useRef<string | null>(null);
   const previousPayload = useRef("");
@@ -30,10 +37,8 @@ export default function LeadForm({ variant = "inline", configurationValid = true
       if (payload !== previousPayload.current) key.current = null;
       previousPayload.current = payload;
       key.current ??= crypto.randomUUID();
-      const response = await fetch(sitePath("/api/leads"), { method: "POST", headers: { "Content-Type": "application/json", "Idempotency-Key": key.current }, body: payload });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error ?? "Не удалось сохранить заявку. Попробуйте ещё раз.");
-      setMessage(`Заявка сохранена. Номер: ${result.id}.`); track("lead_saved"); form.reset(); setPhone(""); setEmail(""); setConsent(false); key.current = null;
+      const result = await submitLead(payload, key.current);
+      setMessage(`Заявка ${result.sent ? "отправлена" : "сохранена"}. Номер: ${result.id}.`); track("lead_saved"); form.reset(); setPhone(""); setEmail(""); setConsent(false); key.current = null;
       if (persistConfiguration) clearQuoteDraft();
       if (configuration) onSaved?.(configuration);
     } catch (error) { setMessage(error instanceof Error ? error.message : "Нет соединения. Попробуйте ещё раз."); }
@@ -47,9 +52,10 @@ export default function LeadForm({ variant = "inline", configurationValid = true
     <label className="honeypot" aria-hidden="true">Сайт<input name="website" tabIndex={-1} autoComplete="off" /></label>
     <div className={contactForm ? "contact-form-footer" : "quote-form-footer"}>
       <label className="check-field consent-field"><input type="checkbox" checked={consent} onChange={e => setConsent(e.target.checked)} required disabled={busy} /><span>Даю <a href={sitePath(legal.consentPath)} target="_blank" rel="noopener">согласие на обработку данных</a> для ответа на заявку и ознакомлен с <a href={sitePath(legal.policyPath)} target="_blank" rel="noopener">политикой обработки</a>.</span></label>
-      <button className="button button-primary" type="submit" disabled={busy || !consent || !configurationValid}>{busy ? "Сохраняем…" : contactForm ? "Отправить заявку" : "Получить проект"}<span aria-hidden="true">↗</span></button>
+      <button className="button button-primary" type="submit" disabled={busy || !consent || !configurationValid || hostDisabled}>{busy ? "Отправляем…" : contactForm ? "Отправить заявку" : "Получить проект"}<span aria-hidden="true">↗</span></button>
     </div>
     {reviewMode ? <p className="field-hint">Демонстрационная версия для оценки сайта. Формы не отправляют заявки.</p> : contactForm && <p className="field-hint">Без рекламной рассылки. Не указывайте в форме конфиденциальные сведения об объекте.</p>}
+    {hostDisabled && !reviewMode && <p className="field-hint">Приём заявок пока не включён. Свяжитесь с компанией по телефону или email.</p>}
     {!configurationValid && <p className="form-message" role="status">Проверьте размеры конструкции перед отправкой заявки.</p>}
     {message && <p className="form-message" role="status">{message}</p>}
   </form>;
