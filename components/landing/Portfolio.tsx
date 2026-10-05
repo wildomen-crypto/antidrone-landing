@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { sitePath } from "@/lib/site-path";
 import { shapes } from "@/config/catalog";
 import type { ShapeId } from "@/lib/configuration/schema";
 
@@ -77,8 +78,8 @@ export default function Portfolio() {
             const example = examples[shape.id];
             return (
               <article className="portfolio-card" key={shape.id} data-shape={shape.id}>
-                <a className="portfolio-image" href={example.image} target="_blank" rel="noopener noreferrer" aria-label={`Открыть изображение: ${example.title}`}>
-                  <Image src={example.image} alt={example.alt} fill sizes="(max-width: 767px) calc(100vw - 32px), (min-width: 1600px) 700px, (min-width: 1304px) 608px, calc((100vw - 88px) / 2)" quality={80} />
+                <a className="portfolio-image" href={sitePath(example.image)} target="_blank" rel="noopener noreferrer" aria-label={`Открыть изображение: ${example.title}`}>
+                  <Image src={sitePath(example.image)} alt={example.alt} fill sizes="(max-width: 767px) calc(100vw - 32px), (min-width: 1600px) 700px, (min-width: 1304px) 608px, calc((100vw - 88px) / 2)" quality={80} />
                   <span className="portfolio-badge">Визуальная концепция</span>
                   <span className="portfolio-expand" aria-hidden="true">↗</span>
                 </a>

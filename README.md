@@ -74,6 +74,28 @@ design/manufacturing/supply/delivery/installation удаляются с пояс
 
 ## Запуск
 
+Для оценки без установки программ: https://wildomen-crypto.github.io/antidrone-landing/.
+На GitHub Pages размещена интерактивная демонстрация: 3D, цены, изображения
+и оба варианта формы. Формы явно помечены и не отправляют заявки на сервер.
+Обычный локальный сервер/переносимый архив сохраняют настоящие заявки как прежде.
+Исходный репозиторий: https://github.com/wildomen-crypto/antidrone-landing.
+
+`npm run build:pages` готовит статический сайт в изолированной .local/pages-копии,
+с префиксом /antidrone-landing, .nojekyll и без API/приватных файлов.
+Для обновления Pages содержимое указанного out размещается в ветке gh-pages;
+main хранит исходники, Pages настроен на gh-pages /. Обычная .next не меняется.
+Переменные NEXT_PUBLIC_BASE_PATH и NEXT_PUBLIC_REVIEW_MODE задаются только
+сборщиком статической демонстрации; их не задавать для обычного сервера.
+
+Для переноса на Windows 10/11 x64 без установленного Node/npm есть упаковщик:
+`node scripts/package-portable.cjs`. Он создаёт в .local/portable ZIP с готовой
+standalone-сборкой, официальным Node 24.14.1 (SHA256 проверен), лицензиями,
+полным исходником и START.cmd. Получателю не нужны установки/интернет.
+START.cmd выбирает свободный локальный порт и открывает браузер.
+Новые заявки в data, LEADS.cmd выгружает их в JSON; прежние данные/секреты
+не включаются. Подробная инструкция scripts/portable/README.txt.
+Режим BUILD_PORTABLE=true используется только упаковщиком; обычная сборка прежняя.
+
 Node.js 24+, npm. На Windows PowerShell использовать npm.cmd.
 
 ```powershell

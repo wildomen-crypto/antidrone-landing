@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { materials } from "@/config/catalog";
 import { materialPhotos } from "@/config/material-photos";
+import { sitePath } from "@/lib/site-path";
 
 export default function Materials() {
   return <section className="section section-tint material-photo-section" id="materials">
@@ -14,8 +15,8 @@ export default function Materials() {
         return <article key={material.id} className="material-card">
           <figure className="material-photo">
             <div className="material-photo-frame">
-              <a href={photo.image} target="_blank" rel="noopener" aria-label={"Открыть изображение: " + material.name}>
-                <Image src={photo.image} alt={photo.alt} fill
+              <a href={sitePath(photo.image)} target="_blank" rel="noopener" aria-label={"Открыть изображение: " + material.name}>
+                <Image src={sitePath(photo.image)} alt={photo.alt} fill
                   sizes="(max-width: 767px) 80vw, (max-width: 1100px) 42vw, 22vw" />
               </a>
             </div>

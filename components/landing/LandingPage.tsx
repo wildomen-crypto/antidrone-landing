@@ -8,12 +8,13 @@ import ChooseShape from "@/components/landing/ChooseShape";
 import Portfolio from "@/components/landing/Portfolio";
 import Materials from "@/components/landing/Materials";
 import LeadForm from "@/components/landing/LeadForm";
+import { sitePath } from "@/lib/site-path";
 
 export default function LandingPage({ calculatorVariant = "standard" }: { calculatorVariant?: "standard" | "wide" | "compact" | "overlay" }) {
   return <>
     <a className="skip-link" href="#main-content">Перейти к содержанию</a>
     <header className="site-header"><div className="container header-inner">
-      <a className="brand" href="/" aria-label={company.shortName + " — на главную"}><span className="brand-mark" aria-hidden="true">Т</span><span>{company.shortName}<small>Инженерные конструкции</small></span></a>
+      <a className="brand" href={sitePath("/")} aria-label={company.shortName + " — на главную"}><span className="brand-mark" aria-hidden="true">Т</span><span>{company.shortName}<small>Инженерные конструкции</small></span></a>
       <nav aria-label="Основная навигация"><a href="#solutions">Решения</a><a href="#calculator">3D-конфигуратор</a><a href="#portfolio">Примеры</a><a href="#contacts">Заказать проект</a></nav>
       <a className="header-phone" href={company.contacts.general.phone.href}>{company.contacts.general.phone.display}<small>Обсудить проект</small></a>
     </div></header>
@@ -30,7 +31,7 @@ export default function LandingPage({ calculatorVariant = "standard" }: { calcul
       <section className="section section-tint" id="process"><div className="container"><p className="eyebrow">Как мы работаем</p><h2>Четыре шага к готовому проекту</h2><div className="process-grid">{[["Заявка и размеры", "Пришлите задачу или соберите предварительную схему."], ["Уточнение решения", "Инженер проверит исходные данные и состав работ."], ["Предложение и проект", "Согласуем стоимость, документацию и условия выполнения."], ["Выдача документации", "Передаём согласованные разделы проекта, чертежи и спецификации."]].map(([t, d], i) => <article key={t}><span>0{i + 1}</span><h3>{t}</h3><p>{d}</p></article>)}</div></div></section>
       <section className="section container contacts-section" id="contacts"><div className="contact-copy"><p className="eyebrow">Начнём с вашей задачи</p><h2>Обсудим конструкцию<br />и состав работ</h2><a className="contact-phone" href={company.contacts.general.phone.href}>{company.contacts.general.phone.display}</a><a className="contact-email" href={company.contacts.general.email.href}>{company.contacts.general.email.address}</a><div className="contact-departments"><div><strong>{company.contacts.design.label}</strong><a href={company.contacts.design.phone.href}>{company.contacts.design.phone.display}</a><a href={company.contacts.design.email.href}>{company.contacts.design.email.address}</a></div></div><address>{company.officeAddress}</address><p className="contact-hours">{company.workingHours.display}<br />Время московское</p></div><LeadForm variant="contact" /></section>
     </main>
-    <footer className="site-footer"><div className="container"><div className="footer-top"><a className="brand" href="/">{company.shortName}</a><p>Проектирование металлоконструкций<br />Разработка КМ, КМД и КЖ</p><a href={company.websiteUrl}>Основной сайт ↗</a></div><div className="footer-bottom"><p>{company.publishedLegalEntity.name} · ИНН {company.publishedLegalEntity.inn} · ОГРН {company.publishedLegalEntity.ogrn}</p><div><a href="/privacy">Политика обработки данных</a><a href="/consent">Согласие на обработку</a></div></div><p className="footer-note">3D-схемы служат для предварительной компоновки. Окончательное конструктивное решение и состав документации определяются проектом и договором.</p></div></footer>
+    <footer className="site-footer"><div className="container"><div className="footer-top"><a className="brand" href={sitePath("/")}>{company.shortName}</a><p>Проектирование металлоконструкций<br />Разработка КМ, КМД и КЖ</p><a href={company.websiteUrl}>Основной сайт ↗</a></div><div className="footer-bottom"><p>{company.publishedLegalEntity.name} · ИНН {company.publishedLegalEntity.inn} · ОГРН {company.publishedLegalEntity.ogrn}</p><div><a href={sitePath("/privacy/")}>Политика обработки данных</a><a href={sitePath("/consent/")}>Согласие на обработку</a></div></div><p className="footer-note">3D-схемы служат для предварительной компоновки. Окончательное конструктивное решение и состав документации определяются проектом и договором.</p></div></footer>
     <div className="mobile-actions"><a href={company.contacts.general.phone.href}>Позвонить</a><a href="#calculator">Собрать 3D-схему ↗</a></div>
   </>;
 }
