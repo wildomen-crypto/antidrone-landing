@@ -11,3 +11,5 @@
 Начальная QA-попытка остановилась на повторной hash-навигации (null response);
 исправленный probe с единственной навигацией и resize PASS.
 Следующий шаг: обратная связь заказчика.
+Код c33602d в main. ZIP/bundle primary-only-20261005-c33602d проверены:
+172 записи без private/runtime; bundle verify PASS. Preview PID 26808.

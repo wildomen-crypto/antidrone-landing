@@ -5,6 +5,9 @@
 Блок ссылок сравнения удалён; основная компоновка сохранена.
 Build/TypeScript/worker и browser 390/1024/1920 PASS; без overflow/pageerror.
 Основная 3D и кнопка расчёта доступны, сервер PID 26808, HTTP 200.
+Код c33602d661f0958508172c9d569714e07ebce4bc в main (fast-forward).
+ZIP/bundle primary-only-20261005-c33602d проверены: 172 записи,
+без данных/секретов/runtime; bundle verify PASS.
 Следующий шаг: обратная связь заказчика.
 
 Предыдущая работа: UI-SIMPLE-QUOTE — VERIFIED; база aa8fd61.
