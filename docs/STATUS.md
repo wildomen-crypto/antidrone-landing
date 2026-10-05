@@ -1,6 +1,14 @@
 # Состояние разработки
 
-Текущая работа: UI-ADAPTIVE-SHAPES — VERIFIED; база e37fc1b.
+Текущая работа: UI-DENSE-OPTIONS — VERIFIED; база e712159.
+Ветка ui/dense-options-default-opening; docs/checkpoints/UI-DENSE-OPTIONS.md.
+Группы иконок в гибкий ряд, проём по умолчанию, плотные карточки,
+несущие выше стен. Build с типизацией/worker PASS; 8 responsive + 5 compact
+групп PASS, 12 окон. C4 размеры 232 px средний / 316 px телефон 390.
+Default проём 179 м², отключённый 188 м²; JSON сохраняет выбор.
+Скриншоты 390/1100/1920 просмотрены. Следующий шаг: main/резервные копии.
+
+Предыдущая работа: UI-ADAPTIVE-SHAPES — VERIFIED; база e37fc1b.
 Ветка ui/adaptive-shape-cards; docs/checkpoints/UI-ADAPTIVE-SHAPES.md.
 Карточки типов конструкций на узких окнах адаптируются как заполнение стен.
 Build с типизацией/worker и 7 responsive групп PASS, 12 окон 320–2560 px.
@@ -117,7 +125,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 43 VERIFIED (включая шестнадцать правок UI и решение не включать upload),
+Реестр: 44 VERIFIED (включая семнадцать правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
@@ -143,7 +151,7 @@ main обновлён fast-forward.
 http://127.0.0.1:3100 — production build, только этот компьютер.
 Новый вариант: http://127.0.0.1:3100/wide#calculator.
 Адаптивная версия: http://127.0.0.1:3100/compact#calculator.
-PID 28860, скрытый фоновый процесс; логи .local/preview.stdout.log и
+PID 1256, скрытый фоновый процесс; логи .local/preview.stdout.log и
 .local/preview.stderr.log. Проверять фактический порт и CommandLine
 перед остановкой; не останавливать чужие процессы. После перезапуска
 компьютера: npm.cmd run start из корня проекта.

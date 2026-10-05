@@ -27,6 +27,14 @@ const Scene = dynamic(() => import("@/components/viewer/Scene"), { ssr: false, l
 const format = (v: number) => v.toLocaleString("ru-RU", { maximumFractionDigits: 2 });
 
 function variantFor(shapeId: string) { return shapeId === "C5" ? "screen" : shapeId === "C7" ? "dome" : "portal"; }
+function inputForShape(current: LayoutInput, shapeId: LayoutInput["shapeId"], defaultOpening: boolean): LayoutInput {
+  const opening = current.opening;
+  const enabled = defaultOpening && ["C1", "C2", "C4", "C5"].includes(shapeId) && current.walls
+    && (!["C2", "C4"].includes(shapeId) || current.sides[0])
+    && opening.offset + opening.width <= current.length && opening.height <= current.height;
+  return { ...current, shapeId, variant: variantFor(shapeId), roof: shapeId === "C3" || current.roof,
+    opening: { ...opening, enabled } };
+}
 export default function Calculator({ variant = "standard" }: { variant?: "standard" | "wide" | "compact" }) {
   const wide = variant !== "standard", compact = variant === "compact";
   const [rightInset, setRightInset] = useState(0);
@@ -34,7 +42,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   const [leftInset, setLeftInset] = useState(0);
   const parameterPanel = useRef<HTMLDivElement>(null);
   const dimensionPanel = useRef<HTMLDivElement>(null);
-  const [input, setInput] = useState<LayoutInput>(structuredClone(defaultInput));
+  const [input, setInput] = useState<LayoutInput>(() => inputForShape(structuredClone(defaultInput), defaultInput.shapeId, compact));
   const [view, setView] = useState<CameraView>("perspective");
   const [onlyFrame, setOnlyFrame] = useState(false), [hiddenGroups, setHiddenGroups] = useState<string[]>([]);
   const [three, setThree] = useState(false), [showAdvanced, setShowAdvanced] = useState(false);
@@ -84,11 +92,11 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     const choose = (event: Event) => {
       const shapeId = (event as CustomEvent<string>).detail;
       if (!shapes.some(s => s.id === shapeId)) return;
-      setInput(c => ({ ...c, shapeId: shapeId as LayoutInput["shapeId"], variant: variantFor(shapeId), roof: shapeId === "C3" || c.roof, opening: { ...c.opening, enabled: false } }));
+      setInput(c => inputForShape(c, shapeId as LayoutInput["shapeId"], compact));
       setHiddenGroups([]); setMessage("");
     };
     window.addEventListener("choose-shape", choose); return () => window.removeEventListener("choose-shape", choose);
-  }, []);
+  }, [compact]);
   const result = useMemo(() => {
     try { const graph = generateModel(input); return { graph, estimate: estimate(graph), error: "" }; }
     catch (error) { return { graph: null, estimate: null, error: error instanceof Error ? error.message : "Проверьте параметры." }; }
@@ -107,7 +115,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     return wide ? <DimensionSlider key={key} label={label} value={input[key]} min={min} max={max} onValue={v => update(key, v)} />
       : <label className="field" key={key}><span>{label}, м</span><NumberInput value={input[key]} min={min} max={max} onValue={v => update(key, v)} /></label>;
   };
-  const choose = (shapeId: LayoutInput["shapeId"]) => { setInput(c => ({ ...c, shapeId, variant: variantFor(shapeId), roof: shapeId === "C3" || c.roof, opening: { ...c.opening, enabled: false } })); setHiddenGroups([]); setMessage(""); };
+  const choose = (shapeId: LayoutInput["shapeId"]) => { setInput(c => inputForShape(c, shapeId, compact)); setHiddenGroups([]); setMessage(""); };
   function download() {
     try {
       const value = parseInput(input), blob = new Blob([JSON.stringify(value, null, 2)], { type: "application/json" });
@@ -210,6 +218,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     </div>
   );
   const viewerControls = <div className="viewer-controls"><div className="view-buttons">{([["perspective", "3D"], ["top", "Сверху"], ["front", "Спереди"], ["side", "Сбоку"]] as const).map(([key, label]) => <button key={key} className={view === key ? "selected" : ""} aria-pressed={view === key} onClick={() => setView(key)}>{label}</button>)}</div><label className="check-field"><input type="checkbox" checked={onlyFrame} onChange={e => setOnlyFrame(e.target.checked)} />Только каркас</label></div>;
+  const structurePicker = <StructurePicker value={input.structuralSystem} spatialSupports={input.spatialSupports} onChange={chooseStructure} />;
   return <div className={wide ? `calculator calculator-wide${compact ? " calculator-compact" : ""}` : "calculator"} data-shape={input.shapeId}>
     {wide && <ShapePicker value={input.shapeId} onChange={choose} />}
     {!wide && settings}
@@ -227,12 +236,13 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
           {settings}
         </div>}
       </div>
+      {compact && structurePicker}
       {wide && <MaterialPicker compact={compact} value={input.materialId} onChange={chooseWalls} noWalls={!wallsAvailable} enabled={wallsEnabled}
         note={!wallsAvailable ? undefined : wallsEnabled ? "Нажмите выбранный материал, чтобы убрать заполнение стен" : "Без заполнения стен — выберите материал, чтобы включить"} />}
       {wide && hasRoofOptions && <MaterialPicker compact={compact} target="roof" value={input.roofMaterialId} enabled={input.roof} onChange={chooseRoof}
         note={requiredRoof ? "Покрытие обязательно для этой конструкции" : input.roof ? "Нажмите выбранный материал, чтобы убрать кровлю" : "Без кровли — выберите материал, чтобы включить"} />}
       {compact && services}
-      {wide && <StructurePicker value={input.structuralSystem} spatialSupports={input.spatialSupports} onChange={chooseStructure} />}
+      {wide && !compact && structurePicker}
       <p className="viewer-help">Вращение: перетащите схему. Масштаб: колесо мыши или жест двумя пальцами. Без WebGL доступна 2D-схема.</p>
       {!compact && viewerControls}
       {input.shapeId === "C8" && <div className="viewer-layers"><span>Видимость (состав заказа не меняется):</span>{input.contours.map((c, i) => c.enabled && <label key={i} className="check-field"><input type="checkbox" checked={!hiddenGroups.includes(`contour${i + 1}`)} onChange={e => setHiddenGroups(old => e.target.checked ? old.filter(g => g !== `contour${i + 1}`) : [...old, `contour${i + 1}`])} />Контур {i + 1}</label>)}</div>}

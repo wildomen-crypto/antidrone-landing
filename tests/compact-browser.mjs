@@ -36,11 +36,12 @@ try{
         const image=await row.locator('.material-choice-image').first().boundingBox();assert.equal(image.height,width>=1280?65:32);
       }
       const roof=await roofRow(page).boundingBox(),works=await page.locator('.service-picker').boundingBox(),structure=await page.locator('.structure-picker').boundingBox();
-      assert.ok(works.y>=roof.y+roof.height-1);assert.ok(structure.y>=works.y+works.height-1);
+      const walls=await wallRow(page).boundingBox();
+      assert.ok(works.y>=roof.y+roof.height-1);assert.ok(structure.y+structure.height<=walls.y+1);
       assert.equal(await page.locator('.service-picker input[type=checkbox]').count(),4);
       assert.equal(await page.locator('.parameter-panel').getByRole('checkbox',{name:'Проектирование',exact:true}).count(),0);
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
-      await waitTotal(page,188);
+      await waitTotal(page,179);
       if([390,768,1440].includes(width))await page.screenshot({path:path.join(output,'compact-'+width+'.png')});
     }
     await page.close();
@@ -67,7 +68,7 @@ try{
     await scene(page);await page.screenshot({path:path.join(output,'canopy-no-right-panel.png')});
   });
   await check('Materials, wall toggle, openings, works and JSON keep their shared behavior; print omits selectors',async()=>{
-    await page.reload({waitUntil:'networkidle'});await waitTotal(page,188);
+    await page.reload({waitUntil:'networkidle'});await waitTotal(page,179);
     assert.equal(await page.locator('.calculator').getAttribute('data-shape'),'C4');
     await wallRow(page).locator('.material-choice').nth(6).click();await waitTotal(page,60);
     assert.equal(await page.locator('.parameter-panel').count(),0);

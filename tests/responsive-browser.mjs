@@ -72,6 +72,13 @@ try{
       const shapeRows=new Set(shapeCards.map(card=>Math.round(card.y))).size;
       assert.equal(shapeRows,new Set(cardLayout.map(card=>Math.round(card.y))).size,'Construction and wall choices wrap into the same number of rows');
       assert.equal((await page.locator('.shape-choice-image').first().boundingBox()).height,width>=1280?76:32);
+      const order=await page.locator('.calculator-output').evaluate(el=>[...el.children].filter(child=>child.matches('.material-picker,.service-picker')).map(child=>child.classList.contains('structure-picker')?'structure':child.classList.contains('service-picker')?'works':child.getAttribute('data-target')));
+      assert.deepEqual(order,['structure','walls','roof','works']);
+      if(!overlay){
+        const icons=await page.locator('.compact-options').evaluate(el=>({available:el.clientWidth,groups:[...el.querySelectorAll('.compact-option-group')].map(group=>({y:group.getBoundingClientRect().y,w:group.getBoundingClientRect().width}))}));
+        if(icons.groups.reduce((sum,group)=>sum+group.w,0)+8*(icons.groups.length-1)<=icons.available+1)
+          assert.equal(new Set(icons.groups.map(group=>Math.round(group.y))).size,1,'Option groups fit on one line and must not waste another row');
+      }
       await noOverflow(page);
       report.viewports.push({width,height,mode:overlay?'large':width>=768?'medium':'phone',sceneHeight:scene.height,sceneWidth:scene.width,containerWidth:container.width,shapeRows,shapePickerHeight:shapes.height});
       if([390,1024,1920].includes(width)){
@@ -112,6 +119,33 @@ try{
       assert.equal(await page.locator('.parameter-panel').count(),0);
       await page.close();
     }
+  });
+  await check('Default front opening changes real quantities; disabling and JSON import remain explicit; shape changes stay valid',async()=>{
+    const page=await browser.newPage({viewport:{width:1024,height:768},reducedMotion:'reduce'});monitor(page);
+    await page.goto(base+'/compact#calculator',{waitUntil:'networkidle'});
+    const opening=page.getByRole('checkbox',{name:'Проём в передней стороне',exact:true});
+    assert.equal(await opening.isChecked(),true);
+    const total=()=>page.locator('.quantity-grid strong').first().textContent();
+    assert.equal(await total(),'179 м²');
+    await opening.uncheck();assert.equal(await total(),'188 м²');
+    const pending=page.waitForEvent('download');await page.getByRole('button',{name:'Сохранить JSON',exact:true}).click();
+    const savedPath=path.join(output,'opening-disabled.json');await(await pending).saveAs(savedPath);
+    assert.equal(JSON.parse(await readFile(savedPath,'utf8')).opening.enabled,false);
+    await opening.check();assert.equal(await total(),'179 м²');
+    await page.locator('input[type=file]').setInputFiles(savedPath);
+    await page.waitForFunction(()=>document.querySelector('.form-message')?.textContent==='Конфигурация восстановлена.');
+    assert.equal(await opening.isChecked(),false);assert.equal(await total(),'188 м²');
+    for(const index of [0,1,3,4]){
+      await page.locator('.shape-choice').nth(index).click();assert.equal(await opening.isChecked(),true);
+      assert.equal(await page.locator('.input-error,.viewer-error').count(),0);
+    }
+    await page.locator('.shape-choice').nth(2).click();assert.equal(await opening.count(),0);
+    await page.evaluate(()=>window.dispatchEvent(new CustomEvent('choose-shape',{detail:'C4'})));
+    assert.equal(await opening.isChecked(),true);
+    await opening.uncheck();await page.getByRole('textbox',{name:'Длина, м',exact:true}).fill('2');
+    await page.locator('.shape-choice').nth(0).click();assert.equal(await opening.isChecked(),false);
+    assert.equal(await page.locator('.input-error,.viewer-error').count(),0);
+    await page.close();
   });
   await check('Desktop pictures restored; narrow dimensions no taller than desktop, openings and contours compact',async()=>{
     const page=await browser.newPage({viewport:{width:1920,height:1080},reducedMotion:'reduce'});monitor(page);
