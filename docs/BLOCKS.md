@@ -9,6 +9,7 @@ B10.2 необязателен: решение об объёме записыв�
 
 | ID | Статус | Результат | Проверка | Карточка |
 | --- | --- | --- | --- | --- |
+| UI-PRIMARY-ONLY | VERIFIED | Основная компоновка без ссылок сравнения | Build/worker; browser 390/1024/1920 без ссылок/overflow/pageerror | docs/checkpoints/UI-PRIMARY-ONLY.md |
 | UI-SIMPLE-QUOTE | VERIFIED | Основная версия без деталей; запрос сохраняет конфигурацию | Build/worker; 5 quote + 5 overlay групп; JSON/draft/SQLite/CLI, 320–1920 | docs/checkpoints/UI-SIMPLE-QUOTE.md |
 | UI-SERVICES-QUOTE | VERIFIED | Основная версия: работы рядом с получением расчёта | Build/worker; 5 overlay групп; 320/390/1024/1920, выбор/JSON/печать/ошибки | docs/checkpoints/UI-SERVICES-QUOTE.md |
 | UI-PRIMARY-OVERLAY | VERIFIED | Основная / с overlay; проём без внутренней рамки/заливки | Build/worker; 5 overlay групп на /; стили/пересчёт 390/1024/1920, варианты HTTP 200 | docs/checkpoints/UI-PRIMARY-OVERLAY.md |

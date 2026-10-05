@@ -1,6 +1,13 @@
 # Состояние разработки
 
-Текущая работа: UI-SIMPLE-QUOTE — VERIFIED; база aa8fd61.
+Текущая работа: UI-PRIMARY-ONLY — VERIFIED; база 7e6a980.
+Ветка ui/remove-layout-links; docs/checkpoints/UI-PRIMARY-ONLY.md.
+Блок ссылок сравнения удалён; основная компоновка сохранена.
+Build/TypeScript/worker и browser 390/1024/1920 PASS; без overflow/pageerror.
+Основная 3D и кнопка расчёта доступны, сервер PID 26808, HTTP 200.
+Следующий шаг: обратная связь заказчика.
+
+Предыдущая работа: UI-SIMPLE-QUOTE — VERIFIED; база aa8fd61.
 Ветка ui/simple-persistent-quote; docs/checkpoints/UI-SIMPLE-QUOTE.md.
 Компактный основной интерфейс и сохраняемая конфигурация при запросе.
 Build/worker, 5 quote + 5 overlay групп PASS. JSON/draft/reload и полная
@@ -244,7 +251,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 55 VERIFIED (включая двадцать восемь правок UI и решение не включать upload),
+Реестр: 56 VERIFIED (включая двадцать девять правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
