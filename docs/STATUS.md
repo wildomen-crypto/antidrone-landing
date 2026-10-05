@@ -7,7 +7,10 @@ Build/worker, 5 quote + 5 overlay групп PASS. JSON/draft/reload и полн
 конфигурация в реальной тестовой заявке SQLite/CLI совпадают; HTTP 201.
 320/390/768/1024/1920 без overflow; 390/1920 просмотрены.
 Сравниваемые версии сохранены; внешняя доставка не подключена.
-Следующий шаг: сохранить проверенный код и резервные копии.
+Код e42d29df4a13b36b10839682eca9acf98bdd8753 в main (fast-forward).
+ZIP/bundle simple-quote-20261005-e42d29d проверены: 171 запись,
+без данных/секретов/runtime, bundle verify PASS. Сервер PID 25252, HTTP 200.
+Следующий шаг: обратная связь заказчика; внешняя доставка требует получателя.
 
 Предыдущая работа: UI-SERVICES-QUOTE — VERIFIED; база 2c356fc.
 Ветка ui/services-near-quote; docs/checkpoints/UI-SERVICES-QUOTE.md.
