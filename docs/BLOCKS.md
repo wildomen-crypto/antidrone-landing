@@ -9,6 +9,7 @@ B10.2 необязателен: решение об объёме записыв�
 
 | ID | Статус | Результат | Проверка | Карточка |
 | --- | --- | --- | --- | --- |
+| GITHUB-HOME-20261005 | IN_PROGRESS | Исходники и готовый Joomla ZIP на GitHub для другого ПК | Запланированы remote SHA, Release assets/SHA256, публичные загрузки и demo HTTP | docs/checkpoints/GITHUB-HOME-20261005.md |
 | JOOMLA-EXISTING-FORM-20261005 | VERIFIED | Обе формы используют jQuery сайта и /upload.php; модуль 1.1.0 без новых SMTP | Check 54 unit/build/worker; PHP lint/17 cases; ZIP/82 ресурсов; Chrome две формы/отказ/повтор/mobile PASS | docs/checkpoints/JOOMLA-EXISTING-FORM-20261005.md |
 | JOOMLA-MONDAY-20261005 | VERIFIED | Отдельный /joomla в стилях yoo_monday; установочный модуль без Node на CMS | Check 48 unit/build, PHP lint/17 cases/dispatcher 3.10.12, ZIP/82 HTTP 200, Chrome C1–C8/цена/auto-height/390 PASS | docs/checkpoints/JOOMLA-MONDAY-20261005.md |
 | PUBLIC-PAGES-20261005 | VERIFIED | Public GitHub + HTTPS Pages для оценки 3D/цены; формы демонстрационные | Check 43 unit/build, 30 HTTP 200, Chrome 2560/1536/390, GitHub built/public PASS | docs/checkpoints/PUBLIC-PAGES-20261005.md |

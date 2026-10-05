@@ -1,5 +1,9 @@
 # Топинженер — лендинг металлоконструкций
 
+Продолжение с другого ПК: [инструкция](docs/HOME.md).
+Готовый установочный модуль Joomla 1.1.0:
+[скачать из Releases](https://github.com/wildomen-crypto/antidrone-landing/releases/tag/joomla-v1.1.0).
+
 Отдельная версия `/joomla` предназначена для страницы существующего
 topengineer.ru (Joomla 3.10.12, yoo_monday). Использует его шрифты и оформление,
 общий 3D-конструктор и цены. `npm run build:joomla` создаёт установочный ZIP

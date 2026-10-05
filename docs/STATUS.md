@@ -1,5 +1,11 @@
 # Состояние разработки
 
+Текущая локальная работа: GITHUB-HOME-20261005 — IN_PROGRESS.
+Карточка docs/checkpoints/GITHUB-HOME-20261005.md; инструкция docs/HOME.md.
+Опубликовать готовый модуль 1.1.0 в Releases и проверить скачивание с другого ПК.
+Код приложения и ранее проверенный архив не меняются.
+Следующий шаг: main + Release ZIP/SHA/instruction и проверка публичной загрузки.
+
 Текущая локальная работа: JOOMLA-EXISTING-FORM-20261005 — VERIFIED.
 Ветка codex/joomla-existing-form; карточка docs/checkpoints/JOOMLA-EXISTING-FORM-20261005.md.
 Обе формы подключены к существующему jQuery /upload.php без новой почты.
