@@ -6,7 +6,10 @@
 Build/worker и 5 overlay групп PASS; 320/390/1024/1920 без переполнения,
 промежуток 12 px; выбор/JSON/печать/восстановление после ошибки работают.
 Одна группа, /compact прежний; снимки 390/1920 просмотрены.
-Следующий шаг: сохранить проверенный код и резервные копии.
+Код cfc7feb129b62564facbec5dfd50670d9b522e48 в main (fast-forward).
+ZIP/bundle services-quote-20261005-cfc7feb проверены: 167 записей,
+без данных/секретов/runtime; bundle verify PASS. Сервер PID 3604.
+Следующий шаг: обратная связь заказчика.
 
 Предыдущая работа: UI-PRIMARY-OVERLAY — VERIFIED; база 6132b99.
 Ветка ui/primary-overlay-clean-opening; docs/checkpoints/UI-PRIMARY-OVERLAY.md.

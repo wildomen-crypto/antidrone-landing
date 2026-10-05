@@ -20,4 +20,8 @@ PASS; /compact сохраняет прежнее размещение. Обра�
 Отчёты .local/qa/services-quote.json и overlay/report.json.
 Геометрия неизменна; unit не повторялись, реальные устройства не проверялись.
 Сервер PID 3604.
-Следующий шаг: сохранить проверенный код и резервные копии.
+Код cfc7feb129b62564facbec5dfd50670d9b522e48 в main (fast-forward).
+ZIP/bundle services-quote-20261005-cfc7feb проверены: 167 записей,
+без данных/секретов/runtime; bundle verify PASS. Каталог
+C:\taran\artifacts\antidrone-landing-backups.
+Следующий шаг: обратная связь заказчика.
