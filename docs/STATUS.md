@@ -1,6 +1,15 @@
 # Состояние разработки
 
-Текущая работа: UI-COMPLEX-DENSITY — VERIFIED; база 1adfd86.
+Текущая работа: UI-EMPTY-DIMENSIONS — VERIFIED; база 709f5ff.
+Ветка ui/full-width-empty-dimensions; docs/checkpoints/UI-EMPTY-DIMENSIONS.md.
+Размеры на свободную ширину без параметров; у навеса скрыть стеновой ряд.
+Build с типизацией/worker; 8 responsive групп PASS на 12 окнах.
+C3/C7 занимают всю среднюю ширину; высота 232→128 px на 768,
+232→85 px на 1024; 316→228 px на телефоне 390. Стены навеса скрыты,
+кровля доступна; комбинация возвращает параметры без сброса размеров.
+Скриншоты 768/1024 просмотрены. Следующий шаг: main/резервные копии.
+
+Предыдущая работа: UI-COMPLEX-DENSITY — VERIFIED; база 1adfd86.
 Ветка ui/dense-complex-parameters; docs/checkpoints/UI-COMPLEX-DENSITY.md.
 Параметры C8 ниже на 29–40%: полная высота 361–364 px вместо 507–606.
 Build/worker PASS; browser 320/390/1024/1920, контуры/основания/JSON PASS.
@@ -163,7 +172,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 48 VERIFIED (включая двадцать одну правку UI и решение не включать upload),
+Реестр: 49 VERIFIED (включая двадцать две правки UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
@@ -189,7 +198,7 @@ main обновлён fast-forward.
 http://127.0.0.1:3100 — production build, только этот компьютер.
 Новый вариант: http://127.0.0.1:3100/wide#calculator.
 Адаптивная версия: http://127.0.0.1:3100/compact#calculator.
-PID 24768, скрытый фоновый процесс; логи .local/preview.stdout.log и
+PID 29296, скрытый фоновый процесс; логи .local/preview.stdout.log и
 .local/preview.stderr.log. Проверять фактический порт и CommandLine
 перед остановкой; не останавливать чужие процессы. После перезапуска
 компьютера: npm.cmd run start из корня проекта.

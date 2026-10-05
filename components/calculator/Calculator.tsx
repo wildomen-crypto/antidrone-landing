@@ -223,7 +223,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     {!wide && settings}
     <div className="calculator-output">
       {!wide && <div className="viewer-toolbar"><span className="step-title"><span>02</span> Предварительная схема</span><span className="viewer-badge">{three ? "3D / 2D" : "Аксонометрия"}</span></div>}
-      <div className="viewer-stage">
+      <div className="viewer-stage" data-settings={compact ? String(showSettingsPanel) : undefined}>
         <div className="viewer" ref={viewer}>{result.graph ? three ? <Scene graph={result.graph} view={view} onlyFrame={onlyFrame} hiddenGroups={hiddenGroups} rightInset={rightInset} topInset={topInset} leftInset={leftInset} /> : <div className="scene-fallback" style={{ paddingRight: rightInset, paddingTop: topInset, paddingLeft: leftInset }}><ModelDiagram graph={result.graph} /></div> : <div className="viewer-error" role="alert">{result.error}</div>}
           {compact && <SceneViewControls view={view} onView={setView} onlyFrame={onlyFrame} onFrame={setOnlyFrame} />}
         </div>
@@ -236,7 +236,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
         </div>}
       </div>
       {compact && structurePicker}
-      {wide && <MaterialPicker compact={compact} value={input.materialId} onChange={chooseWalls} noWalls={!wallsAvailable} enabled={wallsEnabled}
+      {wide && (!compact || wallsAvailable) && <MaterialPicker compact={compact} value={input.materialId} onChange={chooseWalls} noWalls={!wallsAvailable} enabled={wallsEnabled}
         note={!wallsAvailable ? undefined : wallsEnabled ? "Нажмите выбранный материал, чтобы убрать заполнение стен" : "Без заполнения стен — выберите материал, чтобы включить"} />}
       {wide && hasRoofOptions && <MaterialPicker compact={compact} target="roof" value={input.roofMaterialId} enabled={input.roof} onChange={chooseRoof}
         note={requiredRoof ? "Покрытие обязательно для этой конструкции" : input.roof ? "Нажмите выбранный материал, чтобы убрать кровлю" : "Без кровли — выберите материал, чтобы включить"} />}
