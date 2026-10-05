@@ -1,10 +1,11 @@
 # Состояние разработки
 
-Текущая локальная работа: GITHUB-HOME-20261005 — IN_PROGRESS.
+Текущая локальная работа: GITHUB-HOME-20261005 — VERIFIED.
 Карточка docs/checkpoints/GITHUB-HOME-20261005.md; инструкция docs/HOME.md.
-Опубликовать готовый модуль 1.1.0 в Releases и проверить скачивание с другого ПК.
+Готовый модуль 1.1.0 опубликован в Release joomla-v1.1.0: ZIP/SHA/START-HOME.
+Публичное скачивание 39 149 992 байта и SHA256 PASS; 8 ссылок HTTP 200.
 Код приложения и ранее проверенный архив не меняются.
-Следующий шаг: main + Release ZIP/SHA/instruction и проверка публичной загрузки.
+Следующий шаг: дома получить main и продолжить по docs/HOME.md.
 
 Текущая локальная работа: JOOMLA-EXISTING-FORM-20261005 — VERIFIED.
 Ветка codex/joomla-existing-form; карточка docs/checkpoints/JOOMLA-EXISTING-FORM-20261005.md.
