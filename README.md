@@ -219,3 +219,9 @@ docs/checkpoints/LOCAL-DELIVERY.md. Проверить git status и факти�
 
 Исходные требования: docs/SPEC.md; исследование: docs/RESEARCH.md;
 разбиение и рекомендации по моделям: docs/CODEX_PLAN.md.
+
+## Репозиторий
+
+Исходники: https://github.com/wildomen-crypto/antidrone-landing (private).
+GitHub хранит код и историю; развёртывание веб-сайта выполняется отдельно.
+Данные заявок, секреты и локальные файлы среды в репозиторий не входят.

@@ -1,6 +1,11 @@
 # Состояние разработки
 
-Текущая работа: UI-PRIMARY-ONLY — VERIFIED; база 7e6a980.
+Текущая работа: GITHUB-DELIVERY — IN_PROGRESS; база 49d9743.
+Ветка delivery/github; docs/checkpoints/GITHUB-DELIVERY.md.
+Цель: private wildomen-crypto/antidrone-landing. История проверена.
+Следующий шаг: GitHub create/push и сверка SHA.
+
+Предыдущая работа: UI-PRIMARY-ONLY — VERIFIED; база 7e6a980.
 Ветка ui/remove-layout-links; docs/checkpoints/UI-PRIMARY-ONLY.md.
 Блок ссылок сравнения удалён; основная компоновка сохранена.
 Build/TypeScript/worker и browser 390/1024/1920 PASS; без overflow/pageerror.
