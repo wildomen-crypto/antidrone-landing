@@ -1,4 +1,4 @@
-import type { MaterialId, ShapeId, ShapeIdentity, StructuralSystemId, WallModuleId } from "@/lib/configuration/schema";
+import type { MaterialId, ShapeId, ShapeIdentity, StructuralSystemId, WallModuleId } from "../lib/configuration/schema";
 
 export type ShapeDefinition = ShapeIdentity & Readonly<{
   name: string;

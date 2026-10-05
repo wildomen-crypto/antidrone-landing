@@ -38,7 +38,7 @@ export default function LeadForm({ variant = "inline", configurationValid = true
       previousPayload.current = payload;
       key.current ??= crypto.randomUUID();
       const result = await submitLead(payload, key.current);
-      setMessage(`Заявка ${result.sent ? "отправлена" : "сохранена"}. Номер: ${result.id}.`); track("lead_saved"); form.reset(); setPhone(""); setEmail(""); setConsent(false); key.current = null;
+      setMessage(`Заявка ${result.sent ? "отправлена" : "сохранена"}.${result.id ? " Номер: " + result.id + "." : ""}`); track("lead_saved"); form.reset(); setPhone(""); setEmail(""); setConsent(false); key.current = null;
       if (persistConfiguration) clearQuoteDraft();
       if (configuration) onSaved?.(configuration);
     } catch (error) { setMessage(error instanceof Error ? error.message : "Нет соединения. Попробуйте ещё раз."); }

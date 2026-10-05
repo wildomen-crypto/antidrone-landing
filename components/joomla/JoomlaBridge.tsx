@@ -31,7 +31,7 @@ export default function JoomlaBridge() {
         if (Array.from(document.querySelectorAll("link[rel=stylesheet]")).some(link => (link as HTMLLinkElement).href === url.href)) continue;
         const link = document.createElement("link"); link.rel = "stylesheet"; link.href = url.href; document.head.prepend(link);
       }
-      if (host && typeof host.endpoint === "string" && typeof host.tokenName === "string" && Number.isInteger(host.moduleId) && host.moduleId > 0 && typeof host.enabled === "boolean") {
+      if (host && typeof host.endpoint === "string" && (host.transport === "site-form" || typeof host.tokenName === "string") && Number.isInteger(host.moduleId) && host.moduleId > 0 && typeof host.enabled === "boolean") {
         window.antidroneJoomlaHost = host as JoomlaHost;
         window.dispatchEvent(new Event("antidrone-host-ready"));
       }

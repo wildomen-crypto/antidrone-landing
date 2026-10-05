@@ -1,5 +1,14 @@
 # Состояние разработки
 
+Текущая локальная работа: JOOMLA-EXISTING-FORM-20261005 — VERIFIED.
+Ветка codex/joomla-existing-form; карточка docs/checkpoints/JOOMLA-EXISTING-FORM-20261005.md.
+Обе формы подключены к существующему jQuery /upload.php без новой почты.
+Check 54 unit/build/worker, PHP lint/17 cases, ZIP 94/82 HTTP 200 PASS.
+Chrome: верхняя схема/цена, нижняя отказ/повтор, mobile 390 PASS; реальных писем нет.
+ZIP 1.1.0 в Downloads; установка на topengineer.ru остаётся администратору.
+Preview 3100 PID 292928; стенд 3152 PID 258456.
+Следующий шаг: source/main и обновление демонстрации GitHub Pages.
+
 Текущая локальная работа: JOOMLA-MONDAY-20261005 — VERIFIED.
 Карточка docs/checkpoints/JOOMLA-MONDAY-20261005.md; codex/joomla-monday.
 Отдельная версия в оформлении yoo_monday; Joomla 3.10.12 подтверждена manifest.
