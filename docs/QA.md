@@ -1,5 +1,15 @@
 # Проверка локальной версии
 
+## Заголовок параметров без разделителя — 5 октября 2026
+
+UI-PARAMETER-HEADING VERIFIED. Build с типизацией/worker PASS.
+Браузерные 390/1024/1920: border-bottom 0, шрифт как у размеров,
+paddingTop полей 0; C4 проём и C8 высота контура работают, ошибок JS
+и overflow нет. Панель C4 242→226,3 px узкий, 281→252,3 px большой.
+До/после .local/qa/parameter-heading-before.json и -after.json;
+скриншот parameter-heading-1024.png просмотрен. Полные browser/unit
+повторно не запускались для CSS заголовка; логика/геометрия неизменны.
+
 ## Высота сцены −30% — 5 октября 2026
 
 UI-SCENE-HEIGHT VERIFIED. Production build с типизацией/worker PASS,

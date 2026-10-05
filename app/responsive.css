@@ -23,7 +23,8 @@
 .calculator-compact .parameter-panel .field select{min-height:44px}
 .calculator-compact .parameter-panel .check-field{min-height:32px;align-items:center;font-size:12px}
 .calculator-compact .parameter-panel .field-hint{font-size:11px}
-.calculator-compact .parameter-panel-heading{font-size:12px}
+.calculator-compact .parameter-panel-heading{padding:10px 14px 6px;border-bottom:0;font-size:11px;line-height:1.3}
+.calculator-compact .parameter-panel .calculator-inputs{padding:0 14px 10px}
 .calculator-compact .dimension-panel{left:24px}
 .calculator-compact .parameter-panel{right:24px}
 
@@ -51,8 +52,8 @@
   .calculator-compact .dimension-panel,.calculator-compact .parameter-panel{position:static;width:100%;max-width:none;max-height:none;margin:0;box-shadow:none;backdrop-filter:none;overflow:visible}
   .calculator-compact .dimension-panel{grid-column:1;padding:10px 12px 6px}
   .calculator-compact .parameter-panel{grid-column:2;grid-row:2}
-  .calculator-compact .parameter-panel .calculator-inputs{overflow:visible;padding:10px 12px}
-  .calculator-compact .parameter-panel-heading{padding:10px 12px;font-size:11px}
+  .calculator-compact .parameter-panel .calculator-inputs{overflow:visible;padding:0 12px 10px}
+  .calculator-compact .parameter-panel-heading{padding:10px 12px 6px}
   .calculator-compact .dimension-panel>strong{font-size:11px;margin-bottom:6px}
   .calculator-compact .dimension-sliders{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 12px}
   .calculator-compact .dimension-slider{position:static;padding:0;display:block}
@@ -92,8 +93,8 @@
   .calculator-compact .viewer{height:clamp(210px,33.6svh,280px);width:calc(100% + 32px);margin-inline:-16px}
   .calculator-compact .parameter-panel{grid-column:1;grid-row:3}
   .calculator-compact .dimension-panel{padding:10px 12px 6px}
-  .calculator-compact .parameter-panel .calculator-inputs{padding:10px 12px}
-  .calculator-compact .parameter-panel-heading{padding:10px 12px;font-size:11px}
+  .calculator-compact .parameter-panel .calculator-inputs{padding:0 12px 10px}
+  .calculator-compact .parameter-panel-heading{padding:10px 12px 6px}
   .calculator-compact .shape-picker{grid-template-columns:repeat(4,minmax(0,1fr));padding:6px 16px}
   .calculator-compact .shape-choice{min-height:64px;padding:3px 3px 4px}
   .calculator-compact .dimension-sliders{grid-template-columns:minmax(0,1fr);gap:0}

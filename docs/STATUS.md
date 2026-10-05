@@ -1,6 +1,14 @@
 # Состояние разработки
 
-Текущая работа: UI-SCENE-HEIGHT — VERIFIED; база e8c04da.
+Текущая работа: UI-PARAMETER-HEADING — VERIFIED; база f1cdb01.
+Ветка ui/plain-parameter-heading; docs/checkpoints/UI-PARAMETER-HEADING.md.
+Заголовок параметров без разделителя, компактно как у размеров.
+Build с типизацией/worker PASS; браузерные 390/1024/1920 PASS.
+Высота C4 242→226,3 px на узком, 281→252,3 px на большом.
+Разделитель отсутствует, шрифт как у размеров, C4/C8 работают, ошибок JS нет.
+Скриншот 1024 просмотрен. Следующий шаг: main/резервные копии.
+
+Предыдущая работа: UI-SCENE-HEIGHT — VERIFIED; база e8c04da.
 Ветка ui/scene-height-70pct; docs/checkpoints/UI-SCENE-HEIGHT.md.
 Высота 3D /compact 70% прежней во всех компоновках.
 Build с типизацией/worker; 8 responsive + 5 compact групп PASS.
@@ -147,7 +155,7 @@ main обновлён fast-forward.
 Есть idempotency, согласие, origin/honeypot/лимит, CLI и резервирование БД.
 Контакты повторно сверены с topengineer.ru/contact. Аналитика выключена.
 
-Реестр: 46 VERIFIED (включая девятнадцать правок UI и решение не включать upload),
+Реестр: 47 VERIFIED (включая двадцать правок UI и решение не включать upload),
 5 WAITING_EXTERNAL. Коммерческая готовность не объявлена.
 
 ## Проверки
@@ -173,7 +181,7 @@ main обновлён fast-forward.
 http://127.0.0.1:3100 — production build, только этот компьютер.
 Новый вариант: http://127.0.0.1:3100/wide#calculator.
 Адаптивная версия: http://127.0.0.1:3100/compact#calculator.
-PID 3604, скрытый фоновый процесс; логи .local/preview.stdout.log и
+PID 17256, скрытый фоновый процесс; логи .local/preview.stdout.log и
 .local/preview.stderr.log. Проверять фактический порт и CommandLine
 перед остановкой; не останавливать чужие процессы. После перезапуска
 компьютера: npm.cmd run start из корня проекта.
