@@ -2,11 +2,45 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const {defaultInput,parseInput}=require('../../.local/test-build/lib/configuration/input.js');
 const {generateModel,quantities,polygonArea,isStructuralMember}=require('../../.local/test-build/lib/geometry/generate.js');
-const {isStructureSelected,toggleStructure}=require('../../.local/test-build/lib/configuration/structure.js');
+const {isStructureSelected,toggleStructure,selectStructuralLayout}=require('../../.local/test-build/lib/configuration/structure.js');
 const {roofRequired,selectRoof}=require('../../.local/test-build/lib/configuration/roof.js');
 const {hasWallOptions,wallFillingEnabled,selectWalls}=require('../../.local/test-build/lib/configuration/walls.js');
 const input=(extra={})=>({...structuredClone(defaultInput),...extra});
 const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-7,actual+' != '+expected);
+
+test('bracket opens wall canopy and every other support restores the preceding shape',()=>{
+  for(const shapeId of ['C1','C2','C3','C4','C5','C6','C7','C8']) {
+    const variant=shapeId==='C5'?'screen':shapeId==='C6'?'arch':shapeId==='C7'?'dome':'portal';
+    const before=input({shapeId,variant,roof:shapeId==='C3',length:17,materialId:'M5'});
+    const canopy=selectStructuralLayout(before,null,'wall-bracket');
+    assert.equal(canopy.input.shapeId,'C5');assert.equal(canopy.input.variant,'shelter');
+    assert.equal(canopy.input.roof,true);assert.equal(canopy.input.opening.enabled,false);
+    assert.equal(canopy.input.structuralSystem,'wall-bracket');assert.equal(canopy.input.length,17);
+    assert.doesNotThrow(()=>generateModel(canopy.input));
+    const again=selectStructuralLayout(canopy.input,canopy.previous,'wall-bracket');
+    assert.deepEqual(again.previous,canopy.previous);
+    for(const id of ['tube-post','spatial-column','frame','spatial-truss','guyed-mast','spatial-combined']) {
+      const restored=selectStructuralLayout({...again.input,length:19,materialId:'M2'},again.previous,id);
+      assert.equal(restored.previous,null);assert.equal(restored.input.shapeId,shapeId);
+      assert.equal(restored.input.variant,variant);assert.equal(restored.input.roof,before.roof);
+      assert.equal(restored.input.length,19);assert.equal(restored.input.materialId,'M2');
+      assert.equal(restored.input.structuralSystem,id==='spatial-combined'?'spatial-truss':id);
+      assert.equal(restored.input.spatialSupports,id==='spatial-combined');
+      assert.doesNotThrow(()=>generateModel(restored.input));
+    }
+  }
+});
+
+test('bracket return preserves original opening but disables it if edited dimensions no longer fit',()=>{
+  const before=input({opening:{enabled:true,width:3,height:3,offset:3.5}});
+  const canopy=selectStructuralLayout(before,null,'wall-bracket');
+  const back=selectStructuralLayout(canopy.input,canopy.previous,'frame');
+  assert.deepEqual(back.input.opening,before.opening);
+  const smaller=selectStructuralLayout({...canopy.input,length:4},canopy.previous,'frame');
+  assert.equal(smaller.input.opening.enabled,false);assert.doesNotThrow(()=>generateModel(smaller.input));
+  const manual=selectStructuralLayout(input({shapeId:'C6',variant:'cable'}),null,'frame');
+  assert.equal(manual.input.shapeId,'C6');assert.equal(manual.input.variant,'cable');
+});
 
 test('mast guy wires belong to structure, while cable-net filling remains separate',()=>{
   const graph=generateModel(input({structuralSystem:'guyed-mast',materialId:'M5',roofMaterialId:'M5'}));

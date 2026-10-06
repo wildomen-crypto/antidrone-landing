@@ -21,7 +21,8 @@ import DimensionSlider from "./DimensionSlider";
 import CompactOptions from "./CompactOptions";
 import SceneViewControls from "./SceneViewControls";
 import { useIndustrialTheme } from "@/components/viewer/useIndustrialTheme";
-import { toggleStructure } from "@/lib/configuration/structure";
+import { selectStructuralLayout } from "@/lib/configuration/structure";
+import type { BracketReturn } from "@/lib/configuration/structure";
 import { roofRequired, selectRoof } from "@/lib/configuration/roof";
 import { hasWallOptions, wallFillingEnabled, selectWalls } from "@/lib/configuration/walls";
 import { track } from "@/lib/analytics";
@@ -39,6 +40,7 @@ function inputForShape(current: LayoutInput, shapeId: LayoutInput["shapeId"], de
     && (!["C2", "C4"].includes(shapeId) || current.sides[0])
     && opening.offset + opening.width <= current.length && opening.height <= current.height;
   return { ...current, shapeId, variant: variantFor(shapeId), roof: shapeId === "C3" || current.roof,
+    structuralSystem: shapeId !== "C5" && current.structuralSystem === "wall-bracket" ? "tube-post" : current.structuralSystem,
     opening: { ...opening, enabled } };
 }
 export default function Calculator({ variant = "standard" }: { variant?: "standard" | "wide" | "compact" | "overlay" }) {
@@ -50,6 +52,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   const parameterPanel = useRef<HTMLDivElement>(null);
   const dimensionPanel = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState<LayoutInput>(() => inputForShape(structuredClone(defaultInput), defaultInput.shapeId, compact));
+  const [bracketReturn, setBracketReturn] = useState<BracketReturn | null>(null);
   const [view, setView] = useState<CameraView>("perspective");
   const [onlyFrame, setOnlyFrame] = useState(false), [hiddenGroups, setHiddenGroups] = useState<string[]>([]);
   const industrialTheme = useIndustrialTheme();
@@ -112,6 +115,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
       const shapeId = (event as CustomEvent<string>).detail;
       if (!shapes.some(s => s.id === shapeId)) return;
       setInput(c => inputForShape(c, shapeId as LayoutInput["shapeId"], compact));
+      setBracketReturn(null);
       setHiddenGroups([]); setMessage("");
     };
     window.addEventListener("choose-shape", choose); return () => window.removeEventListener("choose-shape", choose);
@@ -121,7 +125,12 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     catch (error) { return { graph: null, estimate: null, error: error instanceof Error ? error.message : "Проверьте параметры." }; }
   }, [input]);
   const update = <K extends keyof LayoutInput>(key: K, value: LayoutInput[K]) => { setInput(c => ({ ...c, [key]: value })); setMessage(""); };
-  const chooseStructure = (id: LayoutInput["structuralSystem"]) => { setInput(c => ({ ...c, ...toggleStructure(c, id) })); setMessage(""); };
+  const chooseStructure = (id: LayoutInput["structuralSystem"] | "spatial-combined", toggle = true) => {
+    const next = selectStructuralLayout(input, bracketReturn, id, toggle);
+    setInput(next.input); setBracketReturn(next.previous);
+    if (next.input.shapeId !== input.shapeId) setHiddenGroups([]);
+    setMessage("");
+  };
   const chooseRoof = (id: LayoutInput["roofMaterialId"]) => { setInput(c => ({ ...c, ...selectRoof(c, id) })); setMessage(""); };
   const chooseWalls = (id: LayoutInput["materialId"]) => { setInput(c => ({ ...c, ...selectWalls(c, id) })); setMessage(""); };
   const chooseVariant = (variant: LayoutInput["variant"]) => { setInput(c => ({ ...c, variant, roof: roofRequired({ ...c, variant }) || c.roof, opening: { ...c.opening, enabled: false } })); setMessage(""); };
@@ -135,7 +144,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     return wide ? <DimensionSlider key={key} label={label} value={input[key]} min={min} max={max} onValue={v => update(key, v)} />
       : <label className="field" key={key}><span>{label}, м</span><NumberInput value={input[key]} min={min} max={max} onValue={v => update(key, v)} /></label>;
   };
-  const choose = (shapeId: LayoutInput["shapeId"]) => { setInput(c => inputForShape(c, shapeId, compact)); setHiddenGroups([]); setMessage(""); };
+  const choose = (shapeId: LayoutInput["shapeId"]) => { setInput(c => inputForShape(c, shapeId, compact)); setBracketReturn(null); setHiddenGroups([]); setMessage(""); };
   function download() {
     try {
       downloadConfiguration(parseInput(input));
@@ -153,7 +162,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     try {
       if (selected.size > 150000) throw new Error("Файл конфигурации должен быть меньше 150 КБ.");
       const raw = JSON.parse(await selected.text());
-      setInput(parseInput(raw)); setHiddenGroups([]);
+      setInput(parseInput(raw)); setBracketReturn(null); setHiddenGroups([]);
       setMessage(hasLegacyServices(raw.services) ? servicesUpdatedNotice : "Конфигурация восстановлена.");
     }
     catch (e) { setMessage(e instanceof Error ? e.message : "Не удалось прочитать файл."); }
@@ -215,7 +224,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
       {(wide || showAdvanced) && <div className="advanced-fields">
         {!wide && <>
           <label className="field"><span>Несущие элементы</span><select value={input.structuralSystem === "spatial-truss" && input.spatialSupports ? "spatial-combined" : input.structuralSystem}
-            onChange={e => { const combined = e.target.value === "spatial-combined"; setInput(c => ({ ...c, structuralSystem: combined ? "spatial-truss" : e.target.value as LayoutInput["structuralSystem"], spatialSupports: combined })); setMessage(""); }}>
+            onChange={e => chooseStructure(e.target.value as LayoutInput["structuralSystem"] | "spatial-combined", false)}>
             {structuralSystems.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}<option value="spatial-combined">Пространственная опора + ферма</option>
           </select></label>
           <label className="field"><span>Форма сечения на схеме</span><select value={input.sectionType} onChange={e => update("sectionType", e.target.value as LayoutInput["sectionType"])}><option value="profile">Профильная труба</option><option value="round">Круглая труба</option></select></label>
@@ -259,7 +268,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     </div>
   );
   const viewerControls = <div className="viewer-controls"><div className="view-buttons">{([["perspective", "3D"], ["top", "Сверху"], ["front", "Спереди"], ["side", "Сбоку"]] as const).map(([key, label]) => <button key={key} className={view === key ? "selected" : ""} aria-pressed={view === key} onClick={() => setView(key)}>{label}</button>)}</div><label className="check-field"><input type="checkbox" checked={onlyFrame} onChange={e => setOnlyFrame(e.target.checked)} />Только каркас</label></div>;
-  const structurePicker = <StructurePicker value={input.structuralSystem} spatialSupports={input.spatialSupports} onChange={chooseStructure} />;
+  const structurePicker = <StructurePicker value={input.structuralSystem} spatialSupports={input.spatialSupports} onChange={id => chooseStructure(id)} />;
   return <div className={wide ? `calculator calculator-wide${compact ? " calculator-compact" : ""}${overlay ? " calculator-overlay" : ""}` : "calculator"} data-shape={input.shapeId}>
     {wide && <ShapePicker value={input.shapeId} onChange={choose} />}
     {!wide && settings}
