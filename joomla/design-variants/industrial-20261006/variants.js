@@ -47,7 +47,7 @@
       doc.body.setAttribute('data-design-variant', variant);
       doc.body.setAttribute('data-design-theme', 'industrial');
       var css = doc.createElement('link'); css.rel = 'stylesheet'; css.href = assetRoot + 'frame.css?v=workspace-lines-icons-20261006'; doc.head.append(css);
-      var theme = doc.createElement('link'); theme.rel = 'stylesheet'; theme.href = assetRoot + 'theme-frame.css?v=gallery-contrast-20261006'; doc.head.append(theme);
+      var theme = doc.createElement('link'); theme.rel = 'stylesheet'; theme.href = assetRoot + 'theme-frame.css?v=scene-gradient-20261006'; doc.head.append(theme);
       var documents = root.querySelector('.documents-section'); if (documents) documents.id = 'documents';
       var left = variant !== 'workspace' ? rail('left') : null;
       var right = variant !== 'workspace' ? rail('right') : null;
