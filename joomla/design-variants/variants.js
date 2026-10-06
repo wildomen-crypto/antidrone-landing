@@ -45,7 +45,7 @@
       installed = doc;
       shell.querySelectorAll('.variant-rail').forEach(function (el) {el.remove();});
       doc.body.setAttribute('data-design-variant', variant);
-      var css = doc.createElement('link'); css.rel = 'stylesheet'; css.href = assetRoot + 'frame.css?v=workspace-overlay-20261006'; doc.head.append(css);
+      var css = doc.createElement('link'); css.rel = 'stylesheet'; css.href = assetRoot + 'frame.css?v=workspace-lines-icons-20261006'; doc.head.append(css);
       var documents = root.querySelector('.documents-section'); if (documents) documents.id = 'documents';
       var left = variant !== 'workspace' ? rail('left') : null;
       var right = variant !== 'workspace' ? rail('right') : null;
