@@ -1,4 +1,5 @@
-import Image from "next/image";
+import PhotoGallery from './PhotoGallery';
+import { photoPreview, photoSrcSet } from '@/lib/photo-previews';
 import { materials } from "@/config/catalog";
 import { materialPhotos } from "@/config/material-photos";
 import { sitePath } from "@/lib/site-path";
@@ -10,20 +11,22 @@ export default function Materials() {
         <div><p className="eyebrow">Заполнение и комплектующие</p><h2>От сетчатого полотна<br />до стальных труб</h2></div>
         <p>Материал выбирается под проект. Характеристики и крепления согласуются по документам производителя. Изображения — фотореалистичные визуализации.</p>
       </div>
-      <div className="material-grid">{materials.map(material => {
+      <PhotoGallery className="material-grid" label="Заполнение и комплектующие">{materials.map(material => {
         const photo = materialPhotos[material.id];
         return <article key={material.id} className="material-card">
           <figure className="material-photo">
             <div className="material-photo-frame">
-              <a href={sitePath(photo.image)} target="_blank" rel="noopener" aria-label={"Открыть изображение: " + material.name}>
-                <Image src={sitePath(photo.image)} alt={photo.alt} fill
-                  sizes="(max-width: 767px) 80vw, (max-width: 1100px) 42vw, 22vw" />
+              <a href={sitePath(photo.image)} data-gallery-photo data-photo-title={material.name} aria-label={"Открыть изображение: " + material.name}>
+                <img src={photoPreview(photo.image, 800)} srcSet={photoSrcSet(photo.image, [400, 800])}
+                  sizes="(max-width: 600px) calc(100vw - 80px), (max-width: 1100px) 42vw, (max-width: 1760px) 22vw, 400px"
+                  alt={photo.alt} width={1586} height={992} loading="lazy" decoding="async"
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
               </a>
             </div>
           </figure>
           <h3>{material.name}</h3><p>{material.description}</p>
         </article>;
-      })}</div>
+      })}</PhotoGallery>
     </div>
   </section>;
 }

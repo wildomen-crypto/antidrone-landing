@@ -4,6 +4,12 @@
 Живая страница: https://topengineer.ru/proektirovanie/proectirovanie-antidronovoi-zashiti.
 Размещение и откат: [docs/deployment-topengineer.md](docs/deployment-topengineer.md).
 
+В текущем исходном коде карточки портфолио и материалов используют отдельные
+адаптивные WebP-превью. Оригинальные PNG открываются в галерее поверх страницы:
+в Joomla — существующий Widgetkit сайта, самостоятельно — доступный HTML dialog.
+Превью уже включены в репозиторий; повторная подготовка при замене изображений:
+`python scripts/prepare-photo-previews.py` (нужен Pillow). Скрипт сохраняет оригиналы.
+
 Готовый установочный модуль Joomla 1.1.1 (ZIP для Linux-хостинга):
 [скачать из Releases](https://github.com/wildomen-crypto/antidrone-landing/releases/tag/joomla-v1.1.1).
 

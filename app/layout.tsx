@@ -8,6 +8,7 @@ import "./responsive.css";
 import "./overlay-calculator.css";
 import "./portfolio.css";
 import "./material-photos.css";
+import "./photo-gallery.css";
 import "./compact-order.css";
 import "./section-spacing.css";
 import "./quote-form.css";

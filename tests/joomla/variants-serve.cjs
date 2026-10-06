@@ -3,12 +3,13 @@ const fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const root=path.resolve(__dirname,'../..');
 const build=JSON.parse(fs.readFileSync(path.join(root,'.local/joomla/latest.json'),'utf8'));
 const media=path.join(build.stage,'media'),variants=path.join(root,'joomla/design-variants');
-const types={'.html':'text/html; charset=utf-8','.js':'application/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.woff':'font/woff','.woff2':'font/woff2'};
+const types={'.html':'text/html; charset=utf-8','.js':'application/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.woff':'font/woff','.woff2':'font/woff2'};
 const requests=[];
 http.createServer(async(req,res)=>{
  try{
   const url=new URL(req.url,'http://127.0.0.1:3153');
   if(url.pathname==='/__fixture/requests'){res.setHeader('Content-Type','application/json');res.end(JSON.stringify(requests));return;}
+  if(url.pathname==='/standalone'){res.setHeader('Content-Type','text/html; charset=utf-8');res.end(fs.readFileSync(path.join(build.output,'index.html')));return;}
   if(url.pathname==='/upload.php'){
    if(req.method!=='GET'||!url.searchParams.has('submit')){res.writeHead(400);res.end('error');return;}
    requests.push({method:req.method,fields:Object.fromEntries(url.searchParams)});res.end('');return;

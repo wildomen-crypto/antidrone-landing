@@ -1,4 +1,5 @@
-import Image from "next/image";
+import PhotoGallery from './PhotoGallery';
+import { photoPreview, photoSrcSet } from '@/lib/photo-previews';
 import { sitePath } from "@/lib/site-path";
 import { shapes } from "@/config/catalog";
 import type { ShapeId } from "@/lib/configuration/schema";
@@ -73,13 +74,16 @@ export default function Portfolio() {
           <p>Восемь типов конструкций из нашего конфигуратора — в промышленной среде. Выберите подходящую форму и настройте её под свой объект.</p>
         </div>
         <p className="portfolio-note">Изображения созданы как визуальные концепции, а не фотографии выполненных работ. Конструктивное решение и характеристики защиты определяются при проектировании.</p>
-        <div className="portfolio-grid">
+        <PhotoGallery className="portfolio-grid" label="Примеры возможной реализации защиты">
           {shapes.map(shape => {
             const example = examples[shape.id];
             return (
               <article className="portfolio-card" key={shape.id} data-shape={shape.id}>
-                <a className="portfolio-image" href={sitePath(example.image)} target="_blank" rel="noopener noreferrer" aria-label={`Открыть изображение: ${example.title}`}>
-                  <Image src={sitePath(example.image)} alt={example.alt} fill sizes="(max-width: 767px) calc(100vw - 32px), (min-width: 1600px) 700px, (min-width: 1304px) 608px, calc((100vw - 88px) / 2)" quality={80} />
+                <a className="portfolio-image" href={sitePath(example.image)} data-gallery-photo data-photo-title={example.title} aria-label={`Открыть изображение: ${example.title}`}>
+                  <img src={photoPreview(example.image, 960)} srcSet={photoSrcSet(example.image, [480, 960, 1600])}
+                    sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1760px) calc((100vw - 80px) / 2), 860px"
+                    alt={example.alt} width={1672} height={941} loading="lazy" decoding="async"
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
                   <span className="portfolio-badge">Визуальная концепция</span>
                   <span className="portfolio-expand" aria-hidden="true">↗</span>
                 </a>
@@ -90,7 +94,7 @@ export default function Portfolio() {
               </article>
             );
           })}
-        </div>
+        </PhotoGallery>
       </div>
     </section>
   );

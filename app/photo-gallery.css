@@ -1,0 +1,10 @@
+.photo-gallery-dialog{position:fixed;inset:0;width:100vw;max-width:none;height:100dvh;max-height:none;margin:0;padding:24px;border:0;background:transparent;color:white}
+.photo-gallery-dialog::backdrop{background:rgba(16,25,35,.88)}
+.photo-gallery-view{position:relative;height:100%;display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;gap:12px;pointer-events:none}
+.photo-gallery-view figure{margin:0;text-align:center;pointer-events:auto}
+.photo-gallery-view img{display:block;max-width:100%;max-height:calc(100dvh - 110px);width:auto;height:auto;margin:auto;object-fit:contain}
+.photo-gallery-view figcaption{font-size:14px;padding-top:12px;color:white}
+.photo-gallery-view button{pointer-events:auto;width:44px;height:44px;border:1px solid #ffffff80;border-radius:50%;color:white;background:#162537aa;cursor:pointer;font-size:30px;line-height:1}
+.photo-gallery-close{position:absolute;top:0;right:0;z-index:1}
+.photo-gallery-view button:focus-visible{outline:3px solid white;outline-offset:3px}
+@media(max-width:600px){.photo-gallery-dialog{padding:12px}.photo-gallery-view{grid-template-columns:36px minmax(0,1fr) 36px;gap:4px}.photo-gallery-view button{width:34px;height:34px}.photo-gallery-view figcaption{font-size:12px}}
