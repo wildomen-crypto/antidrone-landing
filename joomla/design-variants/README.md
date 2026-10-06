@@ -66,6 +66,11 @@ workspace от 1280 px размещает выбор услуг и настоя�
 исходный текст/поля/физическая логика страницы сохранены.
 
 Локальная проверка: node tests/joomla/variants-serve.cjs, порт 3153.
+В industrial (-4) внешний фон без скругления и прилегает к шапке и бокам.
+theme-host.css компенсирует только у этой статьи внешние 10 px шаблона
+yoo_monday. Внутренние отступы, общий контейнер и нижние модули сохранены.
+Проверки: docs/checkpoints/INDUSTRIAL-FLUSH-EDGES-20261006.md.
+
 Требуются готовый build:joomla (.local/joomla/latest.json) и публичный HTML
 исходной страницы в .local/design-variants/host-before.html. Это тестовая
 копия оболочки Joomla, не сборка для публикации. Контроль качества: design-qa.md.

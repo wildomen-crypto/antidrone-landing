@@ -1,14 +1,17 @@
 /* The generated image belongs to this article only. Joomla chrome is untouched. */
+/* yoo_monday adds 10px article padding and 10px container gutters.
+   Bleed only this article; keep the container's bottom modules unchanged. */
+article.tm-article-box:has(.antidrone-variant-shell[data-design-theme=industrial]){padding:0;margin-inline:-10px}
 .antidrone-variant-shell[data-design-theme=industrial]{
  --industrial-base:#16222b;
  display:block;position:relative;isolation:isolate;max-width:none;box-sizing:border-box;padding:30px clamp(12px,3vw,72px) 24px;
  background-color:var(--industrial-base);
- color:#edf3f8;border-radius:10px;
+ color:#edf3f8;border-radius:0;
 }
 .antidrone-variant-shell[data-design-theme=industrial]::before{content:"";position:absolute;inset:0 0 auto;height:1180px;max-height:100%;border-radius:inherit;z-index:-1;pointer-events:none;background-image:linear-gradient(to bottom,rgba(13,23,31,.18),rgba(13,23,31,.38) 48%,#16222b 100%),url('./industrial-enclosed-1672.webp');background-repeat:no-repeat;background-position:center top;background-size:100% 100%,cover}
 .antidrone-variant-shell[data-design-theme=industrial] .antidrone-variant-center{position:relative;max-width:1680px;margin-inline:auto}
 .antidrone-variant-shell[data-design-theme=industrial] iframe[data-antidrone-frame]{background:transparent;color-scheme:dark}
 .antidrone-variant-shell[data-design-theme=industrial] noscript{display:block;background:#16222b;color:white;padding:20px}
 @media(max-width:1100px){.antidrone-variant-shell[data-design-theme=industrial]{padding:18px 14px}.antidrone-variant-shell[data-design-theme=industrial]::before{height:900px;background-image:linear-gradient(to bottom,rgba(13,23,31,.25),rgba(13,23,31,.55) 55%,#16222b 100%),url('./industrial-enclosed-960.webp')}}
-@media(max-width:500px){.antidrone-variant-shell[data-design-theme=industrial]{padding:12px 4px;border-radius:4px}.antidrone-variant-shell[data-design-theme=industrial]::before{height:700px}}
+@media(max-width:500px){.antidrone-variant-shell[data-design-theme=industrial]{padding:12px 4px}.antidrone-variant-shell[data-design-theme=industrial]::before{height:700px}}
 @media print{.antidrone-variant-shell[data-design-theme=industrial]{padding:0;background:white;color:black}.antidrone-variant-shell[data-design-theme=industrial]::before{display:none}}
