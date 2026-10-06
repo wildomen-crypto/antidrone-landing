@@ -16,11 +16,12 @@ html:has(.joomla-content){overflow-y:hidden}
 @media(min-width:1280px){
  body[data-design-variant=workspace] .joomla-content #calculator .container{padding-inline:0}
  body[data-design-variant=workspace] .joomla-content .calculator-output{position:relative;padding-right:330px;min-height:720px}
- body[data-design-variant=workspace] .joomla-content .viewer-stage{display:grid;grid-template-columns:180px minmax(0,1fr) 190px;padding:10px;gap:10px;align-items:start}
- body[data-design-variant=workspace] .joomla-content .viewer-stage .viewer{grid-column:2;grid-row:1;height:480px;width:100%;margin:0}
- body[data-design-variant=workspace] .joomla-content .viewer-stage .dimension-panel{grid-column:1;grid-row:1;position:static;width:auto;max-height:480px;margin:0}
- body[data-design-variant=workspace] .joomla-content .viewer-stage .parameter-panel{grid-column:3;grid-row:1;position:static;width:auto;max-height:480px;margin:0}
- body[data-design-variant=workspace] .joomla-content .viewer-stage[data-settings=false]{grid-template-columns:180px minmax(0,1fr)}
+ /* Keep both controls over the full scene; the existing camera reserves their space. */
+ body[data-design-variant=workspace] .joomla-content .viewer-stage{display:block;padding:0}
+ body[data-design-variant=workspace] .joomla-content .viewer-stage .viewer{height:480px;width:100%;margin:0}
+ body[data-design-variant=workspace] .joomla-content .viewer-stage :is(.dimension-panel,.parameter-panel){position:absolute;top:12px;bottom:auto;width:190px;max-height:456px;margin:0}
+ body[data-design-variant=workspace] .joomla-content .viewer-stage .dimension-panel{left:16px}
+ body[data-design-variant=workspace] .joomla-content .viewer-stage .parameter-panel{right:16px}
  body[data-design-variant=workspace] .joomla-content .quote-result{position:absolute;right:0;top:0;width:330px;box-sizing:border-box;padding:16px;border-left:1px solid #d8d8d8}
  body[data-design-variant=workspace] .joomla-content .quote-result .quote-row{display:flex;flex-direction:column;align-items:stretch;gap:12px}
  body[data-design-variant=workspace] .joomla-content .quote-result .quote-summary{display:none}
