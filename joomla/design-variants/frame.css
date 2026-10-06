@@ -1,0 +1,43 @@
+/* Loaded into a test iframe only, after the unchanged application/theme CSS. */
+body:has(.joomla-content)[data-design-variant]{max-width:none;margin:0}
+html:has(.joomla-content){overflow-y:hidden}
+.joomla-content .container::before,.joomla-content .container::after{content:none!important;display:none!important}
+.joomla-content .lead-form :is(input:not([type=checkbox]),textarea){margin:0}
+.joomla-content .documents-section{display:block}
+.joomla-content .document-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:18px}
+.joomla-content .section{padding-block:24px}
+.joomla-content .portfolio-grid{gap:18px}
+.joomla-content .portfolio-copy{padding:12px 14px}
+.joomla-content .portfolio-copy h3{font-size:20px;line-height:1.35}
+.joomla-content .section-heading :is(h1,h2){font-size:32px}
+.joomla-content .section-heading h1{max-width:850px}
+.joomla-content #solutions .solution-image{height:150px}
+.joomla-content .material-grid{gap:16px}
+@media(min-width:1280px){
+ body[data-design-variant=workspace] .joomla-content #calculator .container{padding-inline:0}
+ body[data-design-variant=workspace] .joomla-content .calculator-output{position:relative;padding-right:330px;min-height:720px}
+ body[data-design-variant=workspace] .joomla-content .viewer-stage{display:grid;grid-template-columns:180px minmax(0,1fr) 190px;padding:10px;gap:10px;align-items:start}
+ body[data-design-variant=workspace] .joomla-content .viewer-stage .viewer{grid-column:2;grid-row:1;height:480px;width:100%;margin:0}
+ body[data-design-variant=workspace] .joomla-content .viewer-stage .dimension-panel{grid-column:1;grid-row:1;position:static;width:auto;max-height:480px;margin:0}
+ body[data-design-variant=workspace] .joomla-content .viewer-stage .parameter-panel{grid-column:3;grid-row:1;position:static;width:auto;max-height:480px;margin:0}
+ body[data-design-variant=workspace] .joomla-content .viewer-stage[data-settings=false]{grid-template-columns:180px minmax(0,1fr)}
+ body[data-design-variant=workspace] .joomla-content .quote-result{position:absolute;right:0;top:0;width:330px;box-sizing:border-box;padding:16px;border-left:1px solid #d8d8d8}
+ body[data-design-variant=workspace] .joomla-content .quote-result .quote-row{display:flex;flex-direction:column;align-items:stretch;gap:12px}
+ body[data-design-variant=workspace] .joomla-content .quote-result .quote-summary{display:none}
+ body[data-design-variant=workspace] .joomla-content .quote-result .service-picker .check-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:4px}
+ body[data-design-variant=workspace] .joomla-content .quote-result .service-picker .check-field{min-height:26px;margin:0}
+ body[data-design-variant=workspace] .joomla-content .quote-result .project-price{text-align:left}
+ body[data-design-variant=workspace] .joomla-content .quote-form{position:absolute;right:0;top:var(--variant-quote-height,245px);width:330px;padding:16px;box-sizing:border-box;border-left:1px solid #d8d8d8}
+ body[data-design-variant=workspace] .joomla-content .quote-fields{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+ body[data-design-variant=workspace] .joomla-content .quote-form .field input{height:40px;min-height:40px}
+ body[data-design-variant=workspace] .joomla-content .quote-form-footer{display:flex;flex-direction:column;align-items:stretch;gap:14px}
+ body[data-design-variant=workspace] .joomla-content .quote-form-footer .button{width:100%}
+ body[data-design-variant=workspace] .joomla-content .quote-form .field-task textarea{height:72px;min-height:72px}
+ body[data-design-variant=workspace] .joomla-content .portfolio-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body[data-design-variant=workspace] .joomla-content .portfolio-image{aspect-ratio:2.7/1}
+ body[data-design-variant=workspace] .joomla-content .solution-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+ body[data-design-variant=workspace] .joomla-content #solutions .solution-image{height:170px}
+}
+@media(max-width:900px){.joomla-content .section-heading :is(h1,h2){font-size:30px}}
+@media(max-width:767px){.joomla-content .document-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:500px){.joomla-content .section-heading :is(h1,h2){font-size:26px}.joomla-content #solutions .solution-image{height:90px}}
