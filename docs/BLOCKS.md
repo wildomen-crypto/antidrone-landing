@@ -9,6 +9,7 @@ B10.2 необязателен: решение об объёме записыв�
 
 | ID | Статус | Результат | Проверка | Карточка |
 | --- | --- | --- | --- | --- |
+| MAIN-WORKSPACE-INDUSTRIAL-20261006 | VERIFIED | Светлый workspace на основной странице; отдельный тематический фон/тёмная тема -4 | 54 unit/build; Chrome 2560/1920/1366/768/390, 8 типов/цена/галерея, 2 локальные формы, CMS/FTP/HTTP/защищённые файлы | docs/checkpoints/MAIN-WORKSPACE-INDUSTRIAL-20261006.md |
 | GITHUB-HOME-20261005 | VERIFIED | Исходники/инструкция в main; готовый Joomla ZIP/SHA/START-HOME в Release | Remote SHA, три assets/digest, публичная загрузка ZIP/SHA256, 8 HTTP 200 PASS | docs/checkpoints/GITHUB-HOME-20261005.md |
 | JOOMLA-EXISTING-FORM-20261005 | VERIFIED | Обе формы используют jQuery сайта и /upload.php; модуль 1.1.0 без новых SMTP | Check 54 unit/build/worker; PHP lint/17 cases; ZIP/82 ресурсов; Chrome две формы/отказ/повтор/mobile PASS | docs/checkpoints/JOOMLA-EXISTING-FORM-20261005.md |
 | JOOMLA-MONDAY-20261005 | VERIFIED | Отдельный /joomla в стилях yoo_monday; установочный модуль без Node на CMS | Check 48 unit/build, PHP lint/17 cases/dispatcher 3.10.12, ZIP/82 HTTP 200, Chrome C1–C8/цена/auto-height/390 PASS | docs/checkpoints/JOOMLA-MONDAY-20261005.md |

@@ -14,8 +14,10 @@ http.createServer(async(req,res)=>{
    if(req.method!=='GET'||!url.searchParams.has('submit')){res.writeHead(400);res.end('error');return;}
    requests.push({method:req.method,fields:Object.fromEntries(url.searchParams)});res.end('');return;
   }
-  if(['navigation','examples','workspace'].includes(url.pathname.slice(1))){
-   const variant=url.pathname.slice(1),snippet=fs.readFileSync(path.join(variants,'article.template.html'),'utf8').replace('{{variant}}',variant);
+  if(['navigation','examples','workspace','main-workspace','industrial'].includes(url.pathname.slice(1))){
+   const variant=url.pathname.slice(1),snippet=variant==='main-workspace'||variant==='industrial'
+    ? fs.readFileSync(path.join(variants,variant==='industrial'?'industrial-article.html':'main-article.html'),'utf8')
+    : fs.readFileSync(path.join(variants,'article.template.html'),'utf8').replace('{{variant}}',variant);
    res.setHeader('Content-Type','text/html; charset=utf-8');
    const hostFile=path.join(root,'.local/design-variants/host-before.html');
    if(!fs.existsSync(hostFile))throw Error('Capture the public host HTML before running this fixture.');
@@ -27,6 +29,8 @@ http.createServer(async(req,res)=>{
   if(url.pathname.startsWith('/templates/yoo_monday/')){const remote=await fetch('https://topengineer.ru'+url.pathname);res.writeHead(remote.status,{'Content-Type':remote.headers.get('content-type')||'text/css'});res.end(Buffer.from(await remote.arrayBuffer()));return;}
   let base,relative;
   if(url.pathname.startsWith('/media/antidrone-layouts/v1/')){base=variants;relative=url.pathname.slice('/media/antidrone-layouts/v1/'.length);}
+  else if(url.pathname.startsWith('/media/antidrone-layouts/industrial-20261006/')){base=path.join(variants,'industrial-20261006');relative=url.pathname.slice('/media/antidrone-layouts/industrial-20261006/'.length);}
+  else if(url.pathname.startsWith('/media/antidrone-layouts/workspace-stable-20261006/')){base=path.join(variants,'workspace-stable-20261006');relative=url.pathname.slice('/media/antidrone-layouts/workspace-stable-20261006/'.length);}
   else if(url.pathname.startsWith('/media/mod_antidrone_design/')){base=media;relative=url.pathname.slice('/media/mod_antidrone_design/'.length);}
   else if(/\.(css|js|png|jpg|jpeg|gif|svg|woff|woff2|ttf|ico)$/i.test(url.pathname)){
    const remote=await fetch('https://topengineer.ru'+url.pathname);

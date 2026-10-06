@@ -1,0 +1,64 @@
+/* Opt-in article palette; no changes to geometry, pricing or lead transport. */
+html:has(body[data-design-theme=industrial]),body[data-design-theme=industrial]{background:transparent!important;color-scheme:dark}
+body[data-design-theme=industrial] .joomla-content{
+ --ink:#f0f5fa;--muted:#c4d0d9;--accent:#ff641a;--line:#52616d;--tint:#22313c;
+ --host-heading:#f0f5fa;--host-text:#f0f5fa;--host-muted:#c4d0d9;--host-accent:#ff641a;
+ color:var(--ink);background:transparent;
+}
+body[data-design-theme=industrial] .joomla-content .section{background:transparent}
+body[data-design-theme=industrial] .joomla-content #calculator{padding-top:0}
+body[data-design-theme=industrial] .joomla-content .section-heading{padding:20px 22px;background:rgba(18,29,38,.74);border-radius:8px;border:1px solid #ffffff20;margin-bottom:18px}
+body[data-design-theme=industrial] .joomla-content :is(h1,h2,h3,h4,strong,.step-title){color:#f0f5fa}
+body[data-design-theme=industrial] .joomla-content .section-heading h1{font-size:clamp(28px,2.3vw,40px);font-weight:600;line-height:1.2}
+body[data-design-theme=industrial] .joomla-content p{color:#c4d0d9}
+body[data-design-theme=industrial] .joomla-content :is(.eyebrow,.text-link){color:#ffa16f}
+body[data-design-theme=industrial] .joomla-content .calculator{border:1px solid #7587976b;border-radius:10px;overflow:hidden;background:rgba(23,36,46,.7)}
+body[data-design-theme=industrial] .joomla-content .shape-picker{background:rgba(39,54,65,.78)}
+body[data-design-theme=industrial] .joomla-content :is(.shape-choice,.material-choice,.compact-option,.view-buttons button){background:#263743;border-color:#657582;color:#edf3f8;border-radius:4px}
+body[data-design-theme=industrial] .joomla-content :is(.shape-choice,.material-choice,.compact-option,.view-buttons button):hover{border-color:#ffa16f;background:#314551}
+body[data-design-theme=industrial] .joomla-content :is(.shape-choice,.material-choice,.compact-option,.view-buttons button)[aria-pressed=true]{background:#ff641a24;border-color:#ff762f;color:white;box-shadow:inset 0 0 0 1px #ff762f}
+body[data-design-theme=industrial] .joomla-content :is(.shape-choice-number,.material-choice-name,.shape-choice-name){color:#e1eaf1}
+body[data-design-theme=industrial] .joomla-content :is(.shape-choice-check,.material-choice-check){color:#ff9d68}
+body[data-design-theme=industrial] .joomla-content :is(.shape-choice-image,.compact-option)>svg{filter:brightness(1.5) saturate(.65)}
+body[data-design-theme=industrial] .joomla-content .material-choice-image pattern rect{fill:#293e4b}
+body[data-design-theme=industrial] .joomla-content .material-choice-image pattern path{stroke:#c1d8e6}
+body[data-design-theme=industrial] .joomla-content .material-choice-image pattern circle{fill:#bdd3df}
+body[data-design-theme=industrial] .joomla-content .material-choice[aria-label^="ПВЛ"] pattern rect{fill:#90a7b6}
+body[data-design-theme=industrial] .joomla-content .material-choice[aria-label^="ПВЛ"] pattern circle{fill:#293e4b}
+body[data-design-theme=industrial] .joomla-content .material-choice-image g>rect{stroke:#b9cfdc}
+body[data-design-theme=industrial] .joomla-content .structure-choice .material-choice-image svg g{stroke:#c1d8e6}
+body[data-design-theme=industrial] .joomla-content .shape-choice-image .model-diagram>line{stroke:#c4d9e8;stroke-opacity:1}
+body[data-design-theme=industrial] .joomla-content .viewer{background:transparent}
+body[data-design-theme=industrial] .joomla-content .viewer-stage{background:radial-gradient(ellipse at center,rgba(40,56,69,.7),rgba(18,30,39,.9))}
+body[data-design-theme=industrial] .joomla-content :is(.dimension-panel,.parameter-panel){background:rgba(20,33,42,.95);border:1px solid #6f84957a;border-radius:6px;box-shadow:0 6px 20px #0003;backdrop-filter:none}
+body[data-design-theme=industrial] .joomla-content :is(.dimension-panel-heading,.parameter-panel-heading){color:#edf3f8}
+body[data-design-theme=industrial] .joomla-content :is(.dimension-exact output,.dimension-value){background:#2b3d49;border-color:#718491;color:#f0f5fa}
+body[data-design-theme=industrial] .joomla-content :is(.dimension-slider-head>label,.check-field,.compact-group-label,.field-hint){color:#c4d0d9}
+body[data-design-theme=industrial] .joomla-content :is(.opening-sliders,.contour-sliders,.quote-result,.quote-form,.viewer-layers){background:rgba(23,36,46,.86);border-color:#5f74816b}
+body[data-design-theme=industrial] .joomla-content .calculator-output::after{background:#5f7481}
+body[data-design-theme=industrial] .joomla-content .material-picker{background:rgba(26,41,53,.94);border-color:#5f74816b}
+body[data-design-theme=industrial] .joomla-content .scene-view-controls{background:#162630ef;border-color:#607480;border-radius:6px}
+body[data-design-theme=industrial] .joomla-content .scene-view-controls button{background:transparent;color:#cadce8;border-color:transparent}
+body[data-design-theme=industrial] .joomla-content .scene-view-controls button[aria-pressed=true]{background:#ff641a24;border-color:#ff762f;color:#ffa16f}
+body[data-design-theme=industrial] .joomla-content .project-price strong{color:#ff8c4d}
+body[data-design-theme=industrial] .joomla-content :is(input:not([type=checkbox]):not([type=range]),textarea,select){background:#2b3d49;border:1px solid #718491;color:#f0f5fa;border-radius:4px}
+body[data-design-theme=industrial] .joomla-content :is(input,textarea)::placeholder{color:#c3d0d9;opacity:1}
+body[data-design-theme=industrial] .joomla-content :is(input,textarea,select):focus{background:#354c5b;border-color:#ff9d68;outline-color:#ff9d68}
+body[data-design-theme=industrial] .joomla-content :is(input[type=checkbox],input[type=range]){accent-color:#ff641a}
+body[data-design-theme=industrial] .joomla-content :is(.quote-consent,.consent-field){color:#c4d0d9}
+body[data-design-theme=industrial] .joomla-content :is(.consent-field,.quote-consent) a{color:#ffaf82;text-decoration:underline;text-underline-offset:2px}
+body[data-design-theme=industrial] .joomla-content .button-primary{background:#ff641a;border-color:#ff641a;color:#fff;font-weight:600;border-radius:4px}
+body[data-design-theme=industrial] .joomla-content .button-primary:disabled{background:#9c552f;border-color:#9c552f;color:#f6e5db;opacity:1}
+body[data-design-theme=industrial] .joomla-content :is(.solution-card,.material-card,.portfolio-card,.document-grid>div,.contact-form,.process-grid article){background:#22333f;border:1px solid #63758282;border-radius:7px}
+body[data-design-theme=industrial] .joomla-content .solution-image{background:#293d4b}
+body[data-design-theme=industrial] .joomla-content .solution-image .model-diagram{filter:brightness(1.8) saturate(.55)}
+body[data-design-theme=industrial] .joomla-content .solution-description-link{color:#cbd8e1}
+body[data-design-theme=industrial] .joomla-content .solution-description-link:hover{color:#ffaf82}
+body[data-design-theme=industrial] .joomla-content .portfolio-image :is(.portfolio-badge,.portfolio-expand){background:#1a2c38e8;color:#f0f5fa}
+body[data-design-theme=industrial] .joomla-content .document-grid strong{color:#ff9d68}
+body[data-design-theme=industrial] .joomla-content .process-grid article{padding:16px}
+body[data-design-theme=industrial] .joomla-content .process-number{color:#ff9d68}
+body[data-design-theme=industrial] .joomla-content :is(.form-message,.validation-summary){background:#293f4c;color:#fff;border-color:#ff9d68}
+body[data-design-theme=industrial] .joomla-content :is(a,button,input,textarea,select):focus-visible{outline:2px solid #ffaf82;outline-offset:3px}
+@media(max-width:767px){body[data-design-theme=industrial] .joomla-content .section-heading{padding:14px 12px}body[data-design-theme=industrial] .joomla-content .section-heading h1{font-size:28px}body[data-design-theme=industrial] .joomla-content .shape-picker{padding-inline:10px}}
+@media print{body[data-design-theme=industrial] .joomla-content{background:white;color:black}body[data-design-theme=industrial] .joomla-content .print-card :is(h2,p,strong){color:black}}

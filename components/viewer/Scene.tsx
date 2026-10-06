@@ -122,6 +122,15 @@ function Camera({ graph, view, rightInset, topInset, leftInset }: { graph: Model
 
 export default function Scene({ graph, view, onlyFrame, hiddenGroups, showDimensions = true, rightInset = 0, topInset = 0, leftInset = 0 }: { graph: ModelGraph; view: CameraView; onlyFrame: boolean; hiddenGroups: string[]; showDimensions?: boolean; rightInset?: number; topInset?: number; leftInset?: number }) {
   const [supported, setSupported] = useState<boolean | null>(null);
+  const [industrialTheme, setIndustrialTheme] = useState(false);
+  // Only the opt-in Joomla article changes the scene palette. Geometry is shared.
+  useEffect(() => {
+    const update = () => setIndustrialTheme(document.body.dataset.designTheme === "industrial");
+    update();
+    const observer = new MutationObserver(update);
+    observer.observe(document.body, { attributes: true, attributeFilter: ["data-design-theme"] });
+    return () => observer.disconnect();
+  }, []);
   useEffect(() => {
     const canvas = document.createElement("canvas");
     try { const context = canvas.getContext("webgl2"); setSupported(!!context); context?.getExtension("WEBGL_lose_context")?.loseContext(); } catch { setSupported(false); }
@@ -133,13 +142,13 @@ export default function Scene({ graph, view, onlyFrame, hiddenGroups, showDimens
   if (!supported) return fallback;
   const extent = Math.max(graph.bounds.length, graph.bounds.width, graph.bounds.height, 3);
   return <WebGLBoundary fallback={fallback}><Canvas frameloop="demand" dpr={[1, 1.5]} camera={{ fov: 40, position: [20, 14, 20] }} fallback={fallback} gl={{ antialias: true }}>
-    <color attach="background" args={["#f0f4f8"]} /><ambientLight intensity={1.8} /><directionalLight position={[20, 35, 20]} intensity={2.3} />
+    {!industrialTheme && <color attach="background" args={["#f0f4f8"]} />}<ambientLight intensity={1.8} /><directionalLight position={[20, 35, 20]} intensity={2.3} />
     <ContextGuard onLost={() => setSupported(false)} /><Camera graph={graph} view={view} rightInset={rightInset} topInset={topInset} leftInset={leftInset} /><Members members={members} scale={Math.min(0.055, Math.max(0.025, extent / 450))} sectionType={graph.sectionType} />
     {!onlyFrame && <Surfaces panels={panels} />}
     {graph.object && <mesh position={[0, graph.object.height / 2, 0]}><boxGeometry args={[graph.object.length, graph.object.height, graph.object.width]} /><meshStandardMaterial color="#bdc8d1" transparent opacity={0.25} /></mesh>}
     {graph.wall && <mesh position={[0, graph.wall.height / 2, -0.15]}><boxGeometry args={[graph.wall.length, graph.wall.height, 0.12]} /><meshStandardMaterial color="#c8d0d8" transparent opacity={0.45} /></mesh>}
     <Solids solids={solids} />
-    {showDimensions && <Dimensions graph={graph} />}
-    <gridHelper args={[extent * 2.2, 24, "#cad5df", "#dde4eb"]} position={[0, -0.03, 0]} />
+    {showDimensions && <Dimensions graph={graph} dark={industrialTheme} />}
+    <gridHelper args={[extent * 2.2, 24, industrialTheme ? "#8cabbc" : "#cad5df", industrialTheme ? "#8cabbc" : "#dde4eb"]} material-transparent={industrialTheme} material-opacity={industrialTheme ? .28 : 1} position={[0, -0.03, 0]} />
   </Canvas></WebGLBoundary>;
 }

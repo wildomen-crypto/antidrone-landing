@@ -2,16 +2,16 @@
 import { useEffect, useMemo } from "react";
 import * as THREE from "three";
 import type { ModelGraph, Point } from "@/lib/geometry/generate";
-function Label({ text, point, scale }: { text: string; point: Point; scale: number }) {
+function Label({ text, point, scale, dark }: { text: string; point: Point; scale: number; dark: boolean }) {
   const texture = useMemo(() => {
     const canvas = document.createElement("canvas"); canvas.width = 512; canvas.height = 112;
-    const ctx = canvas.getContext("2d")!; ctx.fillStyle = "rgba(255,255,255,0.95)"; ctx.fillRect(0,0,512,112); ctx.fillStyle = "#2355d6"; ctx.font = "600 72px Segoe UI, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(text,256,56);
+    const ctx = canvas.getContext("2d")!; ctx.fillStyle = dark ? "rgba(24,37,47,0.95)" : "rgba(255,255,255,0.95)"; ctx.fillRect(0,0,512,112); ctx.fillStyle = dark ? "#e3edf5" : "#2355d6"; ctx.font = "600 72px Segoe UI, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(text,256,56);
     const t = new THREE.CanvasTexture(canvas); t.colorSpace = THREE.SRGBColorSpace; return t;
-  }, [text]);
+  }, [text, dark]);
   useEffect(() => () => texture.dispose(), [texture]);
   return <sprite position={[...point]} scale={[scale * 3, scale * .66, 1]} renderOrder={1000}><spriteMaterial map={texture} depthTest={false} depthWrite={false} /></sprite>;
 }
-export function Dimensions({ graph }: { graph: ModelGraph }) {
+export function Dimensions({ graph, dark = false }: { graph: ModelGraph; dark?: boolean }) {
   const lines = useMemo(() => {
     const {length:l,width:w,height:h} = graph.bounds, pad = Math.max(l,w,h) * .08, z0 = graph.wall ? 0 : -w/2, z1 = graph.wall ? w : w/2;
     const data: {a:Point;b:Point;label:Point;text:string}[] = [
@@ -25,5 +25,5 @@ export function Dimensions({ graph }: { graph: ModelGraph }) {
   }, [lines]);
   useEffect(() => () => geometry.dispose(), [geometry]);
   const scale = Math.max(graph.bounds.length,graph.bounds.width,graph.bounds.height,3) * .09;
-  return <><lineSegments geometry={geometry}><lineBasicMaterial color="#6687c5" transparent opacity={.65} /></lineSegments>{lines.map(d=><Label key={d.text} text={d.text} point={d.label} scale={scale} />)}</>;
+  return <><lineSegments geometry={geometry}><lineBasicMaterial color={dark ? "#adc7dc" : "#6687c5"} transparent opacity={.65} /></lineSegments>{lines.map(d=><Label key={d.text} text={d.text} point={d.label} scale={scale} dark={dark} />)}</>;
 }

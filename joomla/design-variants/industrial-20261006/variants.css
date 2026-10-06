@@ -1,0 +1,35 @@
+/* Only these three test articles opt in. The host template and original module
+   remain intact; iframe rules live in frame.css. */
+.antidrone-variant-shell{width:100%;max-width:1800px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr);gap:22px;font-family:"Open Sans",Arial,sans-serif;color:#5c5c5c}
+.antidrone-variant-center{min-width:0}
+.antidrone-variant-center iframe{display:block;width:100%;max-width:100%;border:0;background:white}
+.variant-rail{min-width:0;position:relative;font-size:13px;line-height:1.5}
+.variant-sticky{position:sticky;top:90px;max-height:calc(100vh - 110px);overflow:auto}
+.variant-box{border:1px solid #dedede;background:#f7f8f8;padding:16px;margin-bottom:16px}
+.variant-box h2,.variant-box h3{font-family:inherit!important;font-size:16px!important;line-height:1.4!important;font-weight:600!important;margin:0 0 12px!important;color:#444!important}
+.variant-box p{font-size:12px;margin:8px 0;color:#5c5c5c}
+.variant-box a,.variant-nav a{color:#5c5c5c;text-decoration:none}
+.variant-box a:hover,.variant-nav a:hover{color:#ff5000}
+.variant-nav{display:grid;gap:4px}
+.variant-nav a{display:block;padding:12px 10px;border-left:2px solid transparent}
+.variant-nav a[aria-current=true]{border-color:#ff5000;background:#fff5ef;color:#e84600}
+.variant-summary-title{font-weight:600;margin-bottom:6px}
+.variant-summary-dimensions{font-size:12px;margin-bottom:16px}
+.variant-service-proxy{display:block;width:100%;text-align:left;border:1px solid #d9d9d9;background:white;padding:8px 10px;margin:6px 0;font:inherit;color:#555;cursor:pointer}
+.variant-service-proxy[aria-pressed=true]{border-color:#ff5000;background:#fff5ef;color:#d94000}
+.variant-price{display:block;font-size:25px;line-height:1.3;color:#ff5000;margin:16px 0 4px}
+.variant-cta{display:block;text-align:center;background:#ff5000;color:white!important;padding:11px 12px;margin-top:12px;border:1px solid #ff5000;text-decoration:none!important}
+.variant-photo img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;margin-bottom:10px}
+.variant-photo button{border:1px solid #ff5000;background:white;color:#d94000;padding:9px 10px;font:inherit;cursor:pointer;display:block;width:100%;margin-top:10px}
+.variant-photo small{display:block;font-size:10px;margin:0 0 8px;color:#777}
+.variant-context-group{position:absolute;left:0;right:0}
+.variant-list{display:grid;gap:9px;margin:0;padding-left:18px;font-size:12px}
+.antidrone-variant-shell :is(a,button):focus-visible{outline:3px solid #ff5000;outline-offset:3px}
+@media(min-width:1400px){
+ .antidrone-variant-shell[data-design-variant=navigation]{grid-template-columns:170px minmax(0,1fr) 230px}
+ .antidrone-variant-shell[data-design-variant=examples]{grid-template-columns:220px minmax(0,1fr) 220px}
+}
+@media(max-width:1399px){.variant-rail{display:none}.antidrone-variant-shell{max-width:1320px}}
+@media(min-width:1400px){.antidrone-variant-shell[data-design-variant=workspace]{max-width:1760px}}
+@media(max-width:767px){.antidrone-variant-shell{gap:0}.antidrone-variant-center{width:100%}}
+@media print{.variant-rail{display:none!important}.antidrone-variant-shell{display:block}}
