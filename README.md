@@ -3,13 +3,13 @@
 Продолжение с другого ПК: [инструкция](docs/HOME.md).
 Живая страница: https://topengineer.ru/proektirovanie/proectirovanie-antidronovoi-zashiti.
 
-На основной странице опубликован проверенный светлый вариант workspace
-(прежний -4). Экспериментальное оформление с промышленным фоном и защитными
-сетками сверху/по периметру размещено отдельно:
+На основную страницу перенесён выбранный вариант -4: промышленный фон
+с защитными сетками сверху/по периметру, затемнение и оранжевые акценты.
+Та же версия остаётся доступной по ссылке:
 https://topengineer.ru/proektirovanie/proectirovanie-antidronovoi-zashiti-4.
 Фото плавно переходит в однотонный графитовый фон; шапка и подвал Joomla
 сохранены. Ресурсы/готовые вставки статей — joomla/design-variants,
-границы и проверка — docs/checkpoints/MAIN-WORKSPACE-INDUSTRIAL-20261006.md.
+границы и проверка переноса — docs/checkpoints/PROMOTE-INDUSTRIAL-MAIN-20261006.md.
 Размещение и откат: [docs/deployment-topengineer.md](docs/deployment-topengineer.md).
 
 В текущем исходном коде карточки портфолио и материалов используют отдельные
