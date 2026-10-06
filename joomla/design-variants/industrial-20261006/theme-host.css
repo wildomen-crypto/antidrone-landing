@@ -2,6 +2,12 @@
 /* yoo_monday adds 10px article padding and 10px container gutters.
    Bleed only this article; keep the container's bottom modules unchanged. */
 article.tm-article-box:has(.antidrone-variant-shell[data-design-theme=industrial]){padding:0;margin-inline:-10px}
+/* bottom-d contains the two hidden Joomla popups and an empty spacer paragraph.
+   Keep them available to Magnific Popup, but remove their wrapper's blank space. */
+.uk-container:has(.antidrone-variant-shell[data-design-theme=industrial]) > #tm-bottom-d{margin-block:0}
+.uk-container:has(.antidrone-variant-shell[data-design-theme=industrial]) > #tm-bottom-d > div{margin-block:0}
+.uk-container:has(.antidrone-variant-shell[data-design-theme=industrial]) > #tm-bottom-d > div > .uk-panel-box{padding:0;min-height:0!important;border:0;background:transparent}
+.uk-container:has(.antidrone-variant-shell[data-design-theme=industrial]) > #tm-bottom-d > div > .uk-panel-box > p{display:none}
 .antidrone-variant-shell[data-design-theme=industrial]{
  --industrial-base:#16222b;
  display:block;position:relative;isolation:isolate;max-width:none;box-sizing:border-box;padding:30px clamp(12px,3vw,72px) 24px;
