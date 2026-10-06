@@ -13,9 +13,10 @@ function ViewIcon({ view, frame = false }: { view: CameraView; frame?: boolean }
   </svg>;
 }
 
-export default function SceneViewControls({ view, onView, onlyFrame, onFrame }: {
+export default function SceneViewControls({ view, onView, onlyFrame, onFrame, lightFrame, onFrameTone }: {
   view: CameraView; onView: (view: CameraView) => void;
   onlyFrame: boolean; onFrame: (value: boolean) => void;
+  lightFrame: boolean; onFrameTone: (light: boolean) => void;
 }) {
   return <div className="scene-view-controls" role="group" aria-label="Вид схемы">
     {views.map(([key, label]) => <button type="button" key={key} title={label}
@@ -24,5 +25,14 @@ export default function SceneViewControls({ view, onView, onlyFrame, onFrame }: 
     </button>)}
     <button type="button" className="scene-frame-toggle" title="Только каркас" aria-label="Только каркас"
       aria-pressed={onlyFrame} onClick={() => onFrame(!onlyFrame)}><ViewIcon view="perspective" frame /></button>
+    <button type="button" className="scene-colour-toggle" aria-label="Светлый каркас"
+      title={lightFrame ? "Светлый каркас — переключить на тёмный" : "Тёмный каркас — переключить на светлый"}
+      aria-pressed={lightFrame} onClick={() => onFrameTone(!lightFrame)}>
+      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+        <circle cx="10" cy="10" r="7" fill="#344e66" />
+        <path d="M10 3A7 7 0 0 0 10 17Z" fill="#edf3f8" />
+        <circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" strokeWidth="1.3" />
+      </svg>
+    </button>
   </div>;
 }

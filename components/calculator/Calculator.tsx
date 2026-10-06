@@ -20,6 +20,7 @@ import StructurePicker from "./StructurePicker";
 import DimensionSlider from "./DimensionSlider";
 import CompactOptions from "./CompactOptions";
 import SceneViewControls from "./SceneViewControls";
+import { useIndustrialTheme } from "@/components/viewer/useIndustrialTheme";
 import { toggleStructure } from "@/lib/configuration/structure";
 import { roofRequired, selectRoof } from "@/lib/configuration/roof";
 import { hasWallOptions, wallFillingEnabled, selectWalls } from "@/lib/configuration/walls";
@@ -51,6 +52,9 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   const [input, setInput] = useState<LayoutInput>(() => inputForShape(structuredClone(defaultInput), defaultInput.shapeId, compact));
   const [view, setView] = useState<CameraView>("perspective");
   const [onlyFrame, setOnlyFrame] = useState(false), [hiddenGroups, setHiddenGroups] = useState<string[]>([]);
+  const industrialTheme = useIndustrialTheme();
+  const [frameTone, setFrameTone] = useState<boolean | undefined>(undefined);
+  const lightFrame = frameTone ?? industrialTheme;
   const [three, setThree] = useState(false), [showAdvanced, setShowAdvanced] = useState(false);
   const [message, setMessage] = useState("");
   const [calculatedAt, setCalculatedAt] = useState("");
@@ -261,8 +265,8 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     <div className="calculator-output">
       {!wide && <div className="viewer-toolbar"><span className="step-title"><span>02</span> Предварительная схема</span><span className="viewer-badge">{three ? "3D / 2D" : "Аксонометрия"}</span></div>}
       <div className="viewer-stage" data-settings={compact ? String(showSettingsPanel) : undefined}>
-        <div className="viewer" ref={viewer}>{result.graph ? three ? <Scene graph={result.graph} view={view} onlyFrame={onlyFrame} hiddenGroups={hiddenGroups} rightInset={rightInset} topInset={topInset} leftInset={leftInset} /> : <div className="scene-fallback" style={{ paddingRight: rightInset, paddingTop: topInset, paddingLeft: leftInset }}><ModelDiagram graph={result.graph} /></div> : <div className="viewer-error" role="alert">{result.error}</div>}
-          {compact && <SceneViewControls view={view} onView={setView} onlyFrame={onlyFrame} onFrame={setOnlyFrame} />}
+        <div className="viewer" ref={viewer}>{result.graph ? three ? <Scene graph={result.graph} view={view} onlyFrame={onlyFrame} hiddenGroups={hiddenGroups} rightInset={rightInset} topInset={topInset} leftInset={leftInset} lightFrame={lightFrame} /> : <div className="scene-fallback" style={{ paddingRight: rightInset, paddingTop: topInset, paddingLeft: leftInset }}><ModelDiagram graph={result.graph} lightFrame={lightFrame} /></div> : <div className="viewer-error" role="alert">{result.error}</div>}
+          {compact && <SceneViewControls view={view} onView={setView} onlyFrame={onlyFrame} onFrame={setOnlyFrame} lightFrame={lightFrame} onFrameTone={setFrameTone} />}
         </div>
         {wide && <div className="dimension-panel" ref={dimensionPanel} role="region" aria-label="Размеры конструкции"><strong>Размеры конструкции</strong>{dimensions}
           <CompactOptions input={input} onSection={v => update("sectionType", v)} onFoundation={v => update("foundation", v)} onSide={toggleSide} />

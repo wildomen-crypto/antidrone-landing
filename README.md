@@ -8,7 +8,10 @@
 Та же версия остаётся доступной по ссылке:
 https://topengineer.ru/proektirovanie/proectirovanie-antidronovoi-zashiti-4.
 Фото плавно переходит в однотонный графитовый фон; шапка и подвал Joomla
-сохранены. Ресурсы/готовые вставки статей — joomla/design-variants,
+сохранены. Каркас по умолчанию светлый; двухцветный круг рядом с кнопками вида
+переключает его на прежний тёмный цвет. Сетки остаются прежними; выбор цвета
+не влияет на стоимость и действует до перезагрузки страницы.
+Ресурсы/готовые вставки статей — joomla/design-variants,
 границы и проверка переноса — docs/checkpoints/PROMOTE-INDUSTRIAL-MAIN-20261006.md.
 Размещение и откат: [docs/deployment-topengineer.md](docs/deployment-topengineer.md).
 
