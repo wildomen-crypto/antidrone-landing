@@ -7,6 +7,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { ModelDiagram } from "./ModelDiagram";
 import type { CameraView } from "./ModelDiagram";
 import type { ModelGraph, Member, Panel, Solid } from "@/lib/geometry/generate";
+import { isStructuralMember } from "@/lib/geometry/generate";
 import { Dimensions } from "./Dimensions";
 import { useIndustrialTheme } from "./useIndustrialTheme";
 
@@ -29,8 +30,8 @@ function Members({ members, scale, sectionType, dark }: { members: Member[]; sca
       dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.copy(b).sub(a).normalize());
       dummy.scale.set(thickness, a.distanceTo(b), thickness); dummy.updateMatrix();
       ref.current!.setMatrixAt(index, dummy.matrix);
-      // Keep infill and cable colours intact; only structural steel is light in the dark article.
-      ref.current!.setColorAt(index, new THREE.Color(dark && (m.kind === "frame" || m.kind === "brace") ? "#edf3f8" : m.group === "contour1" ? "#39797e" : m.group === "contour2" ? "#628eb1" : m.group === "contour3" ? "#2355d6" : m.kind === "infill" ? "#6d8ea5" : "#344e66"));
+      // Guy wires belong to the frame; cable-net infill keeps its original colour.
+      ref.current!.setColorAt(index, new THREE.Color(dark && isStructuralMember(m) ? "#edf3f8" : m.group === "contour1" ? "#39797e" : m.group === "contour2" ? "#628eb1" : m.group === "contour3" ? "#2355d6" : m.kind === "infill" ? "#6d8ea5" : "#344e66"));
     });
     ref.current.instanceMatrix.needsUpdate = true;
     if (ref.current.instanceColor) ref.current.instanceColor.needsUpdate = true;
@@ -132,20 +133,20 @@ export default function Scene({ graph, view, onlyFrame, hiddenGroups, showDimens
     const canvas = document.createElement("canvas");
     try { const context = canvas.getContext("webgl2"); setSupported(!!context); context?.getExtension("WEBGL_lose_context")?.loseContext(); } catch { setSupported(false); }
   }, []);
-  const members = useMemo(() => graph.members.filter(m => !hiddenGroups.includes(m.group) && (!onlyFrame || ["frame", "brace"].includes(m.kind))), [graph.members, hiddenGroups, onlyFrame]);
+  const members = useMemo(() => graph.members.filter(m => !hiddenGroups.includes(m.group) && (!onlyFrame || isStructuralMember(m))), [graph.members, hiddenGroups, onlyFrame]);
   const panels = useMemo(() => graph.panels.filter(p => !hiddenGroups.includes(p.group)), [graph.panels, hiddenGroups]);
   const solids = useMemo(() => graph.solids.filter(s => !hiddenGroups.includes(s.group)), [graph.solids, hiddenGroups]);
-  const fallback = <div className="scene-fallback" style={{ paddingRight: rightInset, paddingTop: topInset, paddingLeft: leftInset }}><ModelDiagram graph={graph} view={view} onlyFrame={onlyFrame} hiddenGroups={hiddenGroups} lightFrame={frameIsLight} /></div>;
+  const fallback = <div className="scene-fallback" style={{ paddingRight: rightInset, paddingTop: topInset, paddingLeft: leftInset, background: frameIsLight ? undefined : "#fff" }}><ModelDiagram graph={graph} view={view} onlyFrame={onlyFrame} hiddenGroups={hiddenGroups} lightFrame={frameIsLight} /></div>;
   if (!supported) return fallback;
   const extent = Math.max(graph.bounds.length, graph.bounds.width, graph.bounds.height, 3);
   return <WebGLBoundary fallback={fallback}><Canvas frameloop="demand" dpr={[1, 1.5]} camera={{ fov: 40, position: [20, 14, 20] }} fallback={fallback} gl={{ antialias: true }}>
-    {!industrialTheme && <color attach="background" args={["#f0f4f8"]} />}<ambientLight intensity={1.8} /><directionalLight position={[20, 35, 20]} intensity={2.3} />
+    {!frameIsLight && <color attach="background" args={["#ffffff"]} />}<ambientLight intensity={1.8} /><directionalLight position={[20, 35, 20]} intensity={2.3} />
     <ContextGuard onLost={() => setSupported(false)} /><Camera graph={graph} view={view} rightInset={rightInset} topInset={topInset} leftInset={leftInset} /><Members members={members} scale={Math.min(0.055, Math.max(0.025, extent / 450))} sectionType={graph.sectionType} dark={frameIsLight} />
     {!onlyFrame && <Surfaces panels={panels} />}
     {graph.object && <mesh position={[0, graph.object.height / 2, 0]}><boxGeometry args={[graph.object.length, graph.object.height, graph.object.width]} /><meshStandardMaterial color="#bdc8d1" transparent opacity={0.25} /></mesh>}
     {graph.wall && <mesh position={[0, graph.wall.height / 2, -0.15]}><boxGeometry args={[graph.wall.length, graph.wall.height, 0.12]} /><meshStandardMaterial color="#c8d0d8" transparent opacity={0.45} /></mesh>}
     <Solids solids={solids} />
-    {showDimensions && <Dimensions graph={graph} dark={industrialTheme} />}
-    <gridHelper args={[extent * 2.2, 24, industrialTheme ? "#8cabbc" : "#cad5df", industrialTheme ? "#8cabbc" : "#dde4eb"]} material-transparent={industrialTheme} material-opacity={industrialTheme ? .28 : 1} position={[0, -0.03, 0]} />
+    {showDimensions && <Dimensions graph={graph} dark={frameIsLight} />}
+    <gridHelper args={[extent * 2.2, 24, frameIsLight ? "#8cabbc" : "#cad5df", frameIsLight ? "#8cabbc" : "#dde4eb"]} material-transparent={frameIsLight} material-opacity={frameIsLight ? .28 : 1} position={[0, -0.03, 0]} />
   </Canvas></WebGLBoundary>;
 }

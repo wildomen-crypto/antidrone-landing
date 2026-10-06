@@ -1,4 +1,5 @@
 import type { ModelGraph, Point } from "@/lib/geometry/generate";
+import { isStructuralMember } from "@/lib/geometry/generate";
 export type CameraView = "perspective" | "top" | "front" | "side";
 export function ModelDiagram({ graph, view = "perspective", onlyFrame = false, hiddenGroups = [], className = "", paddingRatio = .16, lightFrame = false }: { graph: ModelGraph; view?: CameraView; onlyFrame?: boolean; hiddenGroups?: string[]; className?: string; paddingRatio?: number; lightFrame?: boolean }) {
   const project = (p: Point): [number, number] => view === "top" ? [p[0], p[2]] : view === "front" ? [p[0], -p[1]] : view === "side" ? [p[2], -p[1]] : [(p[0] - p[2]) * 0.8, (p[0] + p[2]) * 0.3 - p[1]];
@@ -28,9 +29,9 @@ export function ModelDiagram({ graph, view = "perspective", onlyFrame = false, h
     </pattern>)}</defs>
     {faces.map((face,i) => <polygon key={"solid"+i} points={face.map(p=>project(p).join(",")).join(" ")} fill="#a6b8c7" fillOpacity=".2" stroke="#8da3b5" strokeWidth={stroke*.4} />)}
     {!onlyFrame && graph.panels.filter(p=>!hiddenGroups.includes(p.group)).map(p=><polygon key={p.id} points={p.points.map(p=>project(p).join(",")).join(" ")} fill={"url(#"+prefix+p.materialId+")"} stroke={color(p.group)} strokeWidth={stroke/2} />)}
-    {graph.members.filter(m=>!hiddenGroups.includes(m.group)&&(!onlyFrame||m.kind==="frame"||m.kind==="brace")).map(m=>{
+    {graph.members.filter(m=>!hiddenGroups.includes(m.group)&&(!onlyFrame||isStructuralMember(m))).map(m=>{
       const a=project(m.a),b=project(m.b);
-      return <line key={m.id} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} stroke={lightFrame && (m.kind==="frame"||m.kind==="brace") ? "#edf3f8" : color(m.group)} strokeWidth={m.kind==="frame"?stroke*1.8:stroke*.8} strokeOpacity={m.kind==="cable"?.55:.9} />;
+      return <line key={m.id} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} stroke={lightFrame && isStructuralMember(m) ? "#edf3f8" : color(m.group)} strokeWidth={m.kind==="frame"?stroke*1.8:stroke*.8} strokeOpacity={m.kind==="cable"&&m.role!=="guy"?.55:.9} />;
     })}
   </svg>;
 }

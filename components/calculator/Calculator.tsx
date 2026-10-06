@@ -55,6 +55,7 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
   const industrialTheme = useIndustrialTheme();
   const [frameTone, setFrameTone] = useState<boolean | undefined>(undefined);
   const lightFrame = frameTone ?? industrialTheme;
+  const sceneBackground = lightFrame ? (industrialTheme ? undefined : "#16222b") : "#fff";
   const [three, setThree] = useState(false), [showAdvanced, setShowAdvanced] = useState(false);
   const [message, setMessage] = useState("");
   const [calculatedAt, setCalculatedAt] = useState("");
@@ -264,8 +265,8 @@ export default function Calculator({ variant = "standard" }: { variant?: "standa
     {!wide && settings}
     <div className="calculator-output">
       {!wide && <div className="viewer-toolbar"><span className="step-title"><span>02</span> Предварительная схема</span><span className="viewer-badge">{three ? "3D / 2D" : "Аксонометрия"}</span></div>}
-      <div className="viewer-stage" data-settings={compact ? String(showSettingsPanel) : undefined}>
-        <div className="viewer" ref={viewer}>{result.graph ? three ? <Scene graph={result.graph} view={view} onlyFrame={onlyFrame} hiddenGroups={hiddenGroups} rightInset={rightInset} topInset={topInset} leftInset={leftInset} lightFrame={lightFrame} /> : <div className="scene-fallback" style={{ paddingRight: rightInset, paddingTop: topInset, paddingLeft: leftInset }}><ModelDiagram graph={result.graph} lightFrame={lightFrame} /></div> : <div className="viewer-error" role="alert">{result.error}</div>}
+      <div className="viewer-stage" data-settings={compact ? String(showSettingsPanel) : undefined} style={{ background: sceneBackground }}>
+        <div className="viewer" ref={viewer} style={{ background: sceneBackground }}>{result.graph ? three ? <Scene graph={result.graph} view={view} onlyFrame={onlyFrame} hiddenGroups={hiddenGroups} rightInset={rightInset} topInset={topInset} leftInset={leftInset} lightFrame={lightFrame} /> : <div className="scene-fallback" style={{ paddingRight: rightInset, paddingTop: topInset, paddingLeft: leftInset }}><ModelDiagram graph={result.graph} lightFrame={lightFrame} /></div> : <div className="viewer-error" role="alert">{result.error}</div>}
           {compact && <SceneViewControls view={view} onView={setView} onlyFrame={onlyFrame} onFrame={setOnlyFrame} lightFrame={lightFrame} onFrameTone={setFrameTone} />}
         </div>
         {wide && <div className="dimension-panel" ref={dimensionPanel} role="region" aria-label="Размеры конструкции"><strong>Размеры конструкции</strong>{dimensions}

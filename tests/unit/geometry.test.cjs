@@ -1,12 +1,22 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const {defaultInput,parseInput}=require('../../.local/test-build/lib/configuration/input.js');
-const {generateModel,quantities,polygonArea}=require('../../.local/test-build/lib/geometry/generate.js');
+const {generateModel,quantities,polygonArea,isStructuralMember}=require('../../.local/test-build/lib/geometry/generate.js');
 const {isStructureSelected,toggleStructure}=require('../../.local/test-build/lib/configuration/structure.js');
 const {roofRequired,selectRoof}=require('../../.local/test-build/lib/configuration/roof.js');
 const {hasWallOptions,wallFillingEnabled,selectWalls}=require('../../.local/test-build/lib/configuration/walls.js');
 const input=(extra={})=>({...structuredClone(defaultInput),...extra});
 const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-7,actual+' != '+expected);
+
+test('mast guy wires belong to structure, while cable-net filling remains separate',()=>{
+  const graph=generateModel(input({structuralSystem:'guyed-mast',materialId:'M5',roofMaterialId:'M5'}));
+  const guys=graph.members.filter(m=>m.role==='guy');
+  const net=graph.members.filter(m=>m.kind==='cable'&&m.role!=='guy');
+  assert(guys.length>0);assert(net.length>0);
+  assert(guys.every(m=>isStructuralMember(m)&&m.b[1]===0));
+  assert(net.every(m=>!isStructuralMember(m)));
+  assert(generateModel(input({structuralSystem:'tube-post',materialId:'M5'})).members.every(m=>m.role!=='guy'));
+});
 
 test('PVL defaults and legacy configurations preserve their saved materials and wall state',()=>{
   assert.equal(defaultInput.materialId,'M7');assert.equal(defaultInput.roofMaterialId,'M7');

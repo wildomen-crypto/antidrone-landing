@@ -26,7 +26,7 @@ export default function SceneViewControls({ view, onView, onlyFrame, onFrame, li
     <button type="button" className="scene-frame-toggle" title="Только каркас" aria-label="Только каркас"
       aria-pressed={onlyFrame} onClick={() => onFrame(!onlyFrame)}><ViewIcon view="perspective" frame /></button>
     <button type="button" className="scene-colour-toggle" aria-label="Светлый каркас"
-      title={lightFrame ? "Светлый каркас — переключить на тёмный" : "Тёмный каркас — переключить на светлый"}
+      title={lightFrame ? "Светлый каркас на тёмном фоне — переключить на белый фон" : "Обычные цвета на белом фоне — переключить на светлый каркас"}
       aria-pressed={lightFrame} onClick={() => onFrameTone(!lightFrame)}>
       <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
         <circle cx="10" cy="10" r="7" fill="#344e66" />

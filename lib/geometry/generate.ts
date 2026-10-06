@@ -3,7 +3,10 @@ import type { LayoutInput } from "../configuration/input";
 import type { MaterialId, SurfaceRole } from "../configuration/schema";
 
 export type Point = readonly [number, number, number];
-export type Member = { id: string; a: Point; b: Point; kind: "frame" | "brace" | "infill" | "cable"; group: string };
+export type Member = { id: string; a: Point; b: Point; kind: "frame" | "brace" | "infill" | "cable"; group: string; role?: "guy" };
+export function isStructuralMember(member: Member) {
+  return member.kind === "frame" || member.kind === "brace" || member.role === "guy";
+}
 export type Panel = { id: string; points: Point[]; materialId: MaterialId; layers: number; role: SurfaceRole; group: string; baseSurface: boolean };
 export type Solid = { id: string; center: Point; size: Point; group: string; role: "foundation" | "wall"; material: "concrete" | "steel" | "gabion" };
 export type ModelGraph = { members: Member[]; panels: Panel[]; solids: Solid[]; sectionType: "round" | "profile"; supports: { point: Point; group: string; foundation: LayoutInput["foundation"] }[]; sections: number; bounds: { length: number; width: number; height: number }; object?: { length: number; width: number; height: number }; wall?: { length: number; height: number }; wallModule?: string };
@@ -25,12 +28,12 @@ export function generateModel(value: LayoutInput): ModelGraph {
   const solid = (center: Point, size: Point, group: string, role: Solid["role"], material: Solid["material"]) => graph.solids.push({ id: "s" + graph.solids.length, center, size, group, role, material });
   const keys = new Set<string>(), supportKeys = new Set<string>();
   const key = (p: Point) => p.map(v => v.toFixed(6)).join(",");
-  const member = (a: Point, b: Point, kind: Member["kind"], group: string) => {
+  const member = (a: Point, b: Point, kind: Member["kind"], group: string, role?: Member["role"]) => {
     if (distance(a, b) < 1e-7) return;
     const k = [key(a), key(b)].sort().join("|") + ":" + group + ":" + kind;
     if (keys.has(k)) return;
     if (graph.members.length >= 12000) throw new Error("Слишком подробная модель. Увеличьте шаг секций или уменьшите размеры.");
-    keys.add(k); graph.members.push({ id: `m${graph.members.length}`, a, b, kind, group });
+    keys.add(k); graph.members.push({ id: `m${graph.members.length}`, a, b, kind, group, ...(role ? { role } : {}) });
   };
   const panel = (points: Point[], materialId: MaterialId, role: SurfaceRole, group: string, baseSurface = true) => {
     if (polygonArea(points) < 1e-8) return;
@@ -97,7 +100,7 @@ export function generateModel(value: LayoutInput): ModelGraph {
     }
     if (c.structuralSystem === "guyed-mast" && openingBottom === 0) {
       const signX = x < 0 ? -1 : 1, signZ = z < 0 ? -1 : 1;
-      member(top, [x + signX * 2, 0, z + signZ * 2], "cable", group);
+      member(top, [x + signX * 2, 0, z + signZ * 2], "cable", group, "guy");
     }
   };
   const side = (a: Point, b: Point, height: number, material: MaterialId, role: SurfaceRole, group: string, hole: boolean, fill = true) => {
