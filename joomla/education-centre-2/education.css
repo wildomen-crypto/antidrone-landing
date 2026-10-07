@@ -1,0 +1,61 @@
+/* Only article content; site navigation, template and footer are untouched. */
+#te-education-2{--te-orange:#ff5000;color:#353a40;font-family:inherit;font-size:14px;line-height:1.55;background:#fff}
+#te-education-2,#te-education-2 *{box-sizing:border-box}
+#te-education-2 h1,#te-education-2 h2,#te-education-2 h3,#te-education-2 h4{font-family:inherit;color:inherit;font-weight:700;line-height:1.2}
+#te-education-2 p{margin:0 0 16px}
+#te-education-2 img{display:block;max-width:100%;height:auto}
+#te-education-2 a{transition:background-color .15s,color .15s}
+#te-education-2 a:focus-visible{outline:3px solid #1376b5;outline-offset:4px}
+#te-education-2 .row{margin-left:-12px;margin-right:-12px}
+#te-education-2 [class*="col-"]{padding-left:12px;padding-right:12px}
+#te-education-2 .te-hero{background:#f6f7f7}
+#te-education-2 .te-hero>.row{margin:0;display:flex;align-items:stretch}
+#te-education-2 .te-hero-copy{padding:32px 28px 30px}
+#te-education-2 .te-eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:1.6px;color:#687078;font-weight:700;margin-bottom:18px}
+#te-education-2 h1{margin:0 0 20px;font-size:clamp(32px,3.5vw,52px);font-weight:800;letter-spacing:-1.8px;text-transform:uppercase}
+#te-education-2 h1 span{color:var(--te-orange)}
+#te-education-2 .te-lead{font-size:23px;font-weight:600;line-height:1.3;margin-bottom:16px}
+#te-education-2 .te-hero-copy>p:not(.te-eyebrow):not(.te-lead){max-width:370px}
+#te-education-2 .te-hero-photo{padding:0;position:relative;min-height:350px;overflow:hidden}
+#te-education-2 .te-hero-photo img{width:100%;height:100%;object-fit:cover;object-position:65% center}
+#te-education-2 .te-button{display:inline-flex;align-items:center;justify-content:space-between;gap:16px;border:0;border-radius:0;background:#d33f00;color:#fff;font-family:inherit;font-size:13px;font-weight:600;line-height:1.4;padding:11px 14px;white-space:normal;text-shadow:none;box-shadow:none;text-decoration:none}
+#te-education-2 .te-button:hover{background:#b93600;color:#fff;text-decoration:none}
+#te-education-2 .te-jump{display:flex;border-top:1px solid #dde0e2;border-bottom:1px solid #dde0e2}
+#te-education-2 .te-jump a{flex:1;display:flex;align-items:center;gap:12px;padding:18px 24px;color:#727b82;text-decoration:none;font-size:12px}
+#te-education-2 .te-jump a+a{border-left:1px solid #dde0e2}
+#te-education-2 .te-jump strong{color:#353a40;font-size:14px}
+#te-education-2 .te-jump span{margin-left:auto;color:var(--te-orange);font-size:22px}
+#te-education-2 .te-jump a:hover{background:#fff1e9}
+#te-education-2 .te-section{padding:30px 28px 32px;scroll-margin-top:20px}
+#te-education-2 .te-section-heading{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:23px}
+#te-education-2 .te-section-heading h2{margin:0;font-size:clamp(28px,3.4vw,48px);font-weight:800;letter-spacing:-1.5px;text-transform:uppercase;border-bottom:3px solid var(--te-orange);padding-bottom:8px}
+#te-education-2 .te-section-heading p{flex:0 0 35%;margin:0;font-size:15px;line-height:1.4}
+#te-education-2 .te-course{background:#f6f7f7;height:100%;border:1px solid #e4e6e8}
+#te-education-2 .te-course-title{display:flex;align-items:center;gap:12px;min-height:70px;padding:15px 18px}
+#te-education-2 .te-course-title h3{margin:0;font-size:22px}
+#te-education-2 .te-number{color:#808992;font-size:12px;align-self:flex-start;margin-top:5px}
+#te-education-2 .te-tag{margin-left:auto;border:1px solid #d4d9dd;font-size:10px;letter-spacing:1px;padding:3px 7px;color:#69747e}
+#te-education-2 .te-software-image{width:100%;aspect-ratio:1000/282;object-fit:contain;background:#fff}
+#te-education-2 .te-course-options.row{margin:0;padding:18px 6px 20px}
+#te-education-2 .te-option h4{margin:0 0 7px;font-size:14px}
+#te-education-2 .te-option p{font-size:12px;min-height:38px;margin-bottom:12px}
+#te-education-2 .te-option .te-button{font-size:12px}
+#te-education-2 .te-dark{background:#343a40;color:#fff}
+#te-education-2 .te-dark .te-course{background:#424950;border-color:#596068}
+#te-education-2 .te-dark .te-number{color:#c0c7ce}
+#te-education-2 .te-note{color:#d0d5d9;font-size:12px;margin:18px 0 0}
+#te-education-2 .te-design-description{padding:0 18px;font-size:13px}
+#te-education-2 .te-mentor>img{width:100%;aspect-ratio:16/10;object-fit:cover}
+#te-education-2 .te-benefits{margin-top:24px;text-align:center;color:#66717b}
+#te-education-2 .te-benefits i{font-size:25px;margin-bottom:10px}
+#te-education-2 .te-benefits p{font-size:12px;line-height:1.4}
+#te-education-2 .te-help{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:25px;padding:22px 24px;background:#d33f00;color:#fff}
+#te-education-2 .te-help h3{margin:0 0 6px;font-size:19px}
+#te-education-2 .te-help p{margin:0;font-size:13px}
+#te-education-2 .te-button-light{background:#fff;color:#d33f00;flex-shrink:0}
+#te-education-2 .te-button-light:hover{background:#fff1e9;color:#b93600}
+#te-education-2 .te-image-caption{font-size:11px;color:#79838c;margin:14px 0 0}
+@media(min-width:992px){#te-education-2 .te-section>.row{display:flex;align-items:stretch}}
+@media(max-width:991px){#te-education-2 .te-hero>.row{display:block}#te-education-2 .te-hero-photo{min-height:0}#te-education-2 .te-hero-photo img{height:auto;max-height:400px}#te-education-2 .te-section>.row>[class*="col-"]+[class*="col-"]{margin-top:24px}#te-education-2 h1{font-size:42px}#te-education-2 .te-section-heading h2{font-size:34px}#te-education-2 .te-section-heading p{flex-basis:40%}}
+@media(max-width:767px){#te-education-2 .te-hero-copy,#te-education-2 .te-section{padding:24px 18px}#te-education-2 h1{font-size:34px;letter-spacing:-1.2px}#te-education-2 .te-lead{font-size:21px}#te-education-2 .te-hero-photo img{aspect-ratio:16/10;object-fit:cover}#te-education-2 .te-jump{display:block}#te-education-2 .te-jump a{padding:12px 18px}#te-education-2 .te-jump a+a{border-left:0;border-top:1px solid #dde0e2}#te-education-2 .te-section-heading{display:block}#te-education-2 .te-section-heading h2{font-size:29px;letter-spacing:-1px;display:inline-block;margin-bottom:14px}#te-education-2 .te-section-heading p{font-size:14px}#te-education-2 .te-course-title h3{font-size:19px}#te-education-2 .te-course-title{padding:15px 12px}#te-education-2 .te-course-options.row{padding:16px 0}#te-education-2 .te-option+.te-option{margin-top:20px;padding-top:16px;border-top:1px solid #d5dadd}#te-education-2 .te-option p{min-height:0}#te-education-2 .te-option .te-button{width:100%;min-height:44px}#te-education-2 .te-dark .te-option+.te-option{border-color:#596068}#te-education-2 .te-help{display:block;padding:20px}#te-education-2 .te-help h3{font-size:18px}#te-education-2 .te-button-light{margin-top:18px;width:100%;min-height:44px}}
+@media(prefers-reduced-motion:reduce){#te-education-2 a{transition:none}}
