@@ -1,0 +1,11 @@
+/* Every host rule is scoped to this article. No body, main, sidebar or template rules. */
+#te-antidrone-article{width:100%;min-width:0;isolation:isolate;margin:0;padding:0}
+#te-antidrone-article [data-antidrone-bitrix-contract]{display:none!important}
+#te-antidrone-article .antidrone-variant-shell{--industrial-base:#16222b;position:relative;isolation:isolate;display:block;width:100%;box-sizing:border-box;padding:24px clamp(8px,2vw,32px);color:#edf3f8;background:var(--industrial-base);border-radius:0}
+#te-antidrone-article .antidrone-variant-shell::before{content:"";position:absolute;inset:0 0 auto;height:1180px;max-height:100%;z-index:-1;pointer-events:none;background-image:linear-gradient(to bottom,rgba(13,23,31,.18),rgba(13,23,31,.38) 48%,#16222b 100%),url('./theme/industrial-enclosed-1672.webp');background-repeat:no-repeat;background-position:center top;background-size:100% 100%,cover}
+#te-antidrone-article .antidrone-variant-center{position:relative;min-width:0;max-width:1680px;margin-inline:auto}
+#te-antidrone-article iframe[data-antidrone-frame]{display:block;width:100%;max-width:100%;border:0;background:transparent;overflow:hidden;color-scheme:dark}
+#te-antidrone-article noscript{display:block;padding:20px;color:white;background:#16222b}
+@media(max-width:1100px){#te-antidrone-article .antidrone-variant-shell{padding:16px 8px}#te-antidrone-article .antidrone-variant-shell::before{height:900px;background-image:linear-gradient(to bottom,rgba(13,23,31,.25),rgba(13,23,31,.55) 55%,#16222b 100%),url('./theme/industrial-enclosed-960.webp')}}
+@media(max-width:500px){#te-antidrone-article .antidrone-variant-shell{padding:12px 2px}#te-antidrone-article .antidrone-variant-shell::before{height:700px}}
+@media print{#te-antidrone-article .antidrone-variant-shell{padding:0;background:white;color:black}#te-antidrone-article .antidrone-variant-shell::before{display:none}}

@@ -3,6 +3,12 @@
 Продолжение с другого ПК: [инструкция](docs/HOME.md).
 Живая страница: https://topengineer.ru/proektirovanie/proectirovanie-antidronovoi-zashiti.
 
+Отдельная версия для Битрикс опубликована на
+https://dev.topengineer.ru/proektirovanie/antidronovaya-zashchita/.
+Статья подключается через `/local/include_dynamic/antidrin.php`, стили
+изолированы, шаблон и движок не меняются. Сборка: `npm run build:bitrix`.
+Размещение, штатные формы и откат: [docs/bitrix.md](docs/bitrix.md).
+
 На основную страницу перенесён выбранный вариант -4: промышленный фон
 с защитными сетками сверху/по периметру, затемнение и оранжевые акценты.
 Та же версия остаётся доступной по ссылке:

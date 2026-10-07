@@ -1,5 +1,16 @@
 # Состояние разработки
 
+BITRIX-DEV-ARTICLE-20261007 — VERIFIED, опубликовано dev.topengineer.ru
+/proektirovanie/antidronovaya-zashchita/ через local/include_dynamic/antidrin.php.
+Отдельные статические ресурсы и CSS только статьи, iframe своего домена;
+шаблон/движок/БД не менялись. 2401 защищённый файл без изменений,
+header/footer DOM сохранён. Штатная форма topengineer:request.form/send,
+подписанные параметры; оба локальных запроса прошли native validate без CRM.
+61 unit, typecheck, build:bitrix, PHP lint PASS. Live 2560/390:
+3D, цена/комплекты, цветовые схемы, Magnific Popup портфолио/материалов PASS.
+Инструкция docs/bitrix.md; резерв и проверки
+docs/checkpoints/BITRIX-DEV-ARTICLE-20261007.md. Реальный цикл CRM не тестировался.
+
 EDUCATION-CENTRE-2-20261007 — VERIFIED, опубликовано /education-centr-2.
 Один обычный материал Joomla 705, категория 2, прежнее меню 1342.
 Bootstrap/Open Sans; CSS и две иллюстрации встроены в статью.

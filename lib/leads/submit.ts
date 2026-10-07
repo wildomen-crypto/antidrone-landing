@@ -1,6 +1,6 @@
 import { sitePath } from "../site-path";
 import { siteFormFields } from "./site-form";
-export type JoomlaHost = { transport?: "site-form"; endpoint: string; tokenName?: string; moduleId: number; enabled: boolean };
+export type JoomlaHost = { transport?: "site-form"; endpoint: string; tokenName?: string; moduleId: number; enabled: boolean; requiresAllContacts?: boolean };
 declare global { interface Window { antidroneJoomlaHost?: JoomlaHost } }
 
 function submitThroughParent(fields: Record<string, string>, key: string): Promise<{ sent: true }> {

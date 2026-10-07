@@ -13,8 +13,12 @@ const reviewMode = process.env.NEXT_PUBLIC_REVIEW_MODE === "true";
 export default function LeadForm({ variant = "inline", configurationValid = true, prepareConfiguration, onSaved, persistConfiguration = false }: { variant?: "inline" | "contact"; configurationValid?: boolean; prepareConfiguration?: () => LayoutInput; onSaved?: (configuration: LayoutInput) => void; persistConfiguration?: boolean }) {
   const contactForm = variant === "contact";
   const [hostDisabled, setHostDisabled] = useState(false);
+  const [requiresAllContacts, setRequiresAllContacts] = useState(false);
   useEffect(() => {
-    const refresh = () => setHostDisabled(window.antidroneJoomlaHost?.enabled === false);
+    const refresh = () => {
+      setHostDisabled(window.antidroneJoomlaHost?.enabled === false);
+      setRequiresAllContacts(window.antidroneJoomlaHost?.requiresAllContacts === true);
+    };
     refresh(); window.addEventListener("antidrone-host-ready", refresh);
     return () => window.removeEventListener("antidrone-host-ready", refresh);
   }, []);
@@ -22,9 +26,9 @@ export default function LeadForm({ variant = "inline", configurationValid = true
   const key = useRef<string | null>(null);
   const previousPayload = useRef("");
   const [phone, setPhone] = useState(""), [email, setEmail] = useState("");
-  const nameField = <label className="field"><input name="name" aria-label="ФИО" autoComplete="name" maxLength={100} placeholder="ФИО (необязательно)" disabled={busy} /></label>;
-  const phoneField = <label className="field"><input name="phone" aria-label="Телефон" type="tel" autoComplete="tel" maxLength={120} required={!email.trim()} placeholder="Телефон" value={phone} onChange={event => setPhone(event.target.value)} disabled={busy} /></label>;
-  const emailField = <label className="field"><input name="email" aria-label="Email" type="email" autoComplete="email" maxLength={120} required={!phone.trim()} placeholder="Email" value={email} onChange={event => setEmail(event.target.value)} disabled={busy} /></label>;
+  const nameField = <label className="field"><input name="name" aria-label="ФИО" autoComplete="name" maxLength={100} required={requiresAllContacts} minLength={requiresAllContacts ? 2 : undefined} placeholder={requiresAllContacts ? "ФИО *" : "ФИО (необязательно)"} disabled={busy} /></label>;
+  const phoneField = <label className="field"><input name="phone" aria-label="Телефон" type="tel" autoComplete="tel" maxLength={120} required={requiresAllContacts || !email.trim()} placeholder={requiresAllContacts ? "Телефон *" : "Телефон"} value={phone} onChange={event => setPhone(event.target.value)} disabled={busy} /></label>;
+  const emailField = <label className="field"><input name="email" aria-label="Email" type="email" autoComplete="email" maxLength={120} required={requiresAllContacts || !phone.trim()} placeholder={requiresAllContacts ? "Email *" : "Email"} value={email} onChange={event => setEmail(event.target.value)} disabled={busy} /></label>;
   return <form id={contactForm ? undefined : "quote-request"} className={"lead-form " + (contactForm ? "contact-form" : "quote-form")} aria-label={contactForm ? "Обсудим ваш проект" : "Запрос расчёта проекта"} onSubmit={async event => {
     event.preventDefault(); if (busy || !consent || !configurationValid) return;
     if (reviewMode) { setMessage("Демонстрационная версия: заявка не отправлена. Для обсуждения проекта свяжитесь с нами по телефону или email."); return; }
@@ -44,7 +48,7 @@ export default function LeadForm({ variant = "inline", configurationValid = true
     } catch (error) { setMessage(error instanceof Error ? error.message : "Нет соединения. Попробуйте ещё раз."); }
     finally { setBusy(false); }
   }}>
-    {contactForm && <><h3>Обсудим ваш проект</h3><p>Оставьте контакт и краткое описание. Укажите нужные разделы КМ, КМД и КЖ и наличие исходных чертежей.</p></>}
+    {contactForm && <><h3>Обсудим ваш проект</h3><p>{requiresAllContacts ? "Укажите имя, телефон и email. " : "Оставьте контакт и краткое описание. "}Укажите нужные разделы КМ, КМД и КЖ и наличие исходных чертежей.</p></>}
     <div className={contactForm ? "contact-fields" : "quote-fields"}>
       {phoneField}{emailField}{nameField}
       <label className="field field-task"><textarea name="comment" aria-label="Описание задачи" maxLength={2000} rows={contactForm ? 3 : 2} placeholder="Описание задачи: объект, размеры, нужные работы" disabled={busy} /></label>
